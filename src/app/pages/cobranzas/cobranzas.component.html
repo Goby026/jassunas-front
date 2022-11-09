@@ -1,1 +1,221 @@
-<p>cobranzas works!</p>
+<!-- Main content -->
+<div class="row">
+  <div class="col-md-12">
+    <app-breadcrumbs></app-breadcrumbs>
+  </div>
+  <div class="col-md-8 mb-4 order-0">
+    <div class="card">
+      <div class="d-flex align-items-end row">
+        <div class="col-sm-12">
+          <h4 class="card-header">Cobranza de servicios</h4>
+          <div class="card-body">
+            <div class="table-responsive text-nowrap">
+              <table class="table table-sm" style="font-size: 12px ;">
+                <thead>
+                  <tr>
+                    <th>Cód</th>
+                    <th>Cliente</th>
+                    <th>Servicio contratado</th>
+                    <th>Deuda</th>
+                    <th>Estado</th>
+                    <th>Pago</th>
+                    <th>...</th>
+                  </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+
+                  <tr *ngFor="let cliente of clientes | paginate:{
+                    itemsPerPage: tableSize,
+                    currentPage: page,
+                    totalItems: count}; let i = index">
+                    <td><strong>{{ cliente.idclientes }}</strong></td>
+                    <td>
+                      <div class="">
+                        <p class="text-primary">{{ cliente.ape_paterno }} {{ cliente.ape_materno }} {{ cliente.nombres }}</p>
+                        <p>Dirección : {{ cliente.direccion }}</p>
+                        <p>Ref : Sin referencia</p>
+                        <p>Tipo usuario : Simple</p>
+                        <p>Instalaciones : {{ cliente.num_instalaciones }} (Nro. Familias {{ cliente.num_familias }} ) </p>
+                      </div>
+                    </td>
+                    <td>
+                      SERVICIO DE AGUA POTABLE
+                    </td>
+                    <td>
+                      <strong class="text-danger"> S/ 10.00 </strong>
+                    </td>
+                    <td>
+                      <span class="badge bg-label-primary me-1">Active</span>
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-xs btn-primary" (click)="mostrarCliente(cliente.idclientes)">Ver</button>
+                    </td>
+                    <td>
+                      <div class="dropdown">
+                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-vertical-rounded"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item" href="javascript:void(0);"
+                            ><i class="bx bx-edit-alt me-1"></i> Edit</a
+                          >
+                          <a class="dropdown-item" href="javascript:void(0);"
+                            ><i class="bx bx-trash me-1"></i> Delete</a
+                          >
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+              <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+              </pagination-controls>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-12 order-1" *ngIf="panel" >
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-12 mb-4">
+
+        <!-- <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <div class="avatar flex-shrink-0">
+                <img
+                  src="../assets/img/icons/unicons/wallet-info.png"
+                  alt="Credit Card"
+                  class="rounded"
+                />
+              </div>
+              <div class="dropdown">
+                <button
+                  class="btn p-0"
+                  type="button"
+                  id="cardOpt6"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
+                  <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                  <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                </div>
+              </div>
+            </div>
+            <span>Deuda total</span>
+            <h3 class="card-title text-nowrap mb-1">S/ 35.00</h3>
+
+          </div>
+          <div class="card-footer">
+            <small class="text-light fw-semibold">Detalle</small>
+            <div class="demo-inline-spacing mt-1">
+              <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Enero 2020
+                  <button class="btn btn-primary btn-sm">Pagar</button>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Febrero 2020
+                  <button class="btn btn-primary btn-sm">Pagar</button>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Marzo 2020
+                  <button class="btn btn-primary btn-sm">Pagar</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Pills -->
+        <div class="row">
+          <div class="col-xl-12">
+
+            <div class="nav-align-top mb-4">
+              <ul class="nav nav-pills mb-3 d-flex justify-content-between" role="tablist">
+                <li class="nav-item">
+                  <button
+                    type="button"
+                    class="nav-link active"
+                    role="tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-top-pagos"
+                    aria-controls="navs-pills-top-pagos"
+                    aria-selected="true"
+                  >
+                    Vigente
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button
+                    type="button"
+                    class="nav-link"
+                    role="tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-top-profile"
+                    aria-controls="navs-pills-top-profile"
+                    aria-selected="false"
+                  >
+                    Vencido
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button
+                    type="button"
+                    class="nav-link"
+                    role="tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-top-messages"
+                    aria-controls="navs-pills-top-messages"
+                    aria-selected="false"
+                  >
+                    Historial
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button (click)="cerrarPanel()"
+                    type="button"
+                    class="btn btn-outline-danger text-danger ml-4">
+                    X
+                  </button>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="navs-pills-top-pagos" role="tabpanel">
+                  <p>TODO: Aqui los pagos vigentes</p>
+                </div>
+                <div class="tab-pane fade" id="navs-pills-top-profile" role="tabpanel">
+                  <small class="text-light fw-semibold">TODO: nombres del cliente</small>
+                  <div class="demo-inline-spacing mt-1">
+                    <ul class="list-group">
+                      <li *ngFor="let deuda of deudas" class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="form-check mt-3">
+                          <input class="form-check-input" type="checkbox" value="" id="{{'periodo'+deuda.idtbdeudas}}" />
+                          <label class="form-check-label" for="{{'periodo'+deuda.idtbdeudas}}"> Enero 2022 </label>
+                        </div>
+                        <button class="btn btn-primary btn-sm">Pagar</button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="navs-pills-top-messages" role="tabpanel">
+                  <p>TODO: Aqui historial del clientes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Pills -->
+
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Main content -->

@@ -70,43 +70,39 @@
       <ul class="menu-inner py-1">
         <!-- Dashboard -->
         <li class="menu-item active">
-          <a href="index.html" class="menu-link">
+          <a routerLink="/dashboard" class="menu-link">
             <i class="menu-icon tf-icons bx bx-home-circle"></i>
             <div data-i18n="Analytics">Dashboard</div>
           </a>
         </li>
 
-        <!-- Layouts -->
+        <!-- Cobranzas -->
         <li class="menu-item">
+          <a routerLink="cobranzas" class="menu-link">
+            <i class='menu-icon tf-icons bx bx-money'></i>
+            <div data-i18n="Analytics">Cobranzas</div>
+          </a>
+        </li>
+
+        <!-- Zonas -->
+        <li class="menu-item">
+          <a routerLink="zonas" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+            <div data-i18n="Analytics">Zonas</div>
+          </a>
+        </li>
+
+        <!-- Layouts -->
+        <li class="menu-item" *ngFor="let item of menuItems">
           <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-layout"></i>
-            <div data-i18n="Layouts">Layouts</div>
+            <div data-i18n="Layouts">{{ item.titulo }}</div>
           </a>
 
           <ul class="menu-sub">
-            <li class="menu-item">
-              <a href="layouts-without-menu.html" class="menu-link">
-                <div data-i18n="Without menu">Without menu</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="layouts-without-navbar.html" class="menu-link">
-                <div data-i18n="Without navbar">Without navbar</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="layouts-container.html" class="menu-link">
-                <div data-i18n="Container">Container</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="layouts-fluid.html" class="menu-link">
-                <div data-i18n="Fluid">Fluid</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="layouts-blank.html" class="menu-link">
-                <div data-i18n="Blank">Blank</div>
+            <li class="menu-item" *ngFor="let subitem of item.submenu">
+              <a [routerLink]="subitem.url" class="menu-link">
+                <div data-i18n="Without menu">{{ subitem.titulo }}</div>
               </a>
             </li>
           </ul>

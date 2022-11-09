@@ -64,39 +64,57 @@
                   </g>
                 </svg>
               </span>
-              <span class="app-brand-text demo text-body fw-bolder">Sneat</span>
+              <span class="app-brand-text demo text-body fw-bolder">JASSUÑAS</span>
             </a>
           </div>
           <!-- /Logo -->
-          <h4 class="mb-2">Adventure starts here 🚀</h4>
-          <p class="mb-4">Make your app management easy and fun!</p>
+          <h4 class="mb-2">La aventura inicia aquí 🚀</h4>
+          <p class="mb-4">Hagamos la gestión de la información mas agradable!</p>
 
-          <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
+          <form
+          id="formAuthentication"
+          class="mb-3"
+          autocomplete="off"
+          (ngSubmit)="crearUsuario()"
+          [formGroup]="formRegistro">
             <div class="mb-3">
-              <label for="username" class="form-label">Username</label>
+              <label for="username" class="form-label">Nombre de usuario</label>
               <input
                 type="text"
                 class="form-control"
                 id="username"
-                name="username"
-                placeholder="Enter your username"
+                placeholder="Ingresa tus nombres"
                 autofocus
+                formControlName="name"
               />
             </div>
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
+              <label for="email" class="form-label">Correo</label>
+              <input type="text" class="form-control" formControlName="email" placeholder="aquí tu correo electrónico" />
             </div>
             <div class="mb-3 form-password-toggle">
-              <label class="form-label" for="password">Password</label>
+              <label class="form-label" for="password">Contraseña</label>
               <div class="input-group input-group-merge">
                 <input
                   type="password"
-                  id="password"
                   class="form-control"
-                  name="password"
                   placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                   aria-describedby="password"
+                  formControlName="password"
+                />
+                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+              </div>
+            </div>
+
+            <div class="mb-3 form-password-toggle">
+              <label class="form-label" for="password">Confirmar Contraseña</label>
+              <div class="input-group input-group-merge">
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                  aria-describedby="c_password"
+                  formControlName="c_password"
                 />
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
               </div>
@@ -104,20 +122,39 @@
 
             <div class="mb-3">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="terms-conditions"
+                  name="terms"
+                  formControlName="terminos" />
                 <label class="form-check-label" for="terms-conditions">
-                  I agree to
-                  <a href="javascript:void(0);">privacy policy & terms</a>
+                  Estoy de acuerdo con
+                  <a href="javascript:void(0);">términos y políticas de privacidad</a>
                 </label>
               </div>
             </div>
-            <button class="btn btn-primary d-grid w-100">Sign up</button>
+
+            <div *ngIf="campoNoValido('name')" class="alert alert-danger" role="alert">
+              El campo Nombre de usuario es requerido
+            </div>
+            <div *ngIf="campoNoValido('email')" class="alert alert-danger" role="alert">
+              El campo Email es requerido
+            </div>
+            <div *ngIf="contrasenasNoValidas()" class="alert alert-danger" role="alert">
+              Las contraseñas debes ser iguales
+            </div>
+            <div *ngIf="aceptaTerminos()" class="alert alert-danger" role="alert">
+              Debe aceptar los términos y políticas de privacidad
+            </div>
+
+            <button class="btn btn-primary d-grid w-100">Registrarme</button>
           </form>
 
           <p class="text-center">
-            <span>Already have an account?</span>
-            <a href="auth-login-basic.html">
-              <span>Sign in instead</span>
+            <span>Ya tienes una cuenta? </span>
+            <a routerLink="/login">
+              <span>Iniciar sesión entonces </span>
             </a>
           </p>
         </div>
