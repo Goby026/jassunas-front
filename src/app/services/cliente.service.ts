@@ -14,4 +14,12 @@ export class ClienteService {
   listClients(){
     return this.http.get(`${base_url}/clientes`);
   }
+
+  findClients(nombre: string){
+    return this.http.get(`${base_url}/clientes/listar/${nombre}`);
+  }
+
+  getClientById(id: number){
+    return this.http.get(`${base_url}/clientes/${id}`);
+  }
 }

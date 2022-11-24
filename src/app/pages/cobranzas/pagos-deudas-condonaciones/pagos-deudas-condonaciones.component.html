@@ -1,0 +1,43 @@
+<!-- Small table -->
+
+<div class="card p-2" style="min-height: 230px">
+  <h5 class="card-header">Pagos / Deudas / Condonaciones</h5>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-sm" style="font-size: 11px;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Concepto</th>
+          <th>Periodo</th>
+          <th>Vencimiento</th>
+          <th>Monto</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        <tr *ngFor="let deuda of deudas; index as i">
+          <td>{{ i+1 }}</td>
+          <td><strong>{{ deuda.deudaDescripcion.descripcion }}</strong></td>
+          <td>{{ deuda.periodo }}</td>
+          <td>{{ deuda.vencimiento }}</td>
+          <td>{{ deuda.total | currency: 'S/ ' }}</td>
+          <td><button (click)="emitirDeuda(deuda,i)" class="btn btn-primary btn-xs">Pagar</button></td>
+          <!-- <td>
+            <div class="dropdown">
+              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="javascript:void(0);"
+                  ><i class="bx bx-edit-alt me-1"></i> Condonar</a
+                >
+              </div>
+            </div>
+          </td> -->
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+<!--/ Small table -->

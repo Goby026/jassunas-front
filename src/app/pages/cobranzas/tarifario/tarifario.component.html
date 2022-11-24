@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-md-12 mb-4">
+    <div class="card mb-4">
+      <h5 class="card-header">Tarifario del servicio</h5>
+      <!-- Checkboxes and Radios -->
+      <div class="card-body">
+        <div class="row gy-3">
+          <div class="col-md">
+
+            <small class="text-light fw-semibold">Servicio</small>
+            <!-- TODO:// select de servicios -->
+            <div class="mb-3">
+              <label for="ocurrencia" class="form-label">Tipo</label>
+              <select class="form-select" id="ocurrencia" (change)="listarTarifas(idServicio.value)" #idServicio >
+                <option selected>Seleccionar</option>
+
+                <option *ngFor="let serv of servicios" [value]="serv.codservi">{{ serv.detaservicios }}</option>
+
+              </select>
+            </div>
+
+            <small class="text-light fw-semibold">Costos</small>
+            <div *ngFor="let tarifa of tarifas" class="form-check mt-3">
+              <input [checked]="tarifa.idtarifario == idTarifaSelected" class="form-check-input" type="radio" name='input_name' value="1" [id]="tarifa.idtarifario" />
+              <label class="form-check-label" [for]="tarifa.idtarifario"> {{ tarifa.detalletarifario }} - {{ tarifa.monto | currency:'S/ ' }}</label>
+            </div>
+
+            <button class="btn btn-success mt-4">Guardar</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

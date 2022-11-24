@@ -7,6 +7,13 @@ import { LoginForm } from '../interfaces/login-form-interface';
 
 const base_url = environment.base_url;
 
+const encabezados = new HttpHeaders({
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+  'My header': 'Mi cabecera personalizada',
+  // 'Authorization': `${token}`
+});
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,12 +38,7 @@ export class UsuarioService {
   }
 
   getUsuarioPerfil(token:string){
-    const encabezados = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'My header': 'Mi cabecera personalizada',
-      'Authorization': `${token}`
-    });
+
     return this.http.post( `${base_url}/perfil`, { headers:encabezados });
   }
 

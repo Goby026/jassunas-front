@@ -8,6 +8,17 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ZonasComponent } from './zonas/zonas.component';
 import { CobranzasComponent } from './cobranzas/cobranzas.component';
 import { PagesComponent } from './pages.component';
+import { ClientesComponent } from './clientes/clientes.component';
+import { AperturaComponent } from './apertura/apertura.component';
+import { PagosDeudasCondonacionesComponent } from './cobranzas/pagos-deudas-condonaciones/pagos-deudas-condonaciones.component';
+import { CarritoComponent } from './cobranzas/carrito/carrito.component';
+import { ClienteDataComponent } from './cobranzas/cliente-data/cliente-data.component';
+import { MultasComponent } from './cobranzas/multas/multas.component';
+import { AdelantosComponent } from './cobranzas/adelantos/adelantos.component';
+import { OcurrenciasComponent } from './cobranzas/ocurrencias/ocurrencias.component';
+import { TarifarioComponent } from './cobranzas/tarifario/tarifario.component';
+import { TributosComponent } from './cobranzas/tributos/tributos.component';
+import { HistorialComponent } from './cobranzas/historial/historial.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +26,17 @@ import { PagesComponent } from './pages.component';
     ZonasComponent,
     CobranzasComponent,
     PagesComponent,
+    ClientesComponent,
+    AperturaComponent,
+    PagosDeudasCondonacionesComponent,
+    CarritoComponent,
+    ClienteDataComponent,
+    MultasComponent,
+    AdelantosComponent,
+    OcurrenciasComponent,
+    TarifarioComponent,
+    TributosComponent,
+    HistorialComponent
   ],
   exports:[
     DashboardComponent,

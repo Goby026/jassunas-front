@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ClientesComponent } from './clientes/clientes.component';
 import { CobranzasComponent } from './cobranzas/cobranzas.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PagesComponent } from './pages.component';
@@ -13,6 +14,7 @@ const routes: Routes = [
       { path: '', component: DashboardComponent },
       { path: 'zonas', component: ZonasComponent },
       { path: 'cobranzas', component: CobranzasComponent },
+      { path: 'clientes', component: ClientesComponent },
       // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     ],
   },

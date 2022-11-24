@@ -1,0 +1,76 @@
+
+<!-- profile-report -->
+<div class="col-12 mb-4">
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
+        <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
+          <div class="card-title">
+            <h5 class="text-nowrap mb-2">Total a pagar</h5>
+            <span class="badge bg-label-warning rounded-pill">Año 2022</span>
+          </div>
+          <div class="mt-sm-auto">
+            <!-- <small class="text-success text-nowrap fw-semibold"
+              ><i class="bx bx-chevron-up"></i> 68.2%</small
+            > -->
+            <h3 class="mb-0">{{ monto | currency: 'S/ ' }}</h3>
+          </div>
+        </div>
+        <div id="profileReportChart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ profile-report -->
+
+<!-- Transactions -->
+<div class="col-md-12 col-lg-12 order-2 mb-4">
+  <div class="card h-100">
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <h5 class="card-title m-0 me-2">Operaciones</h5>
+      <!-- <div class="dropdown">
+        <button
+          class="btn p-0"
+          type="button"
+          id="transactionID"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <i class="bx bx-dots-vertical-rounded"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+          <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
+          <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
+          <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
+        </div>
+      </div> -->
+    </div>
+    <div class="card-body">
+      <ul class="p-0 m-0">
+
+        <li *ngFor="let deuda of deudas" class="d-flex mb-4 pb-1">
+          <div class="avatar flex-shrink-0 me-3">
+            <img src="../assets/img/icons/unicons/wallet.png" alt="User" class="rounded" />
+          </div>
+          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+            <div class="me-2">
+              <small class="text-muted d-block mb-1">{{ deuda.periodo }}</small>
+              <h6 class="mb-0">{{ deuda.deudaDescripcion.descripcion }}</h6>
+            </div>
+            <div class="user-progress d-flex align-items-center gap-1">
+              <h6 class="mb-0">{{deuda.total | currency:'S/ ' }}</h6>
+              <!-- <span class="text-muted">USD</span> -->
+              <button class="btn btn-danger btn-xs">X</button>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+    <div class="card-footer">
+      <button (click)="btnPagar()" class="btn btn-success w-100">Pagar</button>
+    </div>
+  </div>
+</div>
+<!--/ Transactions -->
