@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  base_url: 'http://127.0.0.1:8080/api/v1'
+  base_url: 'http://localhost:8081/api/v1',
+  voucher_url: 'http://localhost:8081/api/v1',
+  // base_url: 'http://154.12.238.230:8081/api/v1',
 };
 
 /*

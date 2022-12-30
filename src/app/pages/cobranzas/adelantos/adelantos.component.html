@@ -1,1 +1,135 @@
-<p>adelantos works!</p>
+<div class="row">
+  <div class="col-md-6">
+
+    <div class="mb-3">
+      <label for="exampleFormControlSelect1" class="form-label">Año</label>
+      <select (change)="anioSel = anio.value" class="form-select" id="exampleFormControlSelect1" aria-label="Default select example" #anio>
+        <option selected="" value="0">Seleccionar</option>
+        <option *ngFor="let anio of anios" [value]="anio">
+          {{ anio }}
+        </option>
+      </select>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-center" *ngIf="spinner; else nospinner">
+      <div class="spinner-border spinner-border-lg text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+
+    <ng-template #nospinner>
+      <div class="card mb-4">
+        <h5 class="card-header">Meses</h5>
+        <!-- Checkboxes and Radios -->
+        <div class="card-body">
+          <div class="row gy-3">
+            <div class="col-md">
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>MES</th>
+                    <th>TARIFA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let mes of meses; let i = index">
+                    <td>
+                      <div class="form-check">
+                        <input (change)="agregarMes(mesSelected, mes)" class="form-check-input" type="checkbox" [value]="mes.nmes" id="{{'checkMes'+i}}" #mesSelected>
+                        <label class="form-check-label" for="{{'checkMes'+i}}"> {{mes.mes}} </label>
+                      </div>
+                    </td>
+                    <td>
+                      {{ mes.monto | currency: 'S/ ' }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+        <!-- <div class="card-footer">
+          <button class="btn btn-primary">Agregar</button>
+        </div> -->
+      </div>
+    </ng-template>
+
+  </div>
+
+  <!-- DETALLE  DE PAGOS -->
+  <div class="col-md-6 mb-4">
+    <div class="card mb-4" >
+      <div class="card-body">
+        <h5 class="card-title">MONTOS</h5>
+
+        <div class="table-responsive text-nowrap">
+          <table class="table card-table">
+            <thead>
+              <tr class="table-primary">
+                <th>Periodo</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              <tr class="table-info" *ngFor="let item of arregloPagar; index as i">
+                <td>
+                  {{ item.mes }}
+                </td>
+                <td>
+                  <span>{{ item.monto | currency: 'S/ ' }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <hr>
+        <div class="mb-3 row mx-4">
+          <label class="col-md-8 col-form-label">Sub-Total</label>
+          <div class="col-md-4 mb-1">
+            <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+          </div>
+          <label class="col-md-8 col-form-label">Otras tasas</label>
+          <div class="col-md-4 mb-1">
+            <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+          </div>
+          <label class="col-md-8 col-form-label">Descuento</label>
+          <div class="col-md-4 mb-1">
+            <input class="form-control text-end" type="text" value="0.00">
+          </div>
+          <label class="col-md-8 col-form-label">Total</label>
+          <div class="col-md-4 mb-1">
+            <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-footer d-flex flex-row align-items-center justify-content-around">
+        <!-- <button type="button" class="btn btn-danger w-25 mx-2" (click)="setPaneles('x_all')">Cancelar</button> -->
+
+        <!-- <button
+            (click)="condonarDeuda()"
+            class="btn btn-info w-25 mx-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasEnd"
+            aria-controls="offcanvasEnd">
+            Condonar deuda
+        </button> -->
+
+        <button (click)="registrarAdelanto()" type="button" class="btn btn-success w-25 mx-2">
+              Emitir recibo
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+

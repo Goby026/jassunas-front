@@ -1,11 +1,215 @@
+<!-- FORMULARIO PARA APERTURAR -->
+<div class="row mb-4" *ngIf="estadoCaja">
+  <div class="col-md-12">
+    <div class="card mb-4">
+      <h5 class="card-header">Estado de caja: </h5>
+      <div class="card-body">
+        <div>
+          <p class="text-info">Usted no cuenta con caja aperturada en la fecha {{ fechaHoy }}</p>
+          <p class="text-danger">Para continuar, ¿desea aperturar caja?</p>
+        </div>
+
+        <form [formGroup]="cajaForm">
+          <div class="row gx-3 gy-2 align-items-center">
+            <div class="col-md-3">
+              <label class="form-label" for="selectCaja">CAJA</label>
+              <select class="form-select" id="selectCaja" formControlName="ncaja">
+                <option value="CAJA PRINCIPAL">CAJA PRINCIPAL</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label" for="txtTesoreria">USUARIO</label>
+              <input
+                type="text"
+                class="form-control"
+                readonly
+                value="TESORERA"
+                id="txtTesoreria">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label" for="txtMontoInicial">EFECTIVO INICIAL</label>
+              <input
+                type="number"
+                class="form-control"
+                id="txtMontoInicial"
+                formControlName="efectivoape">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="btnAperturar">&nbsp;</label>
+              <button (click)="aperturarCaja()" id="btnAperturar"
+                class="btn btn-success d-block">Aperturar</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- TABLA APERTURA DE CAJA -->
 <div class="row">
   <div class="col-md-12">
-    <app-breadcrumbs></app-breadcrumbs>
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <h3>Mostrar por fecha</h3>
+      </div>
+      <div class="card-body">
+        <input type="date" class="form-control mb-4" (change)="buscarFecha(fecha.value)" #fecha>
+        <div class="table-responsive text-nowrap">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Cod</th>
+                <th>Caja aperturas</th>
+                <th>Inicio</th>
+                <th>Final</th>
+                <th>Usuario</th>
+                <th>Total. Arqueo</th>
+                <th>Estado</th>
+                <th>Acción</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              <tr *ngFor="let caja of cajasArr | paginate:{
+                itemsPerPage: tableSize,
+                currentPage: page,
+                totalItems: count}; let i = index">
+                <td> {{ caja.idcaja }} </td>
+                <td> {{ caja.ncaja }} </td>
+                <!-- <td> {{ caja.fapertura | date: 'medium':'America/Lima' }} </td> -->
+                <td> {{ caja.fapertura | date: 'medium' }} </td>
+                <td> {{ caja.fcierre | date: 'medium'  }} </td>
+                <td> {{ caja.usuario?.username }} </td>
+                <td> {{ caja.total | currency: 'S/ ' }} </td>
+                <td>
+                  <span class="badge bg-label-primary me-1" *ngIf=" caja.esta === 1 ;else cajaCerrada">Activo</span>
+                  <ng-template #cajaCerrada>
+                    <span class="badge bg-label-danger me-1">Cerrado</span>
+                  </ng-template>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-danger btn-xs"
+                    *ngIf="caja.esta !== 0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCenter"
+                    (click)="setearCaja(caja)">
+                    Cerrar caja
+                  </button>
+                </td>
+                <td>
+                  <button (click)="seguimiento(caja.idcaja)" class="btn btn-info btn-xs">Seguimiento</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="mt-4">
+            <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 
-  <div class="col-md-8 mb-4 order-0">
 
-    <button>Aperturar caja</button>
+<!-- SEGUIMIENTO -->
+<div class="row mt-4" *ngIf="panelSeguimiento">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <h3>SEGUIMIENTO CAJA {{caja.idcaja}}</h3>
+      </div>
+      <div class="card-body">
+        <!-- <input type="date" class="form-control mb-4" (change)="buscarFecha(fecha.value)" #fecha> -->
+        <div class="table-responsive text-nowrap">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Caja</th>
+                <th>Recibo</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Dcto</th>
+                <th>Cobrado por</th>
+                <th>Estado</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              <tr *ngFor="let pago of pagosservicios; let i = index">
+                <td> {{ i+1 }} </td>
+                <td> {{ pago.caja.ncaja }} </td>
+                <td> {{ pago.correlativo }} </td>
+                <td> {{ pago.costo.cliente.apepaterno }} {{ pago.costo.cliente.apematerno }} {{ pago.costo.cliente.nombres }}</td>
+                <td> {{ pago.fecha }} </td>
+                <td> {{ pago.montopagado | currency: 'S/ ' }} </td>
+                <td> {{ pago.montodescuento | currency: 'S/ ' }} </td>
+                <td> {{ pago.usuaCrea }} </td>
+                <td>
+                  <span class="badge bg-label-primary me-1" *ngIf=" pago.esta === 1 ;else seguimientoCerrado">Cobrado</span>
+                  <ng-template #seguimientoCerrado>
+                    <span class="badge bg-label-danger me-1">Anulado</span>
+                  </ng-template>
+                </td>
+                <td>
+                  <!-- <button class="btn btn-danger btn-xs" *ngIf="pago.esta !== 0">Anular</button> -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+
+<!-- Modal -->
+<div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCenterTitle">Cierre de caja</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col mb-3">
+            <label for="txtMonto" class="form-label">Monto</label>
+            <input
+              type="number"
+              id="txtMonto"
+              class="form-control"
+              value="0"
+              #monto
+            />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+        type="button"
+        class="btn btn-primary"
+        (click)="cerrarCaja(monto.value)"
+        data-bs-dismiss="modal">Cerrar caja</button>
+      </div>
+    </div>
   </div>
 </div>

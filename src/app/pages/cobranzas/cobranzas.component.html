@@ -1,79 +1,207 @@
+<!-- BUSCADOR -->
 <div class="row">
-  <div class="col-md-9 mb-4">
-    <!-- Small table -->
-    <div class="card p-2 mb-4" style="min-height: 230px">
-      <!-- buscar cliente -->
+  <div class="col-md-12">
+    <div class="card mb-2">
+      <h5 class="card-header">Buscador</h5>
+      <div class="card-body">
+        <div class="input-group" style="z-index: 1;">
+          <input type="search" class="form-control" aria-label="Text input with dropdown button"
+            (keyup.enter)="buscarCliente(cliente)" #cliente autocomplete="off">
+          <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            {{tipoBusqueda}}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" (click)="tipoBusqueda = 'Nombre'" style="cursor: pointer;">Nombre</a>
+            </li>
+            <li>
+              <a class="dropdown-item" (click)="tipoBusqueda = 'Apellido'" style="cursor: pointer;">Apellido</a>
+            </li>
+            <li>
+              <a class="dropdown-item" (click)="tipoBusqueda = 'Dni'" style="cursor: pointer;">Dni</a>
+            </li>
+          </ul>
+        </div>
 
-      <div class="mb-3">
-        <label for="exampleDataList" class="form-label">Cliente</label>
-        <input
-          class="form-control"
-          placeholder="Buscar dni ..."
-          (keyup.enter)="buscarCliente(cliente)"
-          #cliente
-        />
-      </div>
+        <div class="mt-4 d-flex justify-content-center" *ngIf="spinner; else nospinner">
+          <div class="spinner-border spinner-border-lg text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
 
-      <!--/ buscar cliente -->
-      <div class="table-responsive text-nowrap">
-        <table class="table table-sm" style="font-size: 11px;">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>N° DNI</th>
-              <th>Cliente/Usuario de servicios</th>
-              <th>Estado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody class="table-border-bottom-0">
-            <tr *ngFor="let cliente of clientes; index as i">
-              <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{i+1}}</strong></td>
-              <td>{{cliente.dni}}</td>
-              <td>
-                <p class="text-primary m-0">{{cliente.ape_paterno}} {{cliente.ape_materno}} {{cliente.nombres}}</p>
-              </td>
-              <td>
-                <span *ngIf="cliente.estado === 1" class="badge bg-label-primary me-1">Activo</span>
-                <span *ngIf="cliente.estado !== 1" class="badge bg-label-danger me-1">Inactivo</span>
-              </td>
-              <td>
-                <button (click)="mostrarCliente(cliente.idclientes)" class="btn btn-primary btn-xs">Ver</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <!--/ Small table -->
+        <ng-template #nospinner>
+          <div class="demo-inline-spacing p-2">
+            <div *ngFor="let cliente of clientes" (click)="mostrarCliente(cliente.idclientes)"
+              class="list-group list-group-flush cursor-pointer">
+              <a class="list-group-item list-group-item-action">{{cliente.apepaterno}} {{cliente.apematerno}}
+                {{cliente.nombres}}</a>
+            </div>
+          </div>
+        </ng-template>
 
-    <!-- pagos -->
-    <div class="row">
-      <div class="col-md-5">
-        <!-- cliente-data -->
-        <app-cliente-data
-        (featureSelected)="onNavigate($event)"
-        (codCosto)="getCodCosto($event)"
-        *ngIf="panel_cliente_data" [idCliente]="idCliente" ></app-cliente-data>
       </div>
-      <div class="col-md-7">
-        <!-- Mostrar componentes -->
-        <app-adelantos *ngIf="loadedFeature === 'adelantos'" ></app-adelantos>
-        <app-multas *ngIf="loadedFeature === 'multas'" ></app-multas>
-        <app-ocurrencias *ngIf="loadedFeature === 'ocurrencias'" ></app-ocurrencias>
-        <app-pagos-deudas-condonaciones [idCliente]="idCliente" (deuda)="recibirDeuda($event)" *ngIf="loadedFeature === 'pagos-deudas'" ></app-pagos-deudas-condonaciones>
-        <app-tarifario [idCosto]="idCosto" *ngIf="loadedFeature === 'tarifario'" ></app-tarifario>
-        <app-tributos *ngIf="loadedFeature === 'tributos'" ></app-tributos>
-        <app-historial *ngIf="loadedFeature === 'historial'"></app-historial>
-      </div>
-    </div>
-    <!--/ pagos -->
-  </div>
-  <div class="col-md-3 mb-4">
-    <div class="row">
-      <!-- carrito -->
-      <app-carrito *ngIf="panel_montos" [prop]="prop" [deudas]="deudas" [idCliente]="idCliente"></app-carrito>
-
     </div>
   </div>
 </div>
+
+<!-- PAGOS -->
+<div class="row">
+  <div class="col-md-12 mb-4">
+    <nav class="navbar navbar-example navbar-expand-lg navbar-light bg-light" *ngIf="idCliente != 0">
+      <div class="container-fluid">
+        <a class="navbar-brand text-primary" href="javascript:void(0)">{{nombre_completo}}</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-ex-2"
+          aria-controls="navbar-ex-2" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-ex-2">
+          <div class="navbar-nav me-auto">
+            <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_pagos')">Deudas</a>
+            <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_tributos')">Tributos</a>
+            <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_adelantos')">Adelantos</a>
+            <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_historial')">Historial</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="row mt-1" *ngIf="panel_pagos">
+      <div class="col-md-6 mb-4">
+        <div class="card mb-4" *ngIf="panel_pagos">
+          <div class="card-body">
+            <h5 class="card-title">DEUDAS</h5>
+            <div class="table-responsive text-nowrap">
+              <table class="table card-table">
+                <thead>
+                  <tr class="table-primary">
+                    <th>Sel</th>
+                    <th>Concepto</th>
+                    <th>Monto</th>
+                  </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                  <tr class="table-info" *ngFor="let deuda of deudas; index as i">
+                    <td>
+                      <label class="d-flex justify-content-between">
+                        <input class="form-check-input me-1" type="checkbox" [value]="deuda.idtbdeudas"
+                          (change)="setPago(deudaSel,deuda)" #deudaSel>
+                        <span>{{ deuda.idtbdeudas }}</span>
+                      </label>
+                    </td>
+                    <td>
+                      <span>{{ deuda.periodo | date:'short' }}</span>
+                    </td>
+                    <td>
+                      {{ deuda.total | currency: 'S/ ' }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLA DE PAGOS -->
+      <div class="col-md-6 mb-4">
+        <div class="card mb-4" *ngIf="panel_pagos">
+          <div class="card-body">
+            <h5 class="card-title">TRANSACCIONES</h5>
+            <div class="table-responsive text-nowrap">
+              <table class="table card-table">
+                <thead>
+                  <tr class="table-primary">
+                    <th>#</th>
+                    <th>Concepto</th>
+                    <th>Periodo</th>
+                    <th>Monto</th>
+                  </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                  <tr class="table-info" *ngFor="let pago of pagos; index as i">
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                      {{ pago.concepto }}
+                    </td>
+                    <td>
+                      <span>{{ pago.fecha }}</span>
+                    </td>
+                    <td>
+                      {{ pago.monto | currency: 'S/ ' }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <hr>
+            <div class="mb-3 row mx-4">
+              <label class="col-md-8 col-form-label">Sub-Total</label>
+              <div class="col-md-4 mb-1">
+                <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+              </div>
+              <label class="col-md-8 col-form-label">Otras tasas</label>
+              <div class="col-md-4 mb-1">
+                <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+              </div>
+              <label class="col-md-8 col-form-label">Descuento</label>
+              <div class="col-md-4 mb-1">
+                <input class="form-control text-end" type="text" value="0.00">
+              </div>
+              <label class="col-md-8 col-form-label">Total</label>
+              <div class="col-md-4 mb-1">
+                <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+              </div>
+            </div>
+
+          </div>
+          <div class="card-footer d-flex flex-row align-items-center justify-content-around">
+            <button type="button" class="btn btn-danger w-25 mx-2" (click)="setPaneles('x_all')">Cancelar</button>
+
+            <button (click)="condonarDeuda()" class="btn btn-info w-25 mx-2" type="button" data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasEnd" aria-controls="offcanvasEnd">
+              Condonar deuda
+            </button>
+
+            <button (click)="regPagosServicio()" type="button" class="btn btn-success w-25 mx-2">
+              Emitir recibo
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+<!-- TRIBUTOS -->
+<div class="row" *ngIf="panel_tributos">
+  <div class="col-md-12">
+    <app-tributos [idCliente]="idCliente"></app-tributos>
+    <button class="btn btn-danger btn-xs" (click)="setPaneles('x_tributos')">Cancelar</button>
+  </div>
+</div>
+
+<!-- HISTORIAL -->
+<div class="row" *ngIf="panel_historial">
+  <div class="col-md-12">
+    <app-historial [idCliente]="idCliente"></app-historial>
+  </div>
+</div>
+
+<!-- CONDONACIONES -->
+<app-condonacion *ngIf="panel_condonacion" [deudas]="deudas" [monto]="monto"></app-condonacion>
+
+<!-- ADELANTOS -->
+<div class="row" *ngIf="panel_adelantos">
+  <div class="col-md-12">
+    <app-adelantos *ngIf="panel_adelantos" [idCliente]="idCliente"></app-adelantos>
+    <button class="btn btn-danger btn-xs" (click)="setPaneles('x_adelantos')">Cancelar</button>
+  </div>
+</div>
+
+<!-- OCURRENCIAS -->

@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="d-flex flex-column align-items-center mt-3">
+          <img class="card-img-top" src="../../assets/img/jass.png" alt="Card image cap" style="width: 350px;">
+          <h5 class="card-title mt-4">SUBIR EL COMPROBANTE O VOUCHER</h5>
+        </div>
+        <div class="card-body">
+          <div class="col-6 offset-3">
+            <form>
+
+              <div class="mb-3">
+                <label for="formFile" class="form-label">Seleccione su voucher</label>
+                <input (change)="selImagen($event)" class="form-control" type="file" id="formFile">
+              </div>
+
+              <div class="mb-3 demo-inline-spacing text-center">
+                <button (click)="subirImagen()" class="btn btn-success" type="button">
+                  SUBIR VOUCHER
+                </button>
+              </div>
+
+              <div class="mt-4">
+                <span>
+                  <h5 class="text-success text-center">SU PAGO HA SIDO ENVIADO CORRECTAMENTE, SERA VERIFICADO EN EL TRANSCURSO DEL DIA</h5>
+                </span>
+
+                <p class="text-center">
+                  <span class="text-primary">NOMBRE</span>: {{ nombreCompleto }}
+                </p>
+
+                <p class="text-center text-info">
+                  Recuerda que el comprobante de pago debe de coindicir con el valor del recibo, caso contrario su pago sera rechazado.
+                </p>
+
+              </div>
+
+              <!-- <div class="d-flex justify-content-center demo-inline-spacing">
+                <button class="btn btn-secondary" type="button" onclick="history.back()">Cancelar</button>
+
+                <a class="btn btn-success" type="button" routerLink="/upload-pago">Siguiente</a>
+              </div> -->
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

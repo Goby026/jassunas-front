@@ -12,16 +12,14 @@ const base_url = environment.base_url;
 })
 export class DeudaService {
 
-  deudas: any[] = [];
-
   constructor( private http: HttpClient ) { }
 
-  getUserDebt(cliente: any){
-    return this.http.post(`${base_url}/deudas/buscar`, cliente)
+  getUserDebt(idCliente: number){
+    return this.http.get(`${base_url}/deudas/buscar/${idCliente}`)
     .pipe(
       map( (resp: any) =>{
         if(resp){
-          return this.deudas = resp.deudas.filter( (item:any)=>{
+          return resp.deudas.filter( (item:any)=>{
             return item.deudaEstado.iddeudaEstado === 3;
           });
         }else{
@@ -29,25 +27,27 @@ export class DeudaService {
         }
       })
      );
+    // return this.http.get(`${base_url}/deudas/buscar/${idCliente}`);
   }
 
-  // listar deudas pre-pagadas por cliente
-  getUserPreDebt(cliente: any){
-    return this.http.post(`${base_url}/deudas/buscar`, cliente)
-    .pipe(
-      map( (resp: any) =>{
-        if(resp){
-          return resp.deudas.filter( (item:any)=>{
-            return item.deudaEstado.iddeudaEstado === 1;
-          });
-        }else{
-          return [];
-        }
-      })
-     );
-  }
+  //()=> listar deudas pre-pagadas por cliente
+  // getUserPreDebt(cliente: any){
+  //   return this.http.post(`${base_url}/deudas/buscar`, cliente)
+  //   .pipe(
+  //     map( (resp: any) =>{
+  //       if(resp){
+  //         return resp.deudas.filter( (item:any)=>{
+  //           return item.deudaEstado.iddeudaEstado === 1;
+  //         });
+  //       }else{
+  //         return [];
+  //       }
+  //     })
+  //    );
+  // }
 
-  updateUserDebt(deudaEstado:any, idDeuda: number){
-    return this.http.put(`${base_url}/deudas/${idDeuda}`, deudaEstado);
+  //()=> actualizar estado de deudas
+  updateUserDebts(deuda: any[]){
+    return this.http.put(`${base_url}/deudas/service`, deuda);
   }
 }

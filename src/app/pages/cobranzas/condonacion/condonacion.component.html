@@ -1,0 +1,37 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEnd" aria-labelledby="offcanvasEndLabel">
+  <form [formGroup]="condonacionForm">
+    <div class="offcanvas-header">
+      <h5 id="offcanvasEndLabel" class="offcanvas-title">CONDONAR DEUDA</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body my-auto mx-0 flex-grow-0">
+      <div class="mb-2">
+        <p *ngFor="let deuda of deudas" >{{ deuda.deudaDescripcion.descripcion }} - Monto: {{ deuda.total }}</p>
+      </div>
+      <div class="mb-4">
+        <label for="txtMotivo" class="form-label">DESCRIPCION</label>
+        <textarea
+          class="form-control"
+          id="txtMotivo"
+          rows="3"
+          formControlName="observacion"></textarea>
+      </div>
+      <div class="mb-2">
+        <p>TOTAL CONDONACIONES: {{ monto | currency: 'S/ ' }}</p>
+      </div>
+      <button
+        (click)="registrarCondonacion()"
+        type="button"
+        class="btn btn-primary mb-2 d-grid w-100"
+        data-bs-dismiss="offcanvas">
+        Registrar
+      </button>
+      <button
+        (click)="cleanData()"
+        type="button"
+        class="btn btn-outline-secondary d-grid w-100" data-bs-dismiss="offcanvas">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

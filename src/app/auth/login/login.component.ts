@@ -16,10 +16,12 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 export class LoginComponent implements OnInit {
 
   errogMsg: string = '';
+  remember: boolean = false;
 
   loginForm: FormGroup = new FormGroup({
-    email: new FormControl(null, [Validators.required, Validators.email]),
+    username: new FormControl(localStorage.getItem('email') || '', [Validators.required, Validators.email]),
     password: new FormControl(null, Validators.required),
+    // remember: new FormControl(false)
   });
 
   constructor(private usuarioService: UsuarioService, private router: Router) {}
@@ -28,18 +30,33 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (this.loginForm.invalid) {
+      alert('Datos incompletos');
       return;
     }
 
-    this.usuarioService.loginUsuario(this.loginForm.value).subscribe({
+    if (this.remember) {
+      localStorage.setItem('email', this.loginForm.get('email')?.value);
+    }else{
+      localStorage.removeItem('email');
+    }
+
+    this.usuarioService.loginUsuario(this.loginForm.value)
+    .subscribe({
       next: (resp: any) => {
-        if (resp.success) {
-          this.usuarioService.setToken(resp.data.token);
+        if (resp.ok) {
+          this.usuarioService.setToken(resp.token);
+          alert(resp.msg);
           this.router.navigate(['/dashboard']);
         }
       },
-      error: ({error}) => this.errogMsg = error.message,
+      error: ({error}) => {
+        alert(this.errogMsg = error.msg);
+      },
       complete: () => console.log('Login completo'),
     });
+  }
+
+  setRemember(valor: boolean){
+    this.remember = valor;
   }
 }

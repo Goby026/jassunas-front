@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from '@angular/router';
+import { Usuario } from 'src/app/models/usuario.model';
 import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
@@ -37,6 +38,12 @@ export class RegisterComponent implements OnInit {
     if (this.formRegistro.invalid) {
       return;
     }
+
+    // let usuario: Usuario = {
+    //   name: this.formRegistro.get('name')?.value,
+    //   email: this.formRegistro.get('email')?.value,
+    //   username: this.formRegistro.get('username')?.value
+    // }
 
     this.usuarioService.regUsuario(this.formRegistro.value)
     .subscribe( (resp)=>{

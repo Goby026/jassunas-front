@@ -1,0 +1,95 @@
+<!-- COSTOS -->
+<div class="row">
+  <div class="col-md-12 mb-4">
+    <div class="card" style="min-height: 250px;">
+      <h5 class="card-header">SERVICIOS DE: <span class="text-primary"> {{ nombres }} </span></h5>
+      <div class="table-responsive text-nowrap">
+        <table class="table table-sm" style="font-size: 11px;">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Servicio</th>
+              <th>Inicio servicio</th>
+              <th>Tipo usuario</th>
+              <th>Tipo vivienda</th>
+              <th>Integrantes</th>
+              <th>Exoneraciones</th>
+              <th>Zona</th>
+              <th>Referencia</th>
+              <th>Acción  </th>
+            </tr>
+          </thead>
+          <tbody class="table-border-bottom-0">
+            <tr *ngFor="let costo of costos; let i = index">
+              <td>{{i+1}}</td>
+              <td>{{ costo.servicio.detaservicios }}</td>
+              <td>{{ costo.fecha_inicio_servicio }}</td>
+              <td>{{ costo.tpousuario }}</td>
+              <td>{{ costo.tpovivienda }}</td>
+              <td>{{ costo.nrointegrante }}</td>
+              <td>
+                <p>Exoneracion A: {{costo.exoa}}</p>
+                <p>Exoneracion F: {{costo.exof}}</p>
+                <p>Exoneracion P: {{costo.exop}}</p>
+              </td>
+              <td>{{ costo.zona.detazona }}</td>
+              <td>{{ costo.referencia_dom }}</td>
+              <!-- <td><span class="badge bg-label-primary me-1">Active</span></td> -->
+              <td>
+                <button (click)="obtenerIdCostoOtro(costo.codcosto, costo.servicio.detaservicios)" class="btn btn-primary btn-xs">Tarifa</button>
+                <!-- <div class="dropdown">
+                  <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> Editar</a>
+                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Eliminar</a>
+                  </div>
+                </div> -->
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- TARIFAS -->
+<div class="row" *ngIf="panelTarifas">
+  <div class="col-md-12 mb-4">
+    <div class="card" style="min-height: 250px;">
+      <h5 class="card-header">TARIFAS: {{ nombreServicio }}</h5>
+      <div class="table-responsive text-nowrap">
+        <table class="table table-sm" style="font-size: 14px;">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Detalle</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th>Acción  </th>
+            </tr>
+          </thead>
+          <tbody class="table-border-bottom-0">
+            <tr *ngFor="let tarifa of tarifas; let i = index">
+              <td>{{i+1}}</td>
+              <td>{{ tarifa.tarifario.detalletarifario }}</td>
+              <td>{{ tarifa.tarifario.monto | currency: 'S/ ' }}</td>
+              <!-- <td>{{ tarifa.tarifario.esta }}</td> -->
+              <td>
+                <span *ngIf="tarifa.tarifario.esta !== 0; else inactivo" class="badge bg-label-primary me-1">Activo</span>
+                <ng-template #inactivo>
+                  <span class="badge bg-label-danger me-1">Inactivo</span>
+                </ng-template>
+              </td>
+              <td><button class="btn btn-primary btn-xs">Editar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

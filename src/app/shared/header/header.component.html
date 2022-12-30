@@ -1,6 +1,6 @@
 <nav class="navbar navbar-example navbar-expand-lg bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="javascript:void(0)">Caja</a>
+    <app-breadcrumbs></app-breadcrumbs>
     <button
       class="navbar-toggler"
       type="button"
@@ -69,7 +69,7 @@
               <div class="dropdown-divider"></div>
             </li>
             <li>
-              <a class="dropdown-item" routerLink="/login">
+              <a (click)="logout()" class="dropdown-item" routerLink="/login">
                 <i class="bx bx-power-off me-2"></i>
                 <span class="align-middle">Salir</span>
               </a>

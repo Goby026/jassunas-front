@@ -28,23 +28,23 @@ export class CarritoComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges){
     // console.log('Deuda----->', this.deudas);
-    this.listarPreDeudas();
+    // this.listarPreDeudas();
   }
 
-  listarPreDeudas(){
-    this.monto = 0;
-    let cliente: any = {
-      "idclientes": this.idCliente
-    };
-    this.deudaService.getUserPreDebt(cliente)
-    .subscribe({
-      next: ( resp:any )=>{
-        // this.deudas = resp;
-        console.log(resp);
-      },
-      error: error=>console.log(error)
-    });
-  }
+  // listarPreDeudas(){
+  //   this.monto = 0;
+  //   let cliente: any = {
+  //     "idclientes": this.idCliente
+  //   };
+  //   this.deudaService.getUserPreDebt(cliente)
+  //   .subscribe({
+  //     next: ( resp:any )=>{
+  //       // this.deudas = resp;
+  //       console.log(resp);
+  //     },
+  //     error: error=>console.log(error)
+  //   });
+  // }
 
   btnPagar(){
     const pdfDefinition: any = {

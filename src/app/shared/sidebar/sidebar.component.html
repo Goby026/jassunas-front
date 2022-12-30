@@ -72,7 +72,15 @@
         <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="/dashboard" class="menu-link">
             <i class="menu-icon tf-icons bx bx-home-circle"></i>
-            <div data-i18n="Analytics">Dashboard</div>
+            <div data-i18n="Analytics">Tablero</div>
+          </a>
+        </li>
+
+        <!-- Caja -->
+        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <a routerLink="caja" class="menu-link">
+            <i class="menu-icon tf-icons bx bxs-bank"></i>
+            <div data-i18n="Analytics">Caja</div>
           </a>
         </li>
 
@@ -81,6 +89,22 @@
           <a routerLink="cobranzas" class="menu-link">
             <i class='menu-icon tf-icons bx bx-money'></i>
             <div data-i18n="Analytics">Cobranzas</div>
+          </a>
+        </li>
+
+        <!-- Pagos -->
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <a routerLink="carrito" class="menu-link">
+            <i class='menu-icon tf-icons bx bx-money'></i>
+            <div data-i18n="Analytics">Pagos</div>
+          </a>
+        </li> -->
+
+        <!-- Vouchers -->
+        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <a routerLink="vouchers" class="menu-link">
+            <i class='menu-icon tf-icons bx bx-credit-card'></i>
+            <div data-i18n="Analytics">Vouchers</div>
           </a>
         </li>
 
@@ -93,15 +117,15 @@
         </li>
 
         <!-- Zonas -->
-        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="zonas" class="menu-link">
             <i class="menu-icon tf-icons bx bx-home-circle"></i>
             <div data-i18n="Analytics">Zonas</div>
           </a>
-        </li>
+        </li> -->
 
         <!-- Principal -->
-        <li class="menu-item" *ngFor="let item of menuItems">
+        <!-- <li class="menu-item" *ngFor="let item of menuItems">
           <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-layout"></i>
             <div data-i18n="Layouts">{{ item.titulo }}</div>
@@ -114,7 +138,7 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> -->
 
 
       </ul>

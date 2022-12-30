@@ -19,4 +19,8 @@ export class TarifasService {
     return this.http.get(`${base_url}/tarifarios/${id}`);
   }
 
+  // getTarifaByClient(){
+  //   buscar costo por cliente
+  // }
+
 }

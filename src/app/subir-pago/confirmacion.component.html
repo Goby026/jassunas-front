@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="d-flex flex-column align-items-center mt-3">
+          <img class="card-img-top" src="../../assets/img/jass.png" alt="Card image cap" style="width: 350px;">
+          <h5 class="card-title mt-4">CONFIRMACION DE LA SOLICITUD</h5>
+        </div>
+        <div class="card-body">
+          <div class="col-6 offset-3">
+            <form >
+
+              <div class="mb-3 row">
+                <label for="txtNumPedido" class="col-md-4 col-form-label text-end text-primary">NUMERO DE
+                  PEDIDO:</label>
+                <div class="col-md-8">
+                  <input class="form-control border-0" type="text" [value]="correlativo" id="txtNumPedido" readonly>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="txtMonto" class="col-md-4 col-form-label text-end text-primary">UD. HA SELECCIONADO PAGAR EL
+                  MONTO DE S/ :</label>
+                <div class="col-md-8">
+                  <input class="form-control border-0" type="text" [value]="monto" id="txtMonto" readonly>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="txtFecha" class="col-md-4 col-form-label text-end text-primary">FECHA Y HORA DE LA
+                  SOLICITUD:</label>
+                <div class="col-md-8">
+                  <input class="form-control border-0" type="text" [value]="fecha" id="txtFecha" readonly>
+                </div>
+              </div>
+
+              <span class="mt-4">
+                <h5>PARA PROCEDER CON EL PAGO, DAR CLICK EN EL BOTON "PAGAR"</h5>
+              </span>
+
+              <div class="d-flex justify-content-center demo-inline-spacing">
+                <button class="btn btn-secondary" type="button" onclick="history.back()">Cancelar</button>
+
+                <button class="btn btn-success" type="button" (click)="registrarVoucher()">PAGAR</button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

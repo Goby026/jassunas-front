@@ -1,0 +1,287 @@
+<div class="row">
+  <div class="col-md-12">
+    <form [formGroup]="clienteForm">
+      <div class="card mb-4">
+        <h5 class="card-header">Datos de cliente</h5>
+
+        <div class="card-body">
+
+          <div class="row">
+            <div class="col">
+
+              <!-- DNI -->
+              <div class="mb-1">
+                <label for="txtDni" class="form-label">DNI <span class="text-danger">*</span> </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="txtDni"
+                  formControlName="dni"
+                  [ngClass]="{ 'is-invalid': submitted && f['dni'].errors }">
+                <div *ngIf="submitted && f['dni'].errors" class="invalid-feedback">
+                  <div *ngIf="f['dni'].errors['required']">Dni es requerido</div>
+                </div>
+              </div>
+              <!-- NOMBRES -->
+              <div class="mb-1">
+                <label for="txtNombres" class="form-label">NOMBRES <span class="text-danger">*</span> </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="txtNombres"
+                  formControlName="nombres"
+                  [ngClass]="{ 'is-invalid': submitted && f['nombres'].errors }">
+                  <div *ngIf="submitted && f['nombres'].errors" class="invalid-feedback">
+                    <div *ngIf="f['nombres'].errors['required']">Nombres es requerido</div>
+                  </div>
+              </div>
+              <!-- APELLIDO PATERNO -->
+              <div class="mb-1">
+                <label for="txtApepat" class="form-label">APELLIDO PATERNO <span class="text-danger">*</span> </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="txtApepat"
+                  formControlName="apepaterno"
+                  [ngClass]="{ 'is-invalid': submitted && f['apepaterno'].errors }">
+                <div *ngIf="submitted && f['apepaterno'].errors" class="invalid-feedback">
+                    <div *ngIf="f['apepaterno'].errors['required']">Apellido paterno es requerido</div>
+                </div>
+              </div>
+              <!-- APELLIDO MATERNO -->
+              <div class="mb-1">
+                <label for="txtApemat" class="form-label">APELLIDO MATERNO <span class="text-danger">*</span> </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="txtApemat"
+                  formControlName="apematerno"
+                  [ngClass]="{ 'is-invalid': submitted && f['apematerno'].errors }">
+                <div *ngIf="submitted && f['apematerno'].errors" class="invalid-feedback">
+                  <div *ngIf="f['apematerno'].errors['required']">Apellido materno es requerido</div>
+                </div>
+              </div>
+              <!-- DIRECCION -->
+              <div class="mb-1">
+                <label for="txtDireccion" class="form-label">DOMICILIO <span class="text-danger">*</span> </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="txtDireccion"
+                  formControlName="direccion"
+                  [ngClass]="{ 'is-invalid': submitted && f['direccion'].errors }">
+                <div *ngIf="submitted && f['direccion'].errors" class="invalid-feedback">
+                  <div *ngIf="f['direccion'].errors['required']">Domicilio es requerido</div>
+                </div>
+              </div>
+              <!-- FECHA NACIMIENTO -->
+              <div class="mb-1">
+                <label for="txtFechaInicio" class="col-md-12 col-form-label">FECHA NACIMIENTO</label>
+                <div class="col-md-12">
+                  <input
+                    class="form-control"
+                    type="date"
+                    formControlName="fec_nac"
+                    id="txtFechaInicio">
+                </div>
+              </div>
+              <!-- NUMERO INSTALACIONES -->
+              <div class="mb-1">
+                <label for="txtNroViv" class="form-label">N° INSTALACIONES. <span class="text-danger">*</span> </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="txtNroViv"
+                  formControlName="num_instalaciones"
+                  [ngClass]="{ 'is-invalid': submitted && f['num_instalaciones'].errors }">
+                <div *ngIf="submitted && f['num_instalaciones'].errors" class="invalid-feedback">
+                  <div *ngIf="f['num_instalaciones'].errors['required']">Cantidad de instalaciones es requerido</div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col">
+
+              <!-- NUMERO FAMILIAS -->
+              <div class="mb-1">
+                <label for="txtNroFamilias" class="form-label">N° FAMILIAS. <span class="text-danger">*</span> </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="txtNroFamilias"
+                  formControlName="num_familias"
+                  [ngClass]="{ 'is-invalid': submitted && f['num_familias'].errors }">
+                <div *ngIf="submitted && f['num_familias'].errors" class="invalid-feedback">
+                  <div *ngIf="f['num_familias'].errors['required']">Numero de familias es requerido</div>
+                </div>
+              </div>
+              <!-- EXHONERACIONES -->
+              <br>
+              <div class="mb-1 d-flex flex-row justify-content-between align-items-center">
+                <label class="form-label">EXHONERACIONES: </label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="exoFaena" formControlName="exo_f">
+                  <label class="form-check-label" for="exoFaena"> Exo.Faena </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="exoAsamblea" formControlName="exo_a">
+                  <label class="form-check-label" for="exoAsamblea"> Exo.Asamb </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="exoPagos" formControlName="exo_p">
+                  <label class="form-check-label" for="exoPagos"> Exo.Pagos </label>
+                </div>
+              </div>
+              <!-- FECHA INGRESO -->
+              <div class="mb-1">
+                <label for="txtFechaIngreso" class="col-md-12 col-form-label">FECHA INGRESO</label>
+                <div class="col-md-12">
+                  <input class="form-control" type="date" formControlName="fec_ing" id="txtFechaIngreso">
+                </div>
+              </div>
+              <!-- BAJA? -->
+              <div class="mb-1">
+                <label for="selectEstado" class="form-label">ESTADO</label>
+                <select (change)="changeEstadoCliente(estado.value)" class="form-select" id="selectEstado"
+                  formControlName="baja" #estado>
+                  <option selected="">Seleccionar</option>
+                  <option value="1">ACTIVO</option>
+                  <option value="0">INACTIVO</option>
+                </select>
+              </div>
+              <!-- FECHA DE BAJA -->
+              <div class="mb-1" *ngIf="estadoCliente">
+                <label for="txtFechaBaja" class="col-md-12 col-form-label">FECHA BAJA</label>
+                <div class="col-md-12">
+                  <input class="form-control" type="date" formControlName="fec_baja" id="txtFechaBaja">
+                </div>
+              </div>
+              <!-- TIPO CLIENTE -->
+              <div class="mb-1">
+                <label for="selectTipoCliente" class="form-label">Tipo de cliente <span class="text-danger">*</span> </label>
+                <select
+                  class="form-select"
+                  id="selectTipoCliente"
+                  formControlName="idtipocliente"
+                  [ngClass]="{ 'is-invalid': submitted && f['idtipocliente'].errors }">
+                  <option *ngFor="let tipo of tipoClientes" [value]="tipo.idtipocliente">{{ tipo.descripcion }}</option>
+                </select>
+                <div *ngIf="submitted && f['idtipocliente'].errors" class="invalid-feedback">
+                  <div *ngIf="f['idtipocliente'].errors['required']">Tipo de cliente requerido</div>
+                </div>
+              </div>
+              <!-- ZONA -->
+              <div class="mb-4">
+                <label for="selectZona" class="form-label">Zona de la vivienda <span class="text-danger">*</span> </label>
+                <select
+                  class="form-select"
+                  id="selectZona"
+                  formControlName="idtbzonas"
+                  [ngClass]="{ 'is-invalid': submitted && f['idtbzonas'].errors }">
+                  <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">{{ zona.detazona }}</option>
+                </select>
+                <div *ngIf="submitted && f['idtbzonas'].errors" class="invalid-feedback">
+                  <div *ngIf="f['idtbzonas'].errors['required']">Tipo de cliente requerido</div>
+                </div>
+              </div>
+              <!-- ESTADO -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-12">
+    <form [formGroup]="costoForm">
+      <div class="card mb-4">
+        <h5 class="card-header">Datos de Servicio</h5>
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <!-- TIPO DE SERVICIO -->
+              <div class="mb-1">
+                <label for="selectServicio" class="form-label">Tipo de servicio</label>
+                <select class="form-select" id="selectServicio" formControlName="servicio">
+                  <option *ngFor="let servicio of servicios" [value]="servicio.codservi">{{ servicio.detaservicios }}
+                  </option>
+                </select>
+                <small *ngIf="!costoForm.get('servicio')?.valid && !costoForm.get('servicio')?.touched" class="text-danger">* Campo Tipo de servicio requerido</small>
+              </div>
+              <!-- INTEGRANTES -->
+              <div class="mb-1">
+                <label for="txtIntegrantes" class="col-md-12 col-form-label">INTEGRANTES CASA</label>
+                <div class="col-md-12">
+                  <input class="form-control" type="number" formControlName="nrointegrante" id="txtIntegrantes">
+                </div>
+              </div>
+              <!-- FECHA INICIO SERVICIO -->
+              <div class="mb-1">
+                <label for="txtFechaFacturacion" class="col-md-12 col-form-label">FECHA INICIO SERVICIO</label>
+                <div class="col-md-12">
+                  <input class="form-control" type="date" formControlName="fecha_inicio_servicio" id="txtFechaFacturacion">
+                </div>
+              </div>
+              <!-- FECHA DE FACTURACION -->
+              <div class="mb-1">
+                <label for="txtFechaFacturacion" class="col-md-12 col-form-label">FECHA FACTURACION</label>
+                <div class="col-md-12">
+                  <input
+                    class="form-control"
+                    type="date"
+                    formControlName="fcobranza"
+                    id="txtFechaFacturacion">
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <!-- REFERENCIA -->
+              <div class="mb-2">
+                <label for="txtReferencia" class="col-md-12 col-form-label">REFERENCIA DOMICILIO</label>
+                <div class="col-md-12">
+                  <input class="form-control" type="text" formControlName="referencia_dom" id="txtReferencia">
+                </div>
+              </div>
+              <!-- MANZANA -->
+              <div class="mb-1 row">
+                <label for="txtManzana" class="col-md-2 col-form-label">Mzna</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="text" formControlName="mza" id="txtManzana">
+                </div>
+              </div>
+              <!-- LOTE -->
+              <div class="mb-1 row">
+                <label for="txtLote" class="col-md-2 col-form-label">Lt</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="text" formControlName="lote" id="txtLote">
+                </div>
+              </div>
+              <!-- NRO CASA -->
+              <div class="mb-4 row">
+                <label for="txtNroCasa" class="col-md-2 col-form-label">Nro</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="text" formControlName="nropre" id="txtNroCasa">
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center mb-1">
+                <button type="button" (click)="registrarCliente()" class="btn btn-primary w-50 mb-2">Registrar</button>
+              </div>
+              <div class="d-flex justify-content-center mb-1">
+                <button
+                  type="button"
+                  (click)="onReset()"
+                  class="btn btn-warning w-50">
+                  Reiniciar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

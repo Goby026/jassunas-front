@@ -11,7 +11,7 @@
           <th>Periodo</th>
           <th>Vencimiento</th>
           <th>Monto</th>
-          <th>Actions</th>
+          <th>Opc</th>
         </tr>
       </thead>
       <tbody class="table-border-bottom-0">
@@ -19,9 +19,12 @@
           <td>{{ i+1 }}</td>
           <td><strong>{{ deuda.deudaDescripcion.descripcion }}</strong></td>
           <td>{{ deuda.periodo }}</td>
+
           <td>{{ deuda.vencimiento }}</td>
           <td>{{ deuda.total | currency: 'S/ ' }}</td>
-          <td><button (click)="emitirDeuda(deuda,i)" class="btn btn-primary btn-xs">Pagar</button></td>
+          <td>
+            <!-- <button (click)="emitirDeuda(deuda,i)" class="btn btn-primary btn-xs">Pagar</button> -->
+          </td>
           <!-- <td>
             <div class="dropdown">
               <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

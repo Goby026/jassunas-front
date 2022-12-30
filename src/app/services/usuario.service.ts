@@ -1,45 +1,67 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { RegisterForm } from '../interfaces/register-form-interface';
-import { environment } from 'src/environments/environment';
 import { LoginForm } from '../interfaces/login-form-interface';
-// import { Usuario } from '../models/usuario.model';
+import { environment } from 'src/environments/environment';
+import { Usuario } from '../models/usuario.model';
+import { Observable, tap } from 'rxjs';
 
 const base_url = environment.base_url;
-
-const encabezados = new HttpHeaders({
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'My header': 'Mi cabecera personalizada',
-  // 'Authorization': `${token}`
-});
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
 
+  usuario!: Usuario;
+
   constructor( private http: HttpClient ) { }
 
-  regUsuario(formData: RegisterForm){
-    return this.http.post( `${base_url}/register`, formData );
+  validarToken(): boolean{
+    const token = localStorage.getItem('token') || '';
+    if (token) {
+      return true;
+    }
+    return false;
   }
 
-  loginUsuario(formData: LoginForm){
-    return this.http.post( `${base_url}/login`, formData );
+  regUsuario(formData: RegisterForm){
+    return this.http.post( `http://localhost:8081/api/v1/usuarios`, formData );
+  }
+
+  loginUsuario(formData: LoginForm):Observable<any>{
+    return this.http.post<any>( `http://localhost:8081/api/login`, formData).pipe(
+      tap( (resp)=> {
+        let payload = JSON.parse(atob(resp.token.split(".")[1]));
+        localStorage.setItem('token', resp.token);
+        localStorage.setItem('username', payload.sub);
+        this.setUsuarioPerfil(payload.sub);
+      })
+    )
   }
 
   setToken(token:string){
-    localStorage.setItem('_token', token);
+    localStorage.setItem('token', token);
   }
 
   getToken(){
-    return localStorage.getItem('_token');
+    return localStorage.getItem('token');
   }
 
-  getUsuarioPerfil(token:string){
+  getLocalUser(): Usuario{
+    return JSON.parse(localStorage.getItem('usuario') || '');
+  }
 
-    return this.http.post( `${base_url}/perfil`, { headers:encabezados });
+  setUsuarioPerfil(username:string):void{
+    console.log('USERNAME------->', username);
+    this.http.get(`${base_url}/usuario/${username}`)
+    .subscribe({
+      next: (resp) => {
+        console.log('RESP----->', resp);
+        localStorage.setItem('usuario', JSON.stringify(resp));
+      },
+      error: error=> console.log(error)
+    });
   }
 
 }

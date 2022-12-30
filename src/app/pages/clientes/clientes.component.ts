@@ -49,8 +49,9 @@ export class ClientesComponent implements OnInit {
   }
 
 
-  showPanel(){
+  editarCliente(dataCliente: any){
     this.panel = true;
+    this.cliente = dataCliente;
   }
 
 }

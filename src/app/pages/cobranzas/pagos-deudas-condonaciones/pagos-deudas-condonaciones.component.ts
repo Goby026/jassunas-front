@@ -42,24 +42,24 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
     });
   }
 
-  emitirDeuda(deuda: any, index: number){
+  // emitirDeuda(deuda: any, index: number){
 
-    let deudaEstado: any = {
-      "iddeudaEstado": 1
-    }
+  //   let deudaEstado: any = {
+  //     "iddeudaEstado": 1
+  //   }
 
-    this.deudaService.updateUserDebt(deudaEstado, deuda.idtbdeudas)
-    .subscribe( {
-      next: ( resp:any )=>{
-        console.log(resp);
-        this.mostrarDeudasCliente();
-      },
-      error: error=>console.log(error)
-    } );
+  //   this.deudaService.updateUserDebt(deudaEstado, deuda.idtbdeudas)
+  //   .subscribe( {
+  //     next: ( resp:any )=>{
+  //       console.log(resp);
+  //       this.mostrarDeudasCliente();
+  //     },
+  //     error: error=>console.log(error)
+  //   } );
 
-    this.deuda.emit(deuda);
-    this.deudas.splice(index, 1);
-  }
+  //   this.deuda.emit(deuda);
+  //   this.deudas.splice(index, 1);
+  // }
 
 
   // deudasSelect(e: any){
