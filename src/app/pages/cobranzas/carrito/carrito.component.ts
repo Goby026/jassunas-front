@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 
-
+import * as moment from 'moment';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { Cliente } from 'src/app/models/cliente.model';
 import { DeudaService } from 'src/app/services/deuda.service';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
@@ -14,21 +15,23 @@ import { DeudaService } from 'src/app/services/deuda.service';
 })
 export class CarritoComponent implements OnInit {
 
-  @Input() deudas: any[] = [];
-  @Input() idCliente: number = 0;
-  @Input() prop: number = 0;
+  // @Input() deudas: any[] = [];
+  // @Input() idCliente: number = 0;
+  // @Input() prop: number = 0;
 
+  clientes!:Cliente[];
+  cliente!:Cliente;
   monto: number = 0;
+  anio: number = moment().year();
+  fecha = moment().format('DD-MM-YYYY');
+
+  panelPago: boolean = false;
 
   constructor( private deudaService: DeudaService ) { }
 
   ngOnInit(): void {
     // this.listarPreDeudas();
-  }
 
-  ngOnChanges(changes: SimpleChanges){
-    // console.log('Deuda----->', this.deudas);
-    // this.listarPreDeudas();
   }
 
   // listarPreDeudas(){
@@ -45,6 +48,14 @@ export class CarritoComponent implements OnInit {
   //     error: error=>console.log(error)
   //   });
   // }
+
+  getCliente(clis: any){
+    this.clientes = clis;
+  }
+
+  selCliente(cli: Cliente){
+    this.cliente = cli;
+  }
 
   btnPagar(){
     const pdfDefinition: any = {

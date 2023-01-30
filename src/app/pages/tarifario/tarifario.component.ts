@@ -2,11 +2,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Cliente } from 'src/app/models/cliente.model';
 import { Costo } from 'src/app/models/costo.model';
+import { CostoOtroServicio } from 'src/app/models/costootroservicio.model';
 import { Tarifario } from 'src/app/models/tarifario.model';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { CostoOtrosService } from 'src/app/services/costo-otros.service';
 import { CostoService } from 'src/app/services/costo.service';
-import { ServicioService } from 'src/app/services/servicio.service';
+// import { ServicioService } from 'src/app/services/servicio.service';
 import { TarifasService } from 'src/app/services/tarifas.service';
 
 @Component({
@@ -19,43 +20,63 @@ export class TarifarioComponent implements OnInit {
   // @Input() idCosto: number = 0;
 
   idTarifaSelected: number = 0;
+  idCliente: number = 0;
 
   cliente!: Cliente;
   costos!: Costo[];
-  tarifas!: any[];
+  costoOtros!: CostoOtroServicio[];
+  newCostoOtro!: CostoOtroServicio;
+  tarifas!: Tarifario[];
+  tarifaSelected!: Tarifario[];
 
   nombres: string = "";
   nombreServicio: string = "";
 
-  servicios: any[] = [];
+  // servicios: any[] = [];
 
   panelTarifas: boolean = false;
 
   constructor(
     private tarifaService: TarifasService,
     private clienteService: ClienteService,
-    private servicioService: ServicioService,
+    // private servicioService: ServicioService,
     private costoService: CostoService,
     private costoOtroService: CostoOtrosService,
     private activatedRoute: ActivatedRoute ) {}
 
   ngOnInit(): void {
-    this.obtenerClientePorId( this.activatedRoute.snapshot.params["idClientes"] );
+    this.setParametros();
+    this.listarTarifas();
   }
 
-  // listarTarifas(idServicio: any){
+  setParametros() {
+    this.activatedRoute.params.subscribe({
+      next: (params) => {
+        // const arregloSerializado = params['arrDeudas'];
+        this.idCliente = params['idClientes'];
+        console.log(this.idCliente);
 
-  //   this.getIdCostoOtro(this.idCosto);
+        this.obtenerClientePorId(this.idCliente);
 
-  //   this.tarifaService.findTarifasByIdService(idServicio)
-  //   .subscribe({
-  //     next: (resp:any)=>{
-  //       this.tarifas = resp.tarifas;
-  //     },
-  //     error: error=>console.log(error)
-  //   });
+      },
+      error: (error) => console.log(error),
+      complete: () => {
+        console.log('Cliente obtenido correctamente');
+      },
+    });
+  }
 
-  // }
+  listarTarifas(){
+
+    this.tarifaService.findAllTarifas()
+    .subscribe({
+      next: (resp:Tarifario[])=>{
+        this.tarifas = resp;
+      },
+      error: error=>console.log(error)
+    });
+
+  }
 
   obtenerClientePorId(id: number){
     this.clienteService.getClientById(id)
@@ -75,7 +96,7 @@ export class TarifarioComponent implements OnInit {
     this.costoService.getCostsByClient(idCliente)
     .subscribe({
       next: (resp:any)=>{
-        this.costos = resp.costos;
+        this.costos = resp;
       },
       error: error=>console.log(error)
     });
@@ -86,23 +107,43 @@ export class TarifarioComponent implements OnInit {
     this.nombreServicio = nomServ;
     this.costoOtroService.getCosto_otros(Number(codCosto))
     .subscribe({
-      next: ( resp:any )=>{
-        // this.idTarifaSelected = resp.costootros[0].tarifario.idtarifario;
-        this.tarifas = resp.costootros;
+      next: ( resp:CostoOtroServicio[] )=>{
+        this.costoOtros = resp;
       },
       error: error => console.log(error)
     });
   }
 
-  // listarServicios(){
-  //   this.servicioService.listServicios()
-  //   .subscribe({
-  //     next: (resp:any)=>{
-  //       this.servicios = resp.servicios;
-  //     },
-  //     error: error=>console.log(error)
-  //   });
-  // }
+  setCostoOtroServicio( costoOtro: CostoOtroServicio ): void{
+    this.newCostoOtro = costoOtro;
+  }
+
+  setTarifa(idTarifa: HTMLSelectElement){
+    this.tarifaSelected = this.tarifas.filter( (item)=> item.idtarifario === Number(idTarifa.value));
+
+    this.newCostoOtro.tarifario = this.tarifaSelected[0];
+  }
+
+
+  actualizarTarifa(): void{
+
+    console.log('COSTO PARA MODIFICAR', this.newCostoOtro);
+
+    this.costoOtroService.updateCostoOtroServicio(this.newCostoOtro)
+    .subscribe({
+      next: ( resp:CostoOtroServicio )=>{
+        if (resp.id! > 0) {
+          alert('Tarifa actualizada correctamente');
+        }
+      },
+      error: error => console.log(error),
+      complete: ()=> {
+        // RELOAD COSTOS
+        this.obtenerIdCostoOtro(this.newCostoOtro.id, this.newCostoOtro.tarifario.detalletarifario)
+      }
+    });
+
+  }
 
 
 

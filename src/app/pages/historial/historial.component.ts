@@ -1,11 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { ClienteService } from 'src/app/services/cliente.service';
 import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
+import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
 
+import * as moment from 'moment';
+import 'moment/locale/es';
+moment.locale('es');
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
+import { Historial } from '../reports/Historial';
+import { Cliente } from 'src/app/models/cliente.model';
+import { PagosServicio } from 'src/app/models/pagosservicio.model';
+import { Ticket } from '../cobranzas/Ticket';
+import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
+import { DateService } from 'src/app/services/date.service';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -15,85 +23,92 @@ import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
 })
 export class HistorialComponent implements OnInit {
 
-  @Input() idCliente: number = 0;
-  historial: PagosServicioDetalle[] = [];
-  cliente: any = {};
+  // @Input() idCliente: number = 0;
+  @Input() cliente!: Cliente;
+  pagos: PagosServicio[] = [];
+  pagosDetalle: PagosServicioDetalle[] = [];
 
   constructor(
     // private activatedRoute: ActivatedRoute,
     private pagosService: PagosServiciosService,
-    private clienteService: ClienteService ) { }
+    public dateService: DateService
+    ) { }
 
   ngOnInit(): void {
     // this.idCliente = this.activatedRoute.snapshot.params["idCliente"];
-    console.log('IDCLIENTE------>',this.idCliente);
-    this.cargarCliente();
-    this.cargarHistorial();
+    this.cargarPagos();
+    // this.cargarHistorial();
   }
 
 
   crearPdf(){
-    const pdfDefinition: any = {
-      pageSize: {
-        width: 'A4', //B7 - B8
-        height: 'auto'
-      },
-      content: [
-        {
-          style: 'tableExample',
-          table: {
-            widths: [100, 100, '*', 100, 200, '*', 100],
-            body: [
-              ['width=100', 'star-sized', 'width=200', 'star-sized'],
-              ['fixed-width cells have exactly the specified width', {text: 'nothing interesting here', italics: true, color: 'gray'}, {text: 'nothing interesting here', italics: true, color: 'gray'}, {text: 'nothing interesting here', italics: true, color: 'gray'}]
-            ]
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 0, 0, 10]
-        },
-        subheader: {
-          fontSize: 16,
-          bold: true,
-          margin: [0, 10, 0, 5]
-        },
-        tableExample: {
-          margin: [0, 5, 0, 15]
-        },
-        tableHeader: {
-          bold: true,
-          fontSize: 13,
-          color: 'black'
-        }
-      }
-    }
+    const nombreCompleto: string = `${this.cliente.apepaterno} ${this.cliente.apematerno} ${this.cliente.nombres}`;
+    const reporte: Historial = new Historial(nombreCompleto,this.pagosDetalle);
 
-    const pdf = pdfMake.createPdf(pdfDefinition);
-    pdf.open();
+      reporte.reporte();
   }
 
-  cargarCliente(){
-    this.clienteService.getClientById(this.idCliente)
+  // cargar pagos de un determinado cliente
+  cargarPagos(){
+    this.pagosService.getPagosByCliente(Number(this.cliente.idclientes))
     .subscribe({
-      next: (resp)=>{
-        this.cliente = resp;
-      },
-      error: error => console.error(error)
-    });
-  }
-
-  cargarHistorial(){
-    this.pagosService.getHistorial(this.idCliente)
-    .subscribe({
-      next: (resp:PagosServicioDetalle[])=>{
-        this.historial = resp;
+      next: (resp:PagosServicio[])=>{
+        this.pagos = resp;
       },
       error: (error)=> console.log(error)
     });
+  }
+
+
+  // el historial es la lista de detalles de un pago determinado
+  printVoucher(pago: PagosServicio, opc: boolean = false){
+    this.pagosService.getDetallePago(Number(pago.id))
+    .subscribe({
+      next: (resp:PagosServicioDetalle[])=>{
+
+        resp.map( (item)=>{
+          item.idmes
+        });
+
+        this.pagosDetalle = resp;
+      },
+      error: (error)=> console.log(error),
+      complete: () =>{
+        if (opc) {
+          this.setVoucher(pago);
+        }
+      }
+    });
+  }
+
+  setVoucher(pago: PagosServicio) {
+    //seteando ticket
+    let itemsTicket: ItemTicket[] = this.setTicket();
+
+    // CREANDO EL TICKET [✔]
+    const ticket: Ticket = new Ticket(
+      Number(pago.correlativo),
+      Number(pago.cliente.idclientes),
+      `${pago.cliente.apepaterno} ${pago.cliente.apematerno} ${pago.cliente.nombres}`,
+      pago.cliente.direccion,
+      pago.montopagado,
+      itemsTicket);
+    ticket.pagar();
+  }
+
+  setTicket():ItemTicket[] {
+    let items: ItemTicket[] = [];
+    let item: ItemTicket;
+
+    this.pagosDetalle.forEach( (pago:PagosServicioDetalle )=>{
+      item = {
+        concepto: pago.detalletasas,
+        monto: pago.monto,
+        mes: pago.idmes,
+      }
+      items.push( item );
+    } );
+    return items;
   }
 
 }

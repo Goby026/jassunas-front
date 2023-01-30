@@ -2,13 +2,24 @@
   <div class="col-md-6">
 
     <div class="mb-3">
-      <label for="exampleFormControlSelect1" class="form-label">Año</label>
-      <select (change)="anioSel = anio.value" class="form-select" id="exampleFormControlSelect1" aria-label="Default select example" #anio>
-        <option selected="" value="0">Seleccionar</option>
-        <option *ngFor="let anio of anios" [value]="anio">
-          {{ anio }}
-        </option>
-      </select>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">PAGOS</h5>
+
+          <label for="exampleFormControlSelect1" class="form-label">Año</label>
+          <select (change)="setearMeses(anio)" class="form-select" id="exampleFormControlSelect1"
+            aria-label="Default select example" #anio>
+            <option selected="" value="0">Seleccionar</option>
+            <option *ngFor="let anio of anios" [value]="anio">
+              {{ anio }}
+            </option>
+          </select>
+
+        </div>
+      </div>
+
+
     </div>
 
     <div class="mt-4 d-flex justify-content-center" *ngIf="spinner; else nospinner">
@@ -36,7 +47,8 @@
                   <tr *ngFor="let mes of meses; let i = index">
                     <td>
                       <div class="form-check">
-                        <input (change)="agregarMes(mesSelected, mes)" class="form-check-input" type="checkbox" [value]="mes.nmes" id="{{'checkMes'+i}}" #mesSelected>
+                        <input (change)="agregarMes(mesSelected, mes)" class="form-check-input" type="checkbox"
+                          [value]="mes.nmes" id="{{'checkMes'+i}}" #mesSelected>
                         <label class="form-check-label" for="{{'checkMes'+i}}"> {{mes.mes}} </label>
                       </div>
                     </td>
@@ -60,7 +72,7 @@
 
   <!-- DETALLE  DE PAGOS -->
   <div class="col-md-6 mb-4">
-    <div class="card mb-4" >
+    <div class="card mb-4">
       <div class="card-body">
         <h5 class="card-title">MONTOS</h5>
 
@@ -85,7 +97,6 @@
           </table>
         </div>
 
-
         <hr>
         <div class="mb-3 row mx-4">
           <label class="col-md-8 col-form-label">Sub-Total</label>
@@ -107,29 +118,17 @@
         </div>
 
       </div>
-      <div class="card-footer d-flex flex-row align-items-center justify-content-around">
-        <!-- <button type="button" class="btn btn-danger w-25 mx-2" (click)="setPaneles('x_all')">Cancelar</button> -->
+      <div class="card-footer d-flex justify-content-end">
 
-        <!-- <button
-            (click)="condonarDeuda()"
-            class="btn btn-info w-25 mx-2"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasEnd"
-            aria-controls="offcanvasEnd">
-            Condonar deuda
-        </button> -->
-
-        <button (click)="registrarAdelanto()" type="button" class="btn btn-success w-25 mx-2">
-              Emitir recibo
+        <button (click)="registrarAdelanto()" type="button" class="btn btn-success">
+          Emitir recibo
         </button>
+        <!-- <button (click)="actualizarEstadoPagos(2023)" type="button" class="btn btn-warning">
+          actualizarEstadoPagos
+        </button> -->
 
       </div>
     </div>
 
   </div>
 </div>
-
-
-
-

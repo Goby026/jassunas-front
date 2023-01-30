@@ -2,14 +2,14 @@
   <div class="col-md-6 mb-4">
 
     <div class="card mb-2">
-      <h5 class="card-header">TRIBUTOS : <span class="text-primary">{{ cliente.apepaterno }} {{ cliente.apematerno }} {{ cliente.nombres }}</span> </h5>
+      <h5 class="card-header">TRIBUTOS</h5>
       <!-- Checkboxes and Radios -->
       <div class="card-body">
         <div class="row gy-3 mb-4">
           <div class="col-md">
 
             <label for="tupaSelect" class="form-label">TUPA</label>
-            <select class="form-select" (change)="seleccionTupa(tupa.value)" id="tupaSelect" #tupa>
+            <select class="form-select" (change)="seleccionTupa(tupa)" id="tupaSelect" #tupa>
               <option selected value="0">Seleccionar</option>
               <option [value]="tupa.codtupa" *ngFor="let tupa of tupas; index as i">{{ tupa.denominacion }}</option>
             </select>
@@ -29,7 +29,8 @@
                 </div>
 
                 <ng-template #nospinner>
-                  <a *ngFor="let req of requisitos" href="javascript:void(0);" class="list-group-item list-group-item-action" (click)="addRequisito(req)">{{ req.requisitos }}</a>
+                  <a *ngFor="let req of requisitos" href="javascript:void(0);"
+                    class="list-group-item list-group-item-action" (click)="addRequisito(req)">{{ req.requisitos }}</a>
                 </ng-template>
 
 
@@ -59,20 +60,22 @@
                 <tr>
                   <th>#</th>
                   <th>Concepto</th>
-                  <th>Monto</th>
+                  <th>Monto S/ </th>
                   <th>Acción</th>
                 </tr>
               </thead>
               <tbody class="table-border-bottom-0">
-                <tr *ngFor="let req of reqSel; index as i" >
+                <tr *ngFor="let req of reqSel; index as i">
                   <td>{{ i+1 }}</td>
                   <td>{{ req.requisitos }}</td>
                   <td>
                     <input
-                    type="text"
-                    class="form-control text-center"
-                    [value]="req.monto_ref | currency: 'S/ '"
-                    #monto>
+                      type="text"
+                      class="form-control text-center"
+                      [value]="req.monto_ref"
+                      [(ngModel)]="reqSel[i].monto_ref"
+                      (keyup)="operaciones()"
+                      #monto>
                   </td>
                   <td class="text-center">
                     <button (click)="quitarRequisito(i)" class="btn btn-danger btn-xs">X</button>
@@ -81,16 +84,32 @@
               </tbody>
             </table>
             <hr>
-            <p>TOTAL: {{ subTotal }}</p>
-            <button class="btn btn-success mt-4" (click)="registrarTributo()">Pagar tributo(s)</button>
-            <!-- <br>
-
-            <button class="btn btn-warning mt-4" (click)="registrarTributo()">RegDetalles</button>
-            <br>
-
-            <button (click)="back()" class="btn btn-danger mt-4">Cancelar</button> -->
+            <div class="mb-3 row mx-4">
+              <label class="col-md-8 col-form-label">Sub-Total</label>
+              <div class="col-md-4 mb-1">
+                <input class="form-control text-end" type="text" [value]="subTotal | currency: 'S/ ' " readonly>
+              </div>
+              <label class="col-md-8 col-form-label">Otras tasas</label>
+              <div class="col-md-4 mb-1">
+                <input class="form-control text-end" type="text" value="0.00" readonly>
+              </div>
+              <label class="col-md-8 col-form-label">Descuento</label>
+              <div class="col-md-4 mb-1">
+                <input class="form-control text-end" type="text" value="0.00">
+              </div>
+              <label class="col-md-8 col-form-label">Total</label>
+              <div class="col-md-4 mb-1">
+                <input class="form-control text-end" type="text" [value]="subTotal | currency: 'S/ ' " readonly>
+              </div>
+            </div>
           </div>
           <!--/ Small table -->
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-success" (click)="registrarTributo()">Pagar tributo(s)</button>
+          <!-- <button class="btn btn-secondary" (click)="handleMonto()">HnadleMontos</button> -->
         </div>
       </div>
     </div>

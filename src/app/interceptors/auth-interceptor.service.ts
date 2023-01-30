@@ -3,30 +3,40 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { UsuarioService } from '../services/usuario.service';
 
+import { environment } from 'src/environments/environment';
+const base_url = environment.base_url;
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthInterceptorService implements HttpInterceptor {
 
-
   constructor( private usuarioService: UsuarioService ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    console.log(req.url)
+    if (this.usuarioService.validarToken()) {
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+ this.usuarioService.getToken()
-    });
+      if (req.url !== `${base_url}/api/v1/vouchers/save`) {
 
-    const reqClone = req.clone({
-      headers
-    });
+        const headers = new HttpHeaders({
+          // 'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+ this.usuarioService.getToken()
+        });
 
-    return next.handle(reqClone).pipe(
-      catchError(this.manejarError)
-    );
+        const reqClone = req.clone({
+          headers
+        });
+
+        return next.handle(reqClone).pipe(
+          catchError(this.manejarError)
+        );
+
+      }
+    }
+
+    return next.handle(req);
+
   }
 
   manejarError(error: HttpErrorResponse){

@@ -115,10 +115,10 @@
                   <div *ngIf="f['num_familias'].errors['required']">Numero de familias es requerido</div>
                 </div>
               </div>
-              <!-- EXHONERACIONES -->
+              <!-- EXONERACIONES -->
               <br>
               <div class="mb-1 d-flex flex-row justify-content-between align-items-center">
-                <label class="form-label">EXHONERACIONES: </label>
+                <label class="form-label">EXONERACIONES: </label>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="exoFaena" formControlName="exo_f">
                   <label class="form-check-label" for="exoFaena"> Exo.Faena </label>
@@ -145,8 +145,8 @@
                 <select (change)="changeEstadoCliente(estado.value)" class="form-select" id="selectEstado"
                   formControlName="baja" #estado>
                   <option selected="">Seleccionar</option>
-                  <option value="1">ACTIVO</option>
-                  <option value="0">INACTIVO</option>
+                  <option value="No">ACTIVO</option>
+                  <option value="Si">INACTIVO</option>
                 </select>
               </div>
               <!-- FECHA DE BAJA -->
@@ -162,12 +162,16 @@
                 <select
                   class="form-select"
                   id="selectTipoCliente"
-                  formControlName="idtipocliente"
-                  [ngClass]="{ 'is-invalid': submitted && f['idtipocliente'].errors }">
-                  <option *ngFor="let tipo of tipoClientes" [value]="tipo.idtipocliente">{{ tipo.descripcion }}</option>
+                  formControlName="tipoCliente"
+                  [ngClass]="{ 'is-invalid': submitted && f['tipoCliente'].errors }">
+                  <option
+                    *ngFor="let tipo of tipoClientes"
+                    [value]="tipo.idtipocliente">
+                    {{ tipo.descripcion }}
+                  </option>
                 </select>
-                <div *ngIf="submitted && f['idtipocliente'].errors" class="invalid-feedback">
-                  <div *ngIf="f['idtipocliente'].errors['required']">Tipo de cliente requerido</div>
+                <div *ngIf="submitted && f['tipoCliente'].errors" class="invalid-feedback">
+                  <div *ngIf="f['tipoCliente'].errors['required']">Tipo de cliente requerido</div>
                 </div>
               </div>
               <!-- ZONA -->
@@ -176,12 +180,12 @@
                 <select
                   class="form-select"
                   id="selectZona"
-                  formControlName="idtbzonas"
-                  [ngClass]="{ 'is-invalid': submitted && f['idtbzonas'].errors }">
+                  formControlName="zona"
+                  [ngClass]="{ 'is-invalid': submitted && f['zona'].errors }">
                   <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">{{ zona.detazona }}</option>
                 </select>
-                <div *ngIf="submitted && f['idtbzonas'].errors" class="invalid-feedback">
-                  <div *ngIf="f['idtbzonas'].errors['required']">Tipo de cliente requerido</div>
+                <div *ngIf="submitted && f['zona'].errors" class="invalid-feedback">
+                  <div *ngIf="f['zona'].errors['required']">Tipo de cliente requerido</div>
                 </div>
               </div>
               <!-- ESTADO -->
@@ -269,6 +273,7 @@
 
               <div class="d-flex justify-content-center mb-1">
                 <button type="button" (click)="registrarCliente()" class="btn btn-primary w-50 mb-2">Registrar</button>
+                <!-- <button (click)="getTipoCliente(2)">TipoClientes</button> -->
               </div>
               <div class="d-flex justify-content-center mb-1">
                 <button

@@ -63,8 +63,8 @@ export class ClienteDataComponent implements OnInit {
       'fec_ing': new FormControl(moment().format('YYYY-MM-DD')),
       'baja': new FormControl(1),
       'fec_baja': new FormControl(moment().format('YYYY-MM-DD')),
-      'idtipocliente': new FormControl(),
-      'idtbzonas': new FormControl(),
+      'tipoCliente': new FormControl(),
+      'zona': new FormControl(),
       'estado': new FormControl(1)
     });
   }
@@ -86,7 +86,7 @@ export class ClienteDataComponent implements OnInit {
   listarServicios(){
     this.servicioService.listServicios()
     .subscribe({
-      next: (resp:any) => this.servicios = resp.servicios,
+      next: (resp:any) => this.servicios = resp,
       error: error => console.log(error)
     });
   }
@@ -94,7 +94,7 @@ export class ClienteDataComponent implements OnInit {
   listarZonas(){
     this.zonaService.listAllZonas()
     .subscribe({
-      next: (resp:any) => this.zonas = resp.zonas,
+      next: (resp:any) => this.zonas = resp,
       error: error => console.log(error)
     });
   }
@@ -107,16 +107,31 @@ export class ClienteDataComponent implements OnInit {
     });
   }
 
+  getTipoCliente(idtipoCli: number): TipoCliente{
+    let tipoCli: TipoCliente[] = this.tipoClientes.filter( (tipo)=> {
+      return tipo.idtipocliente === idtipoCli;
+    });
+    return tipoCli[0];
+  }
+
+  getZona(idzona: number): Zona{
+    let zona_: Zona[] = this.zonas.filter( (z)=> {
+      return z.idtbzonas === idzona;
+    });
+    return zona_[0];
+  }
+
   registrarCliente(){
-
     this.submitted = true;
-
     if (this.clienteForm.invalid && this.costoForm.invalid) {
       return;
     }
 
-    console.log(JSON.stringify(this.clienteForm.value, null, 2));
+    let tipoCli: TipoCliente = this.getTipoCliente(Number(this.clienteForm.get('tipoCliente')?.value));
 
+    let zzona: Zona = this.getZona( Number(this.clienteForm.get('zona')?.value) );
+
+    // console.log(JSON.stringify(this.clienteForm.value, null, 2));
     this.cliente = {
       dni: String(this.clienteForm.get('dni')?.value),
       num_instalaciones: this.clienteForm.get('num_instalaciones')?.value,
@@ -132,14 +147,8 @@ export class ClienteDataComponent implements OnInit {
       fec_ing: this.clienteForm.get('fec_ing')?.value,
       baja: this.clienteForm.get('baja')?.value,
       fec_baja: this.clienteForm.get('fec_baja')?.value,
-      tipoCliente: {
-        idtipocliente: this.clienteForm.get('idtipocliente')?.value,
-        descripcion: ''
-      },
-      zona: {
-        idtbzonas: this.clienteForm.get('idtbzonas')?.value,
-        detazona: ''
-      },
+      tipoCliente: tipoCli,
+      zona: zzona,
       estado: '1'
     }
 
@@ -151,7 +160,7 @@ export class ClienteDataComponent implements OnInit {
         this.registrarCosto(this.cliente);
       },
       error: error => console.log(error),
-      complete: ()=> this.clienteForm.reset
+      complete: ()=> this.clienteForm.reset()
     });
 
   }
@@ -163,15 +172,12 @@ export class ClienteDataComponent implements OnInit {
         detaservicios: '',
         estado:1
       },
-      zona:{
-        detazona: '',
-        idtbzonas: cli.zona.idtbzonas
-      },
+      zona:cli.zona,
       cliente: cli,
       mza:this.costoForm.get('mza')?.value,
       lote:this.costoForm.get('lote')?.value,
       nropre:this.costoForm.get('nropre')?.value,
-      fecha_registro:new Date(),
+      fecha_registro: moment().toDate(),
       fecha_inicio_servicio:this.costoForm.get('fecha_inicio_servicio')?.value,
       fcobranza:this.costoForm.get('fcobranza')?.value,
       esta:1,

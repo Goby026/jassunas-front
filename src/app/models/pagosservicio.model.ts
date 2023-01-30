@@ -14,13 +14,13 @@ export class PagosServicio{
       public montodescuento: number,
       public montopagado: number,
       public fecha: Date | string,
-      public usuario: Usuario,
+      public usuario: Usuario | null,
       public esta: number,
       public correlativo: number | null,
       public caja: Caja,
       public pagoServicioEstado: PagoServicioEstado,
       public tipoPagoServicios: TipoPagoServicio,
-      public idpagos?: number, //PK
+      public id?: number, //PK
       public created_at?: Date | string,
       public updated_at?: Date | string,
     ){}

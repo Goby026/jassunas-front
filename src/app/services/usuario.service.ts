@@ -7,6 +7,7 @@ import { Usuario } from '../models/usuario.model';
 import { Observable, tap } from 'rxjs';
 
 const base_url = environment.base_url;
+const base_login = environment.base_login;
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class UsuarioService {
   }
 
   loginUsuario(formData: LoginForm):Observable<any>{
-    return this.http.post<any>( `http://localhost:8081/api/login`, formData).pipe(
+    return this.http.post<any>( base_login, formData).pipe(
       tap( (resp)=> {
         let payload = JSON.parse(atob(resp.token.split(".")[1]));
         localStorage.setItem('token', resp.token);
@@ -58,7 +59,7 @@ export class UsuarioService {
     .subscribe({
       next: (resp) => {
         console.log('RESP----->', resp);
-        localStorage.setItem('usuario', JSON.stringify(resp));
+        // localStorage.setItem('usuario', JSON.stringify(resp));
       },
       error: error=> console.log(error)
     });

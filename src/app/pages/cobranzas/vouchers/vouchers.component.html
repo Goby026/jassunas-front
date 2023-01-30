@@ -1,7 +1,24 @@
 <div class="row">
   <div class="col-md-12">
     <div class="card">
-      <h5 class="card-header">LISTA DE VOUCHERS ENVIADOS</h5>
+      <div class="d-flex flex-row align-items-center justify-content-between">
+        <h5 class="card-header">LISTA DE VOUCHERS ENVIADOS</h5>
+        <div class="form-group row w-50 d-flex align-items-center">
+          <div class="col-md-9">
+            <input
+              class="form-control"
+              type="search"
+              value=""
+              id="html5-search-input"
+              (keyup)="recargarLista(cliente)"
+              (keyup.enter)="buscarVoucher(cliente)"
+              #cliente>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-success" (click)="buscarVoucher(cliente)"><i class='bx bx-search'></i></button>
+          </div>
+        </div>
+      </div>
       <div class="table-responsive text-nowrap" style="min-height: 400px;">
         <table class="table">
           <thead>
@@ -15,7 +32,10 @@
           </thead>
           <tbody class="table-border-bottom-0">
 
-            <tr *ngFor="let v of vouchers; index as i">
+            <tr *ngFor="let v of vouchers | paginate:{
+              itemsPerPage: tableSize,
+              currentPage: page,
+              totalItems: count}; index as i">
               <td>{{ i+1 }}</td>
               <td>{{ v.cliente.apepaterno }} {{ v.cliente.apematerno }} {{ v.cliente.nombres }}</td>
               <td>
@@ -28,9 +48,15 @@
                 </button>
               </td>
               <td>
-                <span class="badge bg-label-danger me-1" *ngIf="v.pagoServicioEstado.idpagoestado === 2; else noPendiente">PENDIENTE</span>
+                <span class="badge bg-label-warning me-1" *ngIf="v.pagoServicioEstado.idpagoestado === 2; else noPendiente">PENDIENTE</span>
                 <ng-template #noPendiente>
-                  <span class="badge bg-label-success me-1">APROBADO</span>
+
+                  <span class="badge bg-label-danger me-1" *ngIf="v.pagoServicioEstado.idpagoestado === 4; else approved">ANULADO</span>
+
+                  <ng-template #approved>
+                    <span class="badge bg-label-success me-1">APROBADO</span>
+                  </ng-template>
+
                 </ng-template>
               </td>
               <td>
@@ -39,21 +65,23 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu">
-                    <button
-                    *ngIf="v.pagoServicioEstado.idpagoestado !== 1; else recibo"
-                      (click)="setearVoucher(v)"
-                      class="dropdown-item"
-                      data-bs-toggle="modal"
-                      data-bs-target="#modalCenter">
-                      <i class="bx bx-edit-alt me-1"></i> Confirmar
-                    </button>
-
-                    <ng-template #recibo>
+                    <div *ngIf="v.pagoServicioEstado.idpagoestado !== 1; else recibo">
                       <button
                         (click)="setearVoucher(v)"
                         class="dropdown-item"
                         data-bs-toggle="modal"
                         data-bs-target="#modalCenter">
+                        <i class="bx bx-edit-alt me-1"></i> Confirmar
+                      </button>
+                      <button (click)="confimarAnulacion(v)" class="dropdown-item">
+                        <i class="bx bx-x me-1"></i> Anular
+                      </button>
+                    </div>
+
+                    <ng-template #recibo>
+                      <button
+                        (click)="imprimirVoucher(v)"
+                        class="dropdown-item">
                         <i class="bx bx-edit-alt me-1"></i> Imprimir recibo
                       </button>
                     </ng-template>
@@ -64,6 +92,13 @@
 
           </tbody>
         </table>
+        <div class="mt-4">
+          <pagination-controls
+            previousLabel="Prev"
+            nextLabel="Sig"
+            (pageChange)="onTableDataChange($event)">
+          </pagination-controls>
+        </div>
       </div>
     </div>
   </div>
@@ -140,7 +175,12 @@
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
               Cerrar
             </button>
-            <button (click)="confirmarPago()" type="button" class="btn btn-primary">Confirmar pagos</button>
+            <button
+              (click)="confirmarPago()"
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal">Confirmar pagos
+            </button>
           </div>
         </div>
       </div>

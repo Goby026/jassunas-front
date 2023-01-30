@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { pipe } from 'rxjs';
+import { Observable, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
+import { Deuda } from '../models/deuda.model';
 
 const base_url = environment.base_url;
 
@@ -14,6 +15,7 @@ export class DeudaService {
 
   constructor( private http: HttpClient ) { }
 
+  // obtener deudas con estado pendiente
   getUserDebt(idCliente: number){
     return this.http.get(`${base_url}/deudas/buscar/${idCliente}`)
     .pipe(
@@ -30,24 +32,18 @@ export class DeudaService {
     // return this.http.get(`${base_url}/deudas/buscar/${idCliente}`);
   }
 
-  //()=> listar deudas pre-pagadas por cliente
-  // getUserPreDebt(cliente: any){
-  //   return this.http.post(`${base_url}/deudas/buscar`, cliente)
-  //   .pipe(
-  //     map( (resp: any) =>{
-  //       if(resp){
-  //         return resp.deudas.filter( (item:any)=>{
-  //           return item.deudaEstado.iddeudaEstado === 1;
-  //         });
-  //       }else{
-  //         return [];
-  //       }
-  //     })
-  //    );
-  // }
+  // listar deudas por zona y por año
+  geDebtsByZoneAndYear(idzona: number, year: number): Observable<Deuda[]> {
+    return this.http.get(`${base_url}/deudas/buscar-zona/${idzona}/${year}`)
+    .pipe(
+      map( (resp: any) =>{
+        return resp.deudas as Deuda[];
+      })
+     );
+  }
 
   //()=> actualizar estado de deudas
-  updateUserDebts(deuda: any[]){
+  updateUserDebts(deuda: Deuda[]){
     return this.http.put(`${base_url}/deudas/service`, deuda);
   }
 }

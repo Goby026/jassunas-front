@@ -3,11 +3,11 @@ import { Tarifario } from "./tarifario.model";
 
 export class CostoOtroServicio{
   constructor(
-    public id: number,
     public costo: Costo,
     public tarifario: Tarifario,
-    public created_at: number,
-    public updated_at: number,
+    public id?: number,
+    public created_at?: Date | string,
+    public updated_at?: Date | string,
   ){}
 }
 

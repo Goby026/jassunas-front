@@ -11,13 +11,15 @@ import { Cliente } from '../models/cliente.model';
 import { PagoServicioEstado } from '../models/pagoservicioestado.model';
 import { TipoPagoServicio } from '../models/tipopagoservicio.model';
 import { VoucherDetalle } from '../models/voucherdetalle.model';
+import { DeudaEstado } from '../models/deudaestado.model';
+import { DeudaService } from '../services/deuda.service';
 
 @Component({
   selector: 'app-confirmacion',
   templateUrl: './confirmacion.component.html',
 })
 export class ConfirmacionComponent implements OnInit {
-  pagos!: Deuda[];
+  pagos!: Deuda[]; // ARREGLO DE DEUDAS
   idcliente: number = 0;
   pagoServicio!: PagosServicio;
   correlativo: number = 0;
@@ -31,6 +33,7 @@ export class ConfirmacionComponent implements OnInit {
     private pagosServicios: PagosServiciosService,
     private voucherService: VoucherService,
     private clienteService: ClienteService,
+    private deudaService: DeudaService,
     private router: Router,
   ) {}
 
@@ -115,6 +118,8 @@ export class ConfirmacionComponent implements OnInit {
 
     let voucherDetalles: VoucherDetalle[] = this.registrarDetalleVoucher(voucher);
 
+    console.log('VOUCHER-------------------------->', voucher);
+
     this.voucherService.saveVoucherAndDetalles(voucher, voucherDetalles)
     .subscribe({
       next: (resp:any) => {
@@ -127,6 +132,7 @@ export class ConfirmacionComponent implements OnInit {
       }
     });
 
+    /*
     this.voucherService.saveVoucher(voucher)
     .subscribe({
       next: (resp:Voucher) => {
@@ -138,8 +144,8 @@ export class ConfirmacionComponent implements OnInit {
         let voucherRegistrado = JSON.stringify(this.regVoucher);
         this.router.navigate(['/upload-pago', voucherRegistrado]);
       }
-    }
-    );
+    });
+    */
   }
 
   registrarDetalleVoucher(v: Voucher) {
@@ -171,4 +177,25 @@ export class ConfirmacionComponent implements OnInit {
     //   complete: ()=> console.log('Detalles registrados')
     // });
   }
+
+  // actualizarEstadoDeuda(){
+  //   let estadodeuda : DeudaEstado = {
+  //     iddeudaEstado : 4,
+  //     estado: null,
+  //     valor: null
+  //   }
+  //   let update_deudas: Deuda[] = this.pagos.map( ( deuda: Deuda )=> {
+
+  //     deuda.deudaEstado = estadodeuda
+
+  //     return deuda as Deuda;
+  //   } );
+
+  //   this.deudaService.updateUserDebts(update_deudas)
+  //   .subscribe({
+  //     next: (resp)=>console.log(resp),
+  //     error: (error)=>console.log('ERROR', error)
+  //   });
+
+  // }
 }

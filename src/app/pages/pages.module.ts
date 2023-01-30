@@ -23,6 +23,9 @@ import { HistorialComponent } from './historial/historial.component';
 import { CondonacionComponent } from './cobranzas/condonacion/condonacion.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from '../interceptors/auth-interceptor.service';
+import { BuscadorComponent } from './clientes/buscador/buscador.component';
+import { ReportesComponent } from './reportes/reportes.component';
+import { CostoComponent } from './costo/costo.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,10 @@ import { AuthInterceptorService } from '../interceptors/auth-interceptor.service
     TarifarioComponent,
     TributosComponent,
     HistorialComponent,
-    CondonacionComponent
+    CondonacionComponent,
+    BuscadorComponent,
+    ReportesComponent,
+    CostoComponent
   ],
   exports:[
     DashboardComponent,

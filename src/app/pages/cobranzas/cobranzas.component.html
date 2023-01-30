@@ -1,47 +1,22 @@
 <!-- BUSCADOR -->
 <div class="row">
   <div class="col-md-12">
-    <div class="card mb-2">
-      <h5 class="card-header">Buscador</h5>
-      <div class="card-body">
-        <div class="input-group" style="z-index: 1;">
-          <input type="search" class="form-control" aria-label="Text input with dropdown button"
-            (keyup.enter)="buscarCliente(cliente)" #cliente autocomplete="off">
-          <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            {{tipoBusqueda}}
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li>
-              <a class="dropdown-item" (click)="tipoBusqueda = 'Nombre'" style="cursor: pointer;">Nombre</a>
-            </li>
-            <li>
-              <a class="dropdown-item" (click)="tipoBusqueda = 'Apellido'" style="cursor: pointer;">Apellido</a>
-            </li>
-            <li>
-              <a class="dropdown-item" (click)="tipoBusqueda = 'Dni'" style="cursor: pointer;">Dni</a>
-            </li>
-          </ul>
-        </div>
-
-        <div class="mt-4 d-flex justify-content-center" *ngIf="spinner; else nospinner">
-          <div class="spinner-border spinner-border-lg text-primary" role="status">
-            <span class="visually-hidden">Cargando...</span>
-          </div>
-        </div>
-
-        <ng-template #nospinner>
-          <div class="demo-inline-spacing p-2">
-            <div *ngFor="let cliente of clientes" (click)="mostrarCliente(cliente.idclientes)"
-              class="list-group list-group-flush cursor-pointer">
-              <a class="list-group-item list-group-item-action">{{cliente.apepaterno}} {{cliente.apematerno}}
-                {{cliente.nombres}}</a>
-            </div>
-          </div>
-        </ng-template>
-
+    <app-buscador (salida)="buscarCliente($event)"></app-buscador>
+    <div class="mt-4 d-flex justify-content-center" *ngIf="spinner; else nospinner">
+      <div class="spinner-border spinner-border-lg text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
+
+    <ng-template #nospinner>
+      <div class="demo-inline-spacing p-2">
+        <div *ngFor="let cliente of clientes" (click)="mostrarCliente(cliente.idclientes)"
+          class="list-group list-group-flush cursor-pointer">
+          <a class="list-group-item list-group-item-action">{{cliente.apepaterno}} {{cliente.apematerno}}
+            {{cliente.nombres}}</a>
+        </div>
+      </div>
+    </ng-template>
   </div>
 </div>
 
@@ -59,7 +34,7 @@
           <div class="navbar-nav me-auto">
             <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_pagos')">Deudas</a>
             <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_tributos')">Tributos</a>
-            <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_adelantos')">Adelantos</a>
+            <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_adelantos')">Pagos</a>
             <a class="nav-item nav-link" style="cursor: pointer;" (click)="setPaneles('o_historial')">Historial</a>
           </div>
         </div>
@@ -83,14 +58,14 @@
                 <tbody class="table-border-bottom-0">
                   <tr class="table-info" *ngFor="let deuda of deudas; index as i">
                     <td>
-                      <label class="d-flex justify-content-between">
+                      <label class="d-flex justify-content-around">
                         <input class="form-check-input me-1" type="checkbox" [value]="deuda.idtbdeudas"
                           (change)="setPago(deudaSel,deuda)" #deudaSel>
                         <span>{{ deuda.idtbdeudas }}</span>
                       </label>
                     </td>
                     <td>
-                      <span>{{ deuda.periodo | date:'short' }}</span>
+                      <span>{{ dateService.setFormatPeriodo(deuda.periodo)}}</span>
                     </td>
                     <td>
                       {{ deuda.total | currency: 'S/ ' }}
@@ -169,19 +144,16 @@
 
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
-
 
 </div>
 
 <!-- TRIBUTOS -->
 <div class="row" *ngIf="panel_tributos">
   <div class="col-md-12">
-    <app-tributos [idCliente]="idCliente"></app-tributos>
+    <app-tributos [cliente]="cliente" [caja]="caja"></app-tributos>
     <button class="btn btn-danger btn-xs" (click)="setPaneles('x_tributos')">Cancelar</button>
   </div>
 </div>
@@ -189,17 +161,23 @@
 <!-- HISTORIAL -->
 <div class="row" *ngIf="panel_historial">
   <div class="col-md-12">
-    <app-historial [idCliente]="idCliente"></app-historial>
+    <app-historial [cliente]="cliente"></app-historial>
   </div>
 </div>
 
 <!-- CONDONACIONES -->
 <app-condonacion *ngIf="panel_condonacion" [deudas]="deudas" [monto]="monto"></app-condonacion>
 
-<!-- ADELANTOS -->
+<!-- ADELANTOS/PAGOS -->
 <div class="row" *ngIf="panel_adelantos">
   <div class="col-md-12">
-    <app-adelantos *ngIf="panel_adelantos" [idCliente]="idCliente"></app-adelantos>
+    <app-adelantos
+      *ngIf="panel_adelantos"
+      [costos]="costos"
+      [cliente]="cliente"
+      [caja]="caja"
+      >
+    </app-adelantos>
     <button class="btn btn-danger btn-xs" (click)="setPaneles('x_adelantos')">Cancelar</button>
   </div>
 </div>

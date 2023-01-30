@@ -1,0 +1,42 @@
+<!-- BUSCADOR -->
+<div class="card mb-2">
+  <h5 class="card-header pt-3">Buscador</h5>
+  <div class="card-body">
+    <div class="input-group" style="z-index: 1;">
+      <input type="search" class="form-control" aria-label="Text input with dropdown button"
+        (keyup.enter)="buscarCliente(cliente)" #cliente autocomplete="off">
+      <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{tipoBusqueda}}
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" (click)="tipoBusqueda = 'Nombre'" style="cursor: pointer;">Nombre</a>
+        </li>
+        <li>
+          <a class="dropdown-item" (click)="tipoBusqueda = 'Apellido'" style="cursor: pointer;">Apellido</a>
+        </li>
+        <li>
+          <a class="dropdown-item" (click)="tipoBusqueda = 'Dni'" style="cursor: pointer;">Dni</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- <div class="mt-4 d-flex justify-content-center" *ngIf="spinner; else nospinner">
+      <div class="spinner-border spinner-border-lg text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+
+    <ng-template #nospinner>
+      <div class="demo-inline-spacing p-2">
+        <div *ngFor="let cliente of clientes" (click)="mostrarCliente(cliente.idclientes)"
+          class="list-group list-group-flush cursor-pointer">
+          <a class="list-group-item list-group-item-action">{{cliente.apepaterno}} {{cliente.apematerno}}
+            {{cliente.nombres}}</a>
+        </div>
+      </div>
+    </ng-template> -->
+
+  </div>
+</div>

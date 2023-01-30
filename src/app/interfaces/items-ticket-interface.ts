@@ -1,8 +1,9 @@
 export interface ItemTicket{
     concepto: string,
-    fecha: Date | string,
     monto: number
-    mes?: string,
+    fecha?: Date | string,
+    mes?: string | number,
     nmes?: number,
+    nannio?: number,
     id?: number,
 }

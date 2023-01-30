@@ -46,7 +46,6 @@ export class CajaService {
 
   saveCaja( caja: Caja ): Observable<Caja>{
     return this.http.post<Caja>(`${base_url}/cajas`, caja).pipe(
-      map( (resp:any) => resp.caja as Caja),
       catchError( e => {
         console.log(e.error)
         return throwError(e);

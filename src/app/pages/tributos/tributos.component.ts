@@ -1,6 +1,4 @@
-import { Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { RequisitoService } from 'src/app/services/requisito.service';
 import { TributoService } from 'src/app/services/tributo.service';
@@ -11,6 +9,24 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
+import { TributoDetalle } from 'src/app/models/tributoDetalle.model';
+import { Requisito } from 'src/app/models/requisito.model';
+import { Tributo } from 'src/app/models/tributo.model';
+import { UsuarioService } from 'src/app/services/usuario.service';
+import { Tupa } from 'src/app/models/tupa.model';
+import { Cliente } from 'src/app/models/cliente.model';
+import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
+import { CostoService } from 'src/app/services/costo.service';
+import { PagosServicio } from 'src/app/models/pagosservicio.model';
+import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
+import { Costo } from 'src/app/models/costo.model';
+import { Caja } from 'src/app/models/caja.model';
+import { TipoPagoServicio } from 'src/app/models/tipopagoservicio.model';
+import { PagoServicioEstado } from 'src/app/models/pagoservicioestado.model';
+import { Ticket } from '../cobranzas/Ticket';
+import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
+
+
 @Component({
   selector: 'app-tributos',
   templateUrl: './tributos.component.html',
@@ -18,66 +34,70 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 })
 export class TributosComponent implements OnInit {
 
-  tupas: any[] = [];
-  requisitos: any[] = [];
-  reqSel: any[] = [];
-  tributosDetalle: any[] = [];  //MAIN
-  cliente: any = {};
+  tupas: Tupa[] = [];
+  tupa!: Tupa;
+  requisitos: Requisito[] = [];
+  reqSel: Requisito[] = [];
+  costos: Costo[] = [];
+  tributosDetalle: TributoDetalle[] = [];  //MAIN
+  // cliente!: Cliente;
   nombre_completo: string = '';
   subTotal: number = 0;
 
   correlativo: number = 0;
   spinner: boolean = false;
 
-  @Input() idCliente: number = 0;
+  itemsTicket: ItemTicket[] = [];
 
-  constructor( private tributoService: TributoService ,private tupaService: TupaService, private requisitoService: RequisitoService, private activatedRoute: ActivatedRoute, private clienteService: ClienteService, private location :Location ) { }
+  @Input() cliente!: Cliente;
+  @Input() caja!: Caja;
+
+  constructor(
+    private tributoService: TributoService ,
+    private tupaService: TupaService,
+    private requisitoService: RequisitoService,
+    private usuarioService: UsuarioService,
+    private pagosserviciosService: PagosServiciosService,
+    private costoService: CostoService) { }
 
   ngOnInit(): void {
     // this.idCliente = this.activatedRoute.snapshot.params["idCliente"];
     this.listarTupas();
     this.cargarCliente();
-    this.getCorrelativo();
+    // this.getCorrelativo();
   }
 
   cargarCliente(){
-    this.clienteService.getClientById(this.idCliente)
-    .subscribe({
-      next: (resp)=>{
-        this.cliente = resp;
-        this.nombre_completo= `${resp.apepaterno} ${resp.apematerno} ${resp.nombres}`;
-      },
-      error: error => console.error(error)
-    });
-  }
+    this.nombre_completo = `${this.cliente.apepaterno} ${this.cliente.apematerno} ${this.cliente.nombres}`;
 
-  getCorrelativo(){
-    this.tributoService.getAllTributes()
-    .subscribe({
-      next: (resp: any)=>{
-        this.correlativo = resp.tributos.length;
-      },
-      error: error => console.log(error)
-    });
+    this.setCostoCliente();
   }
 
 
   listarTupas(){
     this.tupaService.getAllTupas()
     .subscribe({
-      next: ( resp:any )=> {
-        this.tupas = resp.tupas;
+      next: ( resp:Tupa[] )=> {
+        this.tupas = resp;
       },
       error: error => console.log(error)
     });
   }
 
-  seleccionTupa(idTupa: string){
+  seleccionTupa(tupa: HTMLSelectElement){
+
+    this.tupaService.getTupaById(Number(tupa.value))
+    .subscribe({
+      next: ( resp:Tupa )=> {
+        this.tupa = resp;
+      },
+      error: error => console.log(error)
+    });
 
     this.spinner = true;
 
-    if (idTupa !== '0') {
-      this.requisitoService.getReqsByTupa(idTupa)
+    if (tupa.value !== '0') {
+      this.requisitoService.getReqsByTupa(tupa.value)
       .subscribe({
         next: ( resp:any )=> {
           this.requisitos = resp.requisitos;
@@ -94,15 +114,17 @@ export class TributosComponent implements OnInit {
   addRequisito(req: any){
     this.reqSel.push(req);
     this.operaciones();
-
     //TODO: crear el array de detalles
-
   }
 
   quitarRequisito(index: number){
     this.reqSel.splice(index, 1);
     this.operaciones();
   }
+
+  // handleMonto(){
+  //   console.log(this.reqSel);
+  // }
 
   operaciones(){
     this.subTotal = 0;
@@ -123,55 +145,45 @@ export class TributosComponent implements OnInit {
       return;
     }
 
-    let tributo: any = {
-      usuario: "TESORERA",
-      dettupa: "CONSTRUCCION",
-      detrequisito: "PAGOS VARIOS",
+    let tributo: Tributo = {
+      usuario: this.usuarioService.getLocalUser().username,
+      dettupa: this.tupa.denominacion,
+      detrequisito: this.tupa.denominacion,
       subtotal: this.subTotal,
-      cliente: {
-        idclientes: this.idCliente
-      }
+      cliente: this.cliente,
+      user: this.usuarioService.getLocalUser(),
+      correlativo: null
     }
 
     this.tributoService.saveTributo(tributo)
-    .subscribe( {
-      next: (resp:any)=>{
-
-        // registrar detalle de tributo
-        this.registrarDetalleTributo(resp.iddetatributo);
-        this.pagarTributo();
+    .subscribe({
+      next: (resp:Tributo)=>{
+        this.registrarDetalleTributo(resp);
+        this.registrarPagosAndDetalles(resp);
       },
       error: error => console.log(error),
       complete: ()=> {
         this.reqSel = [];
-        // this.subTotal = 0;
       }
-    } );
-
+    });
   }
 
-  registrarDetalleTributo( idtributo: number ){
+  registrarDetalleTributo( tributo: Tributo ){
 
-    this.reqSel.map( (item)=>{
+    this.reqSel.map( (item: Requisito)=>{
 
-      let tributoDetalle : any = {
+      let tributoDetalle : TributoDetalle= {
         datosclientes: `${this.cliente.apepaterno} ${this.cliente.apematerno} ${this.cliente.nombres}`,
         direccion: this.cliente.zona.detazona,
-        monto: this.subTotal,
-        usuaCrea: "TESORERA",
-        fecha: Date.now(),
+        monto: item.monto_ref,
+        usuaCrea: this.usuarioService.getLocalUser().username,
+        fecha: moment().toDate(),
         esta: 1,
-        correlativo: this.correlativo,
-        idanno: 2022,
-        cliente: {
-            idclientes: this.idCliente
-        },
-        requisito: {
-            codrequi: item.codrequi
-        },
-        tributo: {
-            iddetatributo: idtributo
-        }
+        correlativo: tributo.correlativo || 0,
+        idanno: moment().year(),
+        cliente: this.cliente,
+        requisito: item,
+        tributo: tributo
       }
 
       this.tributosDetalle.push(tributoDetalle);
@@ -181,194 +193,108 @@ export class TributosComponent implements OnInit {
     this.tributoService.saveDetalleTributo(this.tributosDetalle)
     .subscribe({
       next: (resp)=> console.log(resp),
+      error: error => console.log(error),
+      complete: () => {
+
+      }
+    });
+
+  }
+
+  setCostoCliente(){
+    this.costoService.getCostsByClient(Number(this.cliente.idclientes))
+    .subscribe({
+      next: (resp)=> {
+        this.costos = resp;
+      },
       error: error => console.log(error)
     });
-
   }
 
+  registrarPagosAndDetalles(tributo: Tributo){
 
-  // TICKET
-  getBase64ImageFromURL(url:any) {
-    return new Promise((resolve, reject) => {
-      let img = new Image();
-      img.setAttribute("crossOrigin", "anonymous");
+    // seteando tipo de pago
+    let tipoPago: TipoPagoServicio = {
+      descripcion: null,
+      idtipopagosservicio: 2
+    }
 
-      img.onload = () => {
-        let canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
+    // seteando estado de pago
+    let pagoServicioEstadoS: PagoServicioEstado = {
+      descripcion: null,
+      idpagoestado: 1
+    }
 
-        let ctx:any = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
+    let pagoServicio: PagosServicio = {
+      costo: this.costos[0],
+      montoapagar: tributo.subtotal,
+      montotasas: 0.0,
+      montodescuento: 0.0,
+      montopagado: tributo.subtotal,
+      fecha: moment().toDate(),
+      usuario: this.usuarioService.getLocalUser(),
+      esta: 1,
+      correlativo: null,
+      caja: this.caja,
+      cliente: tributo.cliente,
+      tipoPagoServicios: tipoPago,
+      pagoServicioEstado: pagoServicioEstadoS
+    }
 
-        let dataURL = canvas.toDataURL("image/png");
+    let detallesPago: PagosServicioDetalle[] = this.setearDetalles(pagoServicio);
 
-        resolve(dataURL);
-      };
+    this.pagosserviciosService.savePagosAndDetalles(pagoServicio, detallesPago)
+    .subscribe({
+      next: (resp: any)=> {
 
-      img.onerror = error => {
-        reject(error);
-      };
+        resp.detalles.map((detalle:any)=>{
 
-      img.src = url;
+          let arrItem:ItemTicket = {
+            concepto: detalle.detalletasas,
+            mes: '--',
+            monto:detalle.monto
+          }
+
+          this.itemsTicket.push(arrItem);
+
+        });
+
+        // CREANDO EL TICKET [✔]
+        const ticket: Ticket = new Ticket(
+          Number(resp.pagosservicio.correlativo),
+          Number(resp.pagosservicio.cliente.idclientes),
+          `${resp.pagosservicio.cliente.apepaterno} ${resp.pagosservicio.cliente.apematerno} ${resp.pagosservicio.cliente.nombres}`,
+          resp.pagosservicio.cliente.direccion,
+          resp.pagosservicio.montopagado,
+          this.itemsTicket);
+
+        ticket.pagar();
+      },
+      error: error => console.log(error),
+      complete: () => {
+        this.subTotal = 0.00;
+        this.reqSel = [];
+      }
     });
   }
 
-  async pagarTributo(){
+  setearDetalles(pagoServicio: PagosServicio): PagosServicioDetalle[] {
+    let pagosServicioDeta: PagosServicioDetalle;
+    let pagServDetalles: PagosServicioDetalle[] = [];
 
-    let dataPagos: any[] = [];
+    this.reqSel.map((itemPago:Requisito) => {
+      pagosServicioDeta = {
+        idcabecera: 1,
+        idmes: 1,
+        detalletasas: itemPago.requisitos,
+        idanno: moment().year(),
+        monto: itemPago.monto_ref,
+        cliente: this.cliente,
+        pagosServicio: pagoServicio,
+      };
+      pagServDetalles.push(pagosServicioDeta);
+    });
 
-    this.reqSel.map( (item:any)=>{
-      let arrItem = [item.requisitos , moment(item.periodo).format("MMM YYYY"), `S/ ${item.monto_ref}`]
-      dataPagos.push(arrItem)
-    } );
-    // crear pdf
-    const pdfDefinition: any = {
-      pageSize: {
-        width: 249, //B7 - B8
-        height: 'auto'
-      },
-      pageMargins: [ 20, 30, 20, 30 ],
-      content: [
-        {
-          image: await this.getBase64ImageFromURL('../../../assets/img/jass.png'),
-          width: 90,
-          alignment: 'center'
-        },
-        {
-          text: 'JUNTA ADMINISTRADORA DE SERVICIOS DE SANEAMIENTO',
-          style: 'subheader',
-          alignment: 'center',
-          margin: [0, 8]
-        },
-        {
-          text: 'Av. 30 de Mayo # 250 - Plaza Principal',
-          alignment: 'center',
-          style: 'small'
-        },
-        {
-          text: 'JUNIN - HUANCAYO - HUANCAYO',
-          alignment: 'center',
-          style: 'small'
-        },
-        {
-          text: `RECIBO PAGO DE TRIBUTO Nro. 000${this.correlativo + 1}`,
-          alignment: 'center',
-          style: 'header',
-          margin: [0, 8]
-        },
-        // {
-        //   text: `
-        //   Cliente: \t\t ${this.idCliente} - ${this.nombre_completo}\n
-        //   Direccion: \t\t ${this.direccion} \n
-        //   Fecha: \t\t ${new Date()}`,
-        //   style: 'small',
-        //   margin: [0, 8]
-        // },
-        {
-          alignment: 'justify',
-          columns: [
-            {
-              text: 'Cliente:',
-              style: 'small',
-              width: 50,
-            },
-            {
-              text: `${this.idCliente} - ${this.nombre_completo}`,
-              style: 'small',
-              // width: 60,
-            }
-          ]
-        },
-        {
-          alignment: 'justify',
-          columns: [
-            {
-              text: 'Direccion:',
-              style: 'small',
-              width: 50,
-            },
-            {
-              text: `${this.cliente.direccion}`,
-              style: 'small',
-              // width: 60,
-            }
-          ]
-        },
-        {
-          alignment: 'justify',
-          columns: [
-            {
-              text: 'Fecha:',
-              style: 'small',
-              width: 50,
-            },
-            {
-              text: `${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-              style: 'small',
-              // width: 60,
-            }
-          ]
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', 40, 40],
-            body: [
-              ['CONCEPTOS', 'MES', 'S.TOTAL'],
-              ...dataPagos
-            ]
-          }
-        },
-        {
-          text: `SON: ${this.subTotal} con 00/100 SOLES`,
-          alignment: 'left',
-          style: 'small',
-          margin: [0, 8]
-        },
-        {
-          text: `
-            SUBTOTAL: \t\t S/ ${this.subTotal}.00 \n
-            TASAS: \t\t S/ 0.00 \n
-            DESCUENTO: \t\t S/ 0.00 \n
-            ________________________ \n
-          `,
-          alignment: 'right',
-          style: 'small',
-          margin: [0, 8]
-        },
-        {
-          text: `TOTAL A PAGAR: \t\t S/ ${this.subTotal}.00`,
-          alignment: 'right',
-          style: 'subheader',
-          margin: [0, 8]
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 16,
-          bold: true
-        },
-        subheader: {
-          fontSize: 14,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        },
-        tableExample: {
-          fontSize: 8,
-          margin: [0, 0, 0, 0]
-        },
-      }
-    }
-
-    const pdf = pdfMake.createPdf(pdfDefinition);
-    pdf.open();
+    return pagServDetalles;
   }
-
-
 }

@@ -1,9 +1,13 @@
 <div class="row">
+  <div class="col-md-12">
+    <app-buscador (salida)="recibiendoClientes($event)"></app-buscador>
+  </div>
+</div>
 
+<div class="row">
   <div class="col-md-8 mb-4 order-0">
     <!-- Small table -->
     <div class="card">
-
       <div class="card-header d-flex align-items-center justify-content-between">
         <h5 class="card-title m-0 me-2">Lista de clientes</h5>
         <a routerLink="/dashboard/cliente-data" class="btn btn-primary btn-xs">Nuevo</a>
@@ -24,11 +28,12 @@
             <tr *ngFor="let cliente of clientes | paginate:{
               itemsPerPage: tableSize,
               currentPage: page,
-              totalItems: count}; let i = index" >
+              totalItems: count}; let i = index">
               <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ cliente.idclientes }}</strong></td>
               <td>{{ cliente.dni }}</td>
               <td>
-                <p class="text-primary m-0">{{ cliente.ape_paterno }} {{ cliente.ape_materno }} {{ cliente.nombres }}</p>
+                <p class="text-primary m-0">{{ cliente.apepaterno }} {{ cliente.apematerno }} {{ cliente.nombres }}
+                </p>
               </td>
               <td><span class="badge bg-label-primary me-1">Active</span></td>
               <td>
@@ -37,12 +42,15 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu">
-                    <button class="dropdown-item" href="javascript:void(0);" (click)="editarCliente(cliente)"><i class="bx bx-edit-alt me-1"></i> Editar</button>
-                    <a class="dropdown-item" [routerLink]="['/dashboard/tarifarios',cliente.idclientes]" ><i class="bx bx-money-withdraw me-1"></i> Tarifas</a
-                    >
-                    <a class="dropdown-item" href="javascript:void(0);"
-                      ><i class="bx bx-trash me-1"></i> Eliminar</a
-                    >
+                    <button class="dropdown-item" href="javascript:void(0);" (click)="editarCliente(cliente)"><i
+                        class="bx bx-edit-alt me-1"></i> Editar</button>
+                    <a class="dropdown-item" [routerLink]="['/dashboard/tarifarios',cliente.idclientes]"><i
+                        class="bx bx-money me-1"></i> Tarifas</a>
+
+                    <a class="dropdown-item" (click)="mantenimiento()" ><i
+                        class="bx bx-credit-card-alt me-1"></i> Costos</a>
+
+                    <!-- <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Eliminar</a> -->
                   </div>
                 </div>
               </td>
@@ -65,83 +73,199 @@
       <div class="card mb-4" *ngIf="panel">
         <div class="card-header d-flex align-items-center justify-content-between pb-0">
           <div class="card-title mb-0">
-            <h5 class="m-0 me-2">{{ cliente.apepaterno }} {{ cliente.apematerno }} {{ cliente.nombres }}</h5>
+            <h5 class="m-0 me-2"></h5>
           </div>
           <button (click)="panel = false" class="btn btn-danger btn-sm">X</button>
         </div>
         <div class="card-body">
-          <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">Email address</label>
-            <input
-              type="email"
-              class="form-control"
-              id="exampleFormControlInput1"
-              placeholder="name@example.com"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlReadOnlyInput1" class="form-label">Read only</label>
-            <input
-              class="form-control"
-              type="text"
-              id="exampleFormControlReadOnlyInput1"
-              placeholder="Readonly input here..."
-              readonly
-            />
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlReadOnlyInputPlain1" class="form-label">Read plain</label>
-            <input
-              type="text"
-              readonly
-              class="form-control-plaintext"
-              id="exampleFormControlReadOnlyInputPlain1"
-              value="email@example.com"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlSelect1" class="form-label">Example select</label>
-            <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
-              <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="exampleDataList" class="form-label">Datalist example</label>
-            <input
-              class="form-control"
-              list="datalistOptions"
-              id="exampleDataList"
-              placeholder="Type to search..."
-            />
-            <datalist id="datalistOptions">
-              <option value="San Francisco"></option>
-              <option value="New York"></option>
-              <option value="Seattle"></option>
-              <option value="Los Angeles"></option>
-              <option value="Chicago"></option>
-            </datalist>
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlSelect2" class="form-label">Example multiple select</label>
-            <select
-              multiple
-              class="form-select"
-              id="exampleFormControlSelect2"
-              aria-label="Multiple select example"
-            >
-              <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <button>Servicios</button>
-            <button>Adicionales</button>
-          </div>
+
+          <form [formGroup]="clienteForm" (ngSubmit)="actualizar()">
+
+            <!-- DNI -->
+            <div class="mb-3">
+              <label for="dni" class="form-label">Dni</label>
+              <input
+                type="number"
+                class="form-control"
+                id="dni"
+                formControlName="dni"
+                />
+            </div>
+
+            <!-- NOMBRES -->
+            <div class="mb-3">
+              <label for="nombres" class="form-label">Nombres</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nombres"
+                formControlName="nombres"
+                />
+            </div>
+
+            <!-- APELLIDO PATERNO -->
+            <div class="mb-3">
+              <label for="apepaterno" class="form-label">Ap. Paterno</label>
+              <input
+                type="text"
+                class="form-control"
+                id="apepaterno"
+                formControlName="apepaterno"
+                />
+            </div>
+
+            <!-- APELLIDO MATERNO -->
+            <div class="mb-3">
+              <label for="apematerno" class="form-label">Ap. Materno</label>
+              <input
+                type="text"
+                class="form-control"
+                id="apematerno"
+                formControlName="apematerno"
+                />
+            </div>
+
+            <!--DIRECCION-->
+            <div class="mb-3">
+              <label for="direccion" class="form-label">Dirección</label>
+              <input
+                type="text"
+                class="form-control"
+                id="direccion"
+                formControlName="direccion"
+                />
+            </div>
+
+            <!--FECHA NACIMIENTO-->
+            <div class="mb-3">
+              <label for="fec_nac" class="form-label">Fec. Nacimiento</label>
+              <input
+                type="date"
+                class="form-control"
+                id="fec_nac"
+                formControlName="fec_nac"
+                />
+            </div>
+
+            <!--NUMERO DE INSTALACIONES-->
+            <div class="mb-3">
+              <label for="num_instalaciones" class="form-label">Instalaciones</label>
+              <input
+                type="number"
+                class="form-control"
+                id="num_instalaciones"
+                formControlName="num_instalaciones"
+                />
+            </div>
+
+            <!--NUMERO DE FAMILIAS-->
+            <div class="mb-3">
+              <label for="num_familias" class="form-label">N. Familias</label>
+              <input
+                type="number"
+                class="form-control"
+                id="num_familias"
+                formControlName="num_familias"
+                />
+            </div>
+
+            <!--EXONERACIONES-->
+            <div class="mb-3">
+              <div class="col-md">
+                <label class="form-label">EXONERACIONES</label>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="exo_p"
+                    formControlName="exo_p">
+                  <label class="form-check-label" for="exo_p"> Exo_p </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="exo_a"
+                    formControlName="exo_a">
+                  <label class="form-check-label" for="exo_a"> Exo_a </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="exo_f"
+                    formControlName="exo_f">
+                  <label class="form-check-label" for="exo_f"> Exo_f </label>
+                </div>
+              </div>
+            </div>
+
+            <!--FECHA INGRESO-->
+            <div class="mb-3">
+              <label for="fec_ing" class="form-label">Fec. Ingreso</label>
+              <input
+                type="date"
+                class="form-control"
+                id="fec_ing"
+                formControlName="fec_ing"/>
+            </div>
+
+            <!--FECHA BAJA-->
+            <div class="mb-3">
+              <label for="fec_baja" class="form-label">Fec. Baja</label>
+              <input
+                type="date"
+                class="form-control"
+                id="fec_baja"
+                formControlName="fec_baja"/>
+            </div>
+
+            <!--TIPO CLIENTE-->
+            <div class="mb-3">
+              <label for="tipoCliente" class="form-label">Tipo de Cliente</label>
+              <select
+                class="form-select"
+                id="tipoCliente"
+                formControlName="tipoCliente">
+                <option value="1">One</option>
+              </select>
+            </div>
+
+            <!--ZONA-->
+            <div class="mb-3">
+              <label for="zona" class="form-label">Zona</label>
+              <select
+                class="form-select"
+                id="zona"
+                formControlName="zona">
+                <option value="1">One</option>
+              </select>
+            </div>
+
+            <!--ESTADO-->
+            <div class="mb-3">
+              <label for="estado" class="form-label">Estado</label>
+              <select
+                class="form-select"
+                id="estado"
+                formControlName="estado">
+                <option value="0">INACTIVO</option>
+                <option value="1">ACTIVO</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <!-- <button>Servicios</button>
+              <button>Adicionales</button> -->
+              <!-- <button type="submit" class="btn btn-warning">ACTUALIZAR</button> -->
+              <button (click)="mantenimiento()" type="button" class="btn btn-warning">ACTUALIZAR</button>
+            </div>
+
+          </form>
+
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { PagosServicio } from "./pagosservicio.model";
 
 export class PagosServicioDetalle {
   constructor(
-    public idmes: number,
+    public idmes: number | undefined,
     public detalletasas: string,
     public idanno: number,
     public monto: number,

@@ -18,10 +18,11 @@ export class HeaderComponent implements OnInit {
   logout(){
     if (!confirm('¿Salir del sistema?')) {
       return;
+    }else{
+      localStorage.clear();
+      this.router.navigate(['/login']);
     }
 
-    localStorage.clear();
-    this.router.navigate(['/login']);
   }
 
 }

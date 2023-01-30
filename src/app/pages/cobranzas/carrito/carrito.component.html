@@ -1,76 +1,281 @@
 
-<!-- profile-report -->
-<div class="col-12 mb-4">
-  <div class="card">
-    <div class="card-body">
-      <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
-        <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
-          <div class="card-title">
-            <h5 class="text-nowrap mb-2">Total a pagar</h5>
-            <span class="badge bg-label-warning rounded-pill">Año 2022</span>
+<div class="row">
+  <div class="col-md-8 mb-4">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="card-title m-0 me-2">CONFIGURACION DE PAGO</h5>
+        <!-- <div class="dropdown">
+          <button
+            class="btn p-0"
+            type="button"
+            id="transactionID"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+            <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
+            <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
+            <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
           </div>
-          <div class="mt-sm-auto">
-            <!-- <small class="text-success text-nowrap fw-semibold"
-              ><i class="bx bx-chevron-up"></i> 68.2%</small
-            > -->
-            <h3 class="mb-0">{{ monto | currency: 'S/ ' }}</h3>
+        </div> -->
+      </div>
+      <div class="card-body">
+          <form>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label" for="basic-default-name">CLIENTE</label>
+              <div class="col-sm-8">
+                <input
+                *ngIf="cliente; else inputVacio"
+                  type="text"
+                  class="form-control"
+                  id="basic-default-name"
+                  [(ngModel)] = "cliente.nombres"
+                  [ngModelOptions]="{standalone: true}"
+                  readonly>
+                  <ng-template #inputVacio>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="basic-default-name"
+                      readonly>
+                  </ng-template>
+              </div>
+              <div class="col-sm-2">
+                <button
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalCenter">
+                  🌐
+                </button>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label" for="basic-default-company">CONCEPTO</label>
+              <div class="col-sm-10">
+                <div class="table-responsive text-nowrap" style="min-height: 300px;">
+                  <table class="table table-borderless">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>DETALLE</th>
+                        <th>MONTO</th>
+                        <th>
+                          <button
+                            class="btn btn-success btn-xs"
+                            (click)="panelPago = true">
+                            AGREGAR PAGO
+                          </button>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>
+                          ENERO 2023
+                        </td>
+                        <td>S/ 10.00</td>
+                        <td>
+                          <button class="btn btn-danger btn-xs">X</button>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label" for="basic-default-email">USUARIO</label>
+              <div class="col-sm-10">
+                <div class="input-group input-group-merge">
+                  <input type="text" id="basic-default-email" class="form-control" placeholder="john.doe" aria-label="john.doe" aria-describedby="basic-default-email2">
+                  <span class="input-group-text" id="basic-default-email2">@example.com</span>
+                </div>
+                <div class="form-text">You can use letters, numbers &amp; periods</div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label" for="basic-default-phone">FECHA</label>
+              <div class="col-sm-10">
+                <input
+                  type="text"
+                  id="basic-default-phone"
+                  class="form-control phone-mask"
+                  [value]="fecha"
+                  readonly>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label" for="basic-default-message">OBSERVACION</label>
+              <div class="col-sm-10">
+                <textarea
+                  rows="4"
+                  id="basic-default-message"
+                  class="form-control" >
+                </textarea>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <button
+                class="btn btn-info w-50 mt-4"
+                (click)="btnPagar()">
+                Pagar
+              </button>
+            </div>
+          </form>
+      </div>
+      <div class="card-footer text-center">
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-4 mb-4">
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
+          <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
+            <div class="card-title">
+              <h5 class="text-nowrap mb-2">Total a pagar</h5>
+              <span class="badge bg-label-warning rounded-pill">Año {{anio}}</span>
+            </div>
+            <div class="mt-sm-auto">
+              <!-- <small class="text-success text-nowrap fw-semibold"
+                ><i class="bx bx-chevron-up"></i> 68.2%</small
+              > -->
+              <h3 class="mb-0">{{ monto | currency: 'S/ ' }}</h3>
+            </div>
           </div>
+          <div id="profileReportChart"></div>
         </div>
-        <div id="profileReportChart"></div>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="panelPago">
+      <div class="card-body mb-4">
+        <div class="d-flex justify-content-end">
+          <button
+            class="btn btn-danger btn-xs right"
+            (click)="panelPago = false">
+            x
+          </button>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlSelect1" class="form-label">TIPO PAGO</label>
+          <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+            <option selected="">MANTENIMIENTO</option>
+            <option value="1">TRIBUTO</option>
+            <option value="2">OCURRENCIA</option>
+            <option value="3">MULTA</option>
+          </select>
+        </div>
+
+        <!-- MANTENIMIENTO -->
+
+        <div class="mb-3">
+          <label for="exampleFormControlSelect1" class="form-label">AÑO</label>
+          <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+            <option selected="">2023</option>
+            <option value="1">2024</option>
+            <option value="2">2025</option>
+            <option value="3">2026</option>
+          </select>
+          <label for="exampleFormControlSelect2" class="form-label">MES</label>
+          <select multiple="false" class="form-select" id="exampleFormControlSelect2" aria-label="Multiple select example">
+            <option selected="">Enero</option>
+            <option value="1">Febrero</option>
+            <option value="2">Marzo</option>
+            <option value="3">Abril</option>
+            <option value="1">Mayo</option>
+            <option value="2">Junio</option>
+            <option value="3">Julio</option>
+            <option value="1">Agosto</option>
+            <option value="2">Setiembre</option>
+            <option value="3">Octubre</option>
+          </select>
+        </div>
+
+        <!-- TRIBUTO -->
+
+        <div class="mb-3" *ngIf="false">
+          <label for="exampleFormControlSelect1" class="form-label">AÑO</label>
+          <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+            <option selected="">2023</option>
+            <option value="1">2024</option>
+            <option value="2">2025</option>
+            <option value="3">2026</option>
+          </select>
+          <label for="exampleFormControlSelect2" class="form-label">MES</label>
+          <select multiple="" class="form-select" id="exampleFormControlSelect2" aria-label="Multiple select example">
+            <option selected="">Enero</option>
+            <option value="1">Febrero</option>
+            <option value="2">Marzo</option>
+            <option value="3">Abril</option>
+          </select>
+        </div>
+
+      </div>
+
+
+      <div class="card-footer">
+        <button class="btn btn-success w-100">Agregar</button>
       </div>
     </div>
   </div>
 </div>
-<!--/ profile-report -->
 
-<!-- Transactions -->
-<div class="col-md-12 col-lg-12 order-2 mb-4">
-  <div class="card h-100">
-    <div class="card-header d-flex align-items-center justify-content-between">
-      <h5 class="card-title m-0 me-2">Operaciones</h5>
-      <!-- <div class="dropdown">
-        <button
-          class="btn p-0"
-          type="button"
-          id="transactionID"
-          data-bs-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          <i class="bx bx-dots-vertical-rounded"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
-          <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
-          <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
-          <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
+
+<!-- Vertically Centered Modal -->
+<div class="col-lg-4 col-md-6">
+  <div class="mt-3">
+    <!-- Modal -->
+    <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <!-- <h5 class="modal-title" id="modalCenterTitle">Modal title</h5> -->
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <app-buscador (clientesSalida)="getCliente($event)"></app-buscador>
+
+            <div class="col-lg-6 mb-4 mb-xl-0" *ngIf="clientes">
+              <small class="text-light fw-semibold">---</small>
+              <div class="demo-inline-spacing mt-3">
+                <div class="list-group list-group-flush">
+                  <button *ngFor="let cliente of clientes"
+                    class="list-group-item list-group-item-action cursor-pointer"
+                    (click)="selCliente(cliente)"
+                    data-bs-dismiss="modal">
+                    {{cliente.nombres}}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal">
+              Cerrar
+            </button>
+            <!-- <button type="button" class="btn btn-primary">Seleccionar</button> -->
+          </div>
         </div>
-      </div> -->
-    </div>
-    <div class="card-body">
-      <ul class="p-0 m-0">
-
-        <li *ngFor="let deuda of deudas" class="d-flex mb-4 pb-1">
-          <div class="avatar flex-shrink-0 me-3">
-            <img src="../assets/img/icons/unicons/wallet.png" alt="User" class="rounded" />
-          </div>
-          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-            <div class="me-2">
-              <small class="text-muted d-block mb-1">{{ deuda.periodo }}</small>
-              <h6 class="mb-0">{{ deuda.deudaDescripcion.descripcion }}</h6>
-            </div>
-            <div class="user-progress d-flex align-items-center gap-1">
-              <h6 class="mb-0">{{deuda.total | currency:'S/ ' }}</h6>
-              <!-- <span class="text-muted">USD</span> -->
-              <button class="btn btn-danger btn-xs">X</button>
-            </div>
-          </div>
-        </li>
-
-      </ul>
-    </div>
-    <div class="card-footer">
-      <button (click)="btnPagar()" class="btn btn-success w-100">Pagar</button>
+      </div>
     </div>
   </div>
 </div>
-<!--/ Transactions -->

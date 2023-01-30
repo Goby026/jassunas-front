@@ -6,10 +6,11 @@ import { Voucher } from 'src/app/models/voucher.model';
 import { VoucherDetalle } from 'src/app/models/voucherdetalle.model';
 import { VoucherService } from 'src/app/services/voucher.service';
 
-
 import * as moment from 'moment';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+
 import { CajaService } from 'src/app/services/caja.service';
 import { Caja } from 'src/app/models/caja.model';
 import { Router } from '@angular/router';
@@ -21,7 +22,6 @@ import { Ticket } from '../Ticket';
 import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
 import { Usuario } from 'src/app/models/usuario.model';
 import { UsuarioService } from 'src/app/services/usuario.service';
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-vouchers',
@@ -40,6 +40,16 @@ export class VouchersComponent implements OnInit {
   imgSel: string = '';
   total: number = 0;
 
+  // PAGOS-SERVICIOS-DETALLES
+  pagosservicio!: PagosServicio;
+  detalles: PagosServicioDetalle[] = [];
+
+  // PAGINADOR
+  page: number = 1;
+  count: number = 0;
+  tableSize: number = 10;
+  tableSizes: number[] = [5,10,15,20];
+
   constructor(
     private voucherService: VoucherService,
     private cajaService: CajaService,
@@ -52,6 +62,13 @@ export class VouchersComponent implements OnInit {
   ngOnInit(): void {
     this.listarVouchers();
     this.verificarEstadoCaja();
+  }
+
+  resetAll(){
+    this.voucherDetalles = [];
+    this.itemsTicket = [];
+    this.imgSel = '';
+    this.total = 0;
   }
 
   verificarEstadoCaja() {
@@ -87,8 +104,7 @@ export class VouchersComponent implements OnInit {
     this.voucherService.getAllVouchers()
      .subscribe({
       next: (resp: Voucher[])=>this.vouchers = resp,
-      error: (err)=>console.log(err),
-      complete: ()=>console.log(this.vouchers)
+      error: (err)=>console.log(err)
      });
   }
 
@@ -103,7 +119,23 @@ export class VouchersComponent implements OnInit {
         } );
       },
       error: (err)=>console.log(err),
-      complete: ()=>console.log(this.voucherDetalles)
+      complete: ()=>{
+
+        this.itemsTicket = [];
+
+        this.voucherDetalles.map( (item: VoucherDetalle)=>{
+          let itemTicket: ItemTicket;
+
+          itemTicket = {
+            concepto: item.detalletasas,
+            mes: item.idmes,
+            monto: item.monto,
+          }
+
+          this.itemsTicket.push(itemTicket);
+        } );
+
+      }
      });
   }
 
@@ -111,6 +143,29 @@ export class VouchersComponent implements OnInit {
     this.voucherSel = v;
     this.listarDetalleVoucher();
     this.cargarCostosCliente(Number(v.cliente.idclientes));
+  }
+
+  async imprimirVoucher(v : Voucher){
+
+    this.voucherSel = v;
+    this.listarDetalleVoucher();
+
+    // console.log('voucher',v);
+    // console.log('detalles', this.itemsTicket);
+
+    setTimeout(() => {
+      let reTicket: Ticket = new Ticket(
+        this.voucherSel.correlativo,
+        Number(this.voucherSel.cliente.idclientes),
+        `${this.voucherSel.cliente.apepaterno} ${this.voucherSel.cliente.apematerno} ${this.voucherSel.cliente.nombres}`,
+        this.voucherSel.cliente.direccion,
+        this.voucherSel.montopagado,
+        this.itemsTicket
+      );
+
+      reTicket.pagar();
+    }, 1000);
+
   }
 
   confirmarPago(){
@@ -122,7 +177,9 @@ export class VouchersComponent implements OnInit {
 
     this.voucherService.uploadVoucher(this.voucherSel)
     .subscribe({
-      next: (resp: Voucher)=> console.log(resp),
+      next: (v: Voucher)=> {
+        this.registrarPagoServicio(v);
+      },
       error: (err)=>console.log(err),
       complete: ()=> {
         this.listarVouchers();
@@ -147,11 +204,11 @@ export class VouchersComponent implements OnInit {
 
     let pagosServicioR: PagosServicio = {
       costo: this.costos[0],
-      cliente: this.voucherSel.cliente,
-      montoapagar: this.total,
-      montotasas: 0,
-      montodescuento: 0,
-      montopagado: this.total,
+      cliente: voucher.cliente,
+      montoapagar: voucher.montoapagar,
+      montotasas: voucher.montotasas,
+      montodescuento: voucher.montodescuento,
+      montopagado: voucher.montopagado,
       fecha: moment().toDate(),
       usuario: this.usuario,
       esta: 1,
@@ -161,32 +218,38 @@ export class VouchersComponent implements OnInit {
       pagoServicioEstado: tipoPagoServiciosE
     }
 
-    this.pagosService.savePagoServicio(pagosServicioR)
-    .subscribe({
-      next:( resp: PagosServicio )=>{
-        this.regPagosDetalle(resp);
+    let detallesR:PagosServicioDetalle[] = this.setDetallesPagos(pagosServicioR);
 
+    this.pagosService.savePagosAndDetalles(pagosServicioR, detallesR)
+    .subscribe({
+      next:( resp: any )=>{
+
+        let {pagosservicio, detalles} = resp;
+
+        this.pagosservicio = pagosservicio;
+        this.detalles = detalles;
+
+      },
+      error: error => console.error(error),
+      complete: ()=>{
+        // this.anio = 0;
+        // this.itemsTicket = [];
         // CREANDO EL TICKET [✔]
         const ticket: Ticket = new Ticket(
-          resp.correlativo,
-          Number(this.voucherSel.cliente.idclientes),
-          `${resp.cliente.apepaterno} ${resp.cliente.apematerno} ${resp.cliente.nombres}`,
-          resp.cliente.direccion,
-          this.total,
+          Number(this.pagosservicio.correlativo),
+          Number(this.pagosservicio.cliente.idclientes),
+          `${this.pagosservicio.cliente.apepaterno} ${this.pagosservicio.cliente.apematerno} ${this.pagosservicio.cliente.nombres}`,
+          this.pagosservicio.cliente.direccion,
+          this.pagosservicio.montopagado,
           this.itemsTicket);
 
         ticket.pagar();
-      },
-      error: error => console.log(error),
-      complete: ()=>{
-        // this.anio = 0;
-        this.itemsTicket = [];
       }
     });
   }
 
     // metodo para registrar los detalles del pago (tabla dependiente)
-    regPagosDetalle(pagoServicio: PagosServicio) {
+    setDetallesPagos(pagoServicio: PagosServicio): PagosServicioDetalle[] {
       let pagosServicioDeta: PagosServicioDetalle;
       let itemTicket: ItemTicket;
       let pagServDetalles: PagosServicioDetalle[] = [];
@@ -203,32 +266,71 @@ export class VouchersComponent implements OnInit {
         };
         itemTicket = {
           concepto: itemPago.detalletasas,
-          fecha: itemPago.periodo,
+          mes: itemPago.idmes,
           monto: itemPago.monto,
         }
 
         pagServDetalles.push(pagosServicioDeta);
-        this.itemsTicket.push(itemTicket);
+        this.itemsTicket.push(itemTicket);//ticket
       });
 
-      this.pagosService.savePagosServicioDetalle(pagServDetalles).subscribe({
-        next: (resp) => {
-          console.log('Detalles', resp);
+      return pagServDetalles;
+    }
+
+    recargarLista(e: HTMLInputElement){
+      if(e.value.length <= 0 || e.value === ''){
+        this.listarVouchers();
+      }
+    }
+
+    buscarVoucher(e : HTMLInputElement){
+      // console.log(e.value)
+      this.voucherService.getVoucherByCliente(e.value)
+      .subscribe({
+        next: (resp: Voucher[]) => {
+          this.vouchers = resp;
         },
         error: (error) => console.log(error),
-        complete: () => console.log('Detalles registrados'),
+        complete: () => console.log('Busqueda realizada correctamente'),
       });
     }
 
+    confimarAnulacion(voucher: Voucher): void {
+      if (!confirm('¿Anular voucher seleccionado?')) {
+        return;
+      }
 
-    // probarRegistro(){
-    //   this.voucherService.saveVoucherAndDetalles(this.voucherSel, this.voucherDetalles)
-    //   .subscribe({
-    //     next: (resp) => {
-    //       console.log(resp)
-    //     },
-    //     error: (error) => console.log(error)
-    //   });
-    // }
+      let pagoServEstado: PagoServicioEstado = {
+        idpagoestado: 4,
+        descripcion: null
+      }
+      let mofidifiedVoucher: Voucher = {
+        ...voucher,
+        montopagado: 0,
+        pagoServicioEstado: pagoServEstado,
+      }
+
+      this.voucherService.updateVoucher(mofidifiedVoucher)
+      .subscribe({
+        next: (resp: Voucher) => {
+          if (resp.idvoucher != 0 || resp.idvoucher != null || resp.idvoucher != undefined) {
+            alert(`Voucher ${resp.correlativo} anulado correctamente!`);
+          }
+        },
+        error: (error) => console.log(error),
+        complete: () => this.listarVouchers()
+      });
+    }
+
+    onTableDataChange( event: any ){
+      this.page = event;
+      this.listarVouchers();
+    }
+
+    onTableSizeChange(event: any):void{
+      this.tableSize = event.target.value;
+      this.page = 1;
+      this.listarVouchers();
+    }
 
 }

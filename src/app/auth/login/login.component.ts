@@ -50,6 +50,8 @@ export class LoginComponent implements OnInit {
         }
       },
       error: ({error}) => {
+        error === '' || error.msg === undefined ? this.errogMsg = 'Algo salio mal' : this.errogMsg = error.msg;
+
         alert(this.errogMsg = error.msg);
       },
       complete: () => console.log('Login completo'),

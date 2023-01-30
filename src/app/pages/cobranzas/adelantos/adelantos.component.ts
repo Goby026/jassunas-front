@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CostoService } from '../../../services/costo.service';
 import { CostoOtrosService } from '../../../services/costo-otros.service';
 import * as moment from 'moment';
 import { Tarifario } from 'src/app/models/tarifario.model';
@@ -7,10 +6,8 @@ import { CostoOtroServicio } from 'src/app/models/costootroservicio.model';
 import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
 import { PagosServicio } from 'src/app/models/pagosservicio.model';
 import { Costo } from 'src/app/models/costo.model';
-import { CajaService } from 'src/app/services/caja.service';
 import { Caja } from 'src/app/models/caja.model';
 import { TipoPagoServicio } from 'src/app/models/tipopagoservicio.model';
-import { ClienteService } from 'src/app/services/cliente.service';
 import { Cliente } from 'src/app/models/cliente.model';
 import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
 import { Ticket } from '../Ticket';
@@ -26,59 +23,41 @@ import { Usuario } from 'src/app/models/usuario.model';
 })
 export class AdelantosComponent implements OnInit {
 
-  @Input() idCliente = 0;
+  @Input() costos!: Costo[];
+  @Input() cliente!: Cliente;
+  @Input() caja!: Caja;
 
-  datos: any[] = []
+  datos: any[] = [];
   anios: number[] = [];
   anio = moment().year();
   anioSel: any = 0;
-  idCosto: number = 0;
+  anioHtml: any;
+  // idCosto: number = 0;
   tarifa!: Tarifario;
   costoOtroServicio!: CostoOtroServicio;
   meses: ItemTicket[] = [];
   monto: number = 0;
   arregloPagar: ItemTicket[] = [];
+  pagosDetalles: PagosServicioDetalle[]= [];
   spinner: boolean = true;
-  costo!: Costo;
-  caja!: Caja;
-  cliente!: Cliente;
+
+
   usuario!: Usuario;
 
   constructor(
-    private costoService: CostoService,
-    private clienteService: ClienteService,
     private costoOtroService: CostoOtrosService,
     private pagosservicio: PagosServiciosService,
-    private usuarioService: UsuarioService,
-    private cajaService: CajaService, ) { }
+    private usuarioService: UsuarioService
+    ){}
 
   ngOnInit(): void {
-    console.log('Adelanto de cliente: ', this.idCliente);
-    this.obtenerCostoCliente(this.idCliente);
-    this.setearArregloAnios();
-    this.verificarCaja();
-    setTimeout(() => {
-      this.setearMeses();
-      this.spinner = false;
-    }, 1000);
-  }
 
-  verificarCaja(){
-    this.cajaService.getCajaStatus()
-    .subscribe({
-      next: (resp: Caja)=>{
-        if(resp.esta!==1){
-          alert('Caja no esta aperturada');
-        }else{
-          this.caja = resp;
-        }
-      },
-      error: error=> console.log(error),
-      complete: ()=> {
-        let username = localStorage.getItem('username') || '';
-        this.usuario = this.usuarioService.getLocalUser();
-      }
-    });
+    this.obtenerTarifaCliente(Number(this.costos[0].codcosto));
+    this.setearArregloAnios();
+    // setTimeout(() => {
+    //   this.setearMeses();
+    //   this.spinner = false;
+    // }, 1000);
   }
 
   setearArregloAnios(){
@@ -87,8 +66,10 @@ export class AdelantosComponent implements OnInit {
     }
   }
 
-  setearMeses(){
-    this.meses = [
+  setearMeses(anio: HTMLSelectElement){
+    this.anioHtml = anio;
+    this.anioSel = anio.value;
+    let totalMeses: ItemTicket[] = [
       {
         concepto: 'MANTENIMIENTO',
         fecha: moment().toDate(),
@@ -175,51 +156,22 @@ export class AdelantosComponent implements OnInit {
       },
 
     ]
+
+    this.mostrarMesesPagar(Number(anio.value), totalMeses);
+
   }
 
-  obtenerCostoCliente(codcliente: number){
-    // 1: obtener el costo del cliente
-    this.costoService.getCostsByClient(codcliente)
-    .subscribe({
-      next:( resp: Costo[] )=>{
-        this.idCosto = Number(resp[0].codcosto);
-      },
-      error: error => console.log(error),
-      complete: ()=>{
-        this.obtenerTarifaCliente(this.idCosto);
-      }
-    });
-  }
-
-  // 2: obtener las tarifas de la tabla tbcostootroservicio
+  // 1: obtener las tarifas de la tabla tbcostootroservicio
   obtenerTarifaCliente(costoCliente: number){
     this.costoOtroService.getCosto_otros(costoCliente)
     .subscribe({
       next:( resp: CostoOtroServicio[] )=>{
         this.tarifa = resp[0].tarifario;
-        console.log('Tarifas------->', this.tarifa);
       },
-      error: error => console.log(error),
+      error: error => console.error(error),
       complete: ()=>{
-        // setear costo
-        this.costoService.getCostoById(this.idCosto)
-        .subscribe({
-          next: (resp: Costo)=>{
-            console.log('costo',resp);
-            this.costo = resp;
-          },
-          error: error => console.log(error)
-        });
-
-        //setear cliente
-        this.clienteService.getClientById(this.idCliente)
-        .subscribe({
-          next: (resp: Cliente)=>{
-            console.log('cliente', resp)
-            this.cliente = resp;
-          },
-          error: error => console.log(error)
-        });
+        let username = localStorage.getItem('username') || '';
+        this.usuario = this.usuarioService.getLocalUser();
       }
     });
   }
@@ -272,7 +224,7 @@ export class AdelantosComponent implements OnInit {
     }
 
     let pagosServicioR: PagosServicio = {
-      costo: this.costo,
+      costo: this.costos[0],
       cliente: this.cliente,
       montoapagar: this.monto,
       montotasas: 0,
@@ -287,52 +239,85 @@ export class AdelantosComponent implements OnInit {
       pagoServicioEstado: tipoPagoServiciosE
     }
 
-    this.pagosservicio.savePagoServicio(pagosServicioR)
+    let arrPagosServiciosDetallesR: PagosServicioDetalle[] = this.registrarPagoServiciosDetalles(pagosServicioR);
+
+    this.pagosservicio.savePagosAndDetalles(pagosServicioR, arrPagosServiciosDetallesR)
     .subscribe({
-      next:( resp: PagosServicio )=>{
-        this.registrarPagoServiciosDetalles(resp);
+      next: (resp: any) => {
+          // CREANDO EL TICKET [✔]
+          const ticket: Ticket = new Ticket(
+            Number(resp.pagosservicio.correlativo),
+            Number(resp.pagosservicio.cliente.idclientes),
+            `${resp.pagosservicio.cliente.apepaterno} ${resp.pagosservicio.cliente.apematerno} ${resp.pagosservicio.cliente.nombres}`,
+            resp.pagosservicio.cliente.direccion,
+            this.monto,
+            this.arregloPagar);
 
-        // CREANDO EL TICKET [✔]
-        const ticket: Ticket = new Ticket(resp.correlativo, this.idCliente,`${resp.cliente.apepaterno} ${resp.cliente.apematerno} ${resp.cliente.nombres}`, resp.cliente.direccion, this.monto, this.arregloPagar);
-
-        ticket.pagar();
+          ticket.pagar();
       },
       error: error => console.log(error),
       complete: ()=>{
-        this.anio = 0;
+        this.setearMeses(this.anioHtml);
         this.arregloPagar = [];
+        this.monto = 0.00;
       }
     });
-
   }
 
-  registrarPagoServiciosDetalles(pagoServicio: PagosServicio){
+  registrarPagoServiciosDetalles(pagoServicio: PagosServicio):PagosServicioDetalle[] {
     let arrPagosServiciosDetalles: PagosServicioDetalle[] = [];
-
     this.arregloPagar.map( (item)=>{
-
       let pagosServiciosDeta: PagosServicioDetalle = {
         idcabecera : 1,
-        idmes :  moment(item.fecha).month(),
+        idmes :  item.nmes,
         detalletasas : 'ADELANTO',
         idanno : Number(this.anioSel),
         monto : item.monto,
         cliente : this.cliente,
         pagosServicio : pagoServicio,
       };
-
       arrPagosServiciosDetalles.push(pagosServiciosDeta);
-
     } );
-
-    this.pagosservicio.savePagosServicioDetalle(arrPagosServiciosDetalles)
-    .subscribe({
-      next:( resp: any )=>{
-        console.log(resp)
-      },
-      error: error => console.log(error)
-    });
+    return arrPagosServiciosDetalles;
   }
+
+
+  mostrarMesesPagar(anio: number, totalMeses: ItemTicket[]){
+    //cargar pagos de cliente
+
+    this.pagosservicio.getDetallePagosClienteAnio(Number(this.cliente.idclientes), anio)
+    .subscribe({
+      next: (resp:PagosServicioDetalle[])=>{
+        this.pagosDetalles = resp;
+      },
+      error: err=>console.log(err),
+      complete: ()=>{
+        let mesesPagados:ItemTicket[] =[];
+        let mesPagado:ItemTicket;
+
+        this.pagosDetalles.forEach( (detalle:PagosServicioDetalle)=>{
+          mesPagado = {
+            concepto: detalle.detalletasas,
+            monto: detalle.monto,
+            nmes: detalle.idmes
+          }
+
+          mesesPagados.push(mesPagado);
+        });
+
+        let mesesSinPagar: ItemTicket[] = totalMeses.filter( item1 => !mesesPagados.some( item2 => item2.nmes === item1.nmes ) );
+
+        this.spinner = false;
+
+        this.meses = mesesSinPagar;
+
+      }
+    });
+
+
+  }
+
+
 
   operarMonto(){
     this.monto = 0;

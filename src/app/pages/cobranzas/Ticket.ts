@@ -1,4 +1,6 @@
 import * as moment from 'moment';
+import 'moment/locale/es';
+moment.locale('es');
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
@@ -12,21 +14,18 @@ export class Ticket{
         public nombre_completo: string,
         public direccion: string,
         public monto: number,
-        public pagos:ItemTicket[]
-    ){
-        console.log( 'PAGOS DE TICKET----->', this.pagos)
-    }
+        public pagos:ItemTicket[],
+    ){}
 
     public async pagar(){
 
         let dataPagos: any[] = [];
 
         this.pagos.map( (item:ItemTicket)=>{
-          let arrItem = [item.concepto, item.mes, `S/ ${item.monto}`]
+          let arrItem = [item.concepto, this.getMes(item.mes), `S/ ${item.monto}`]
           dataPagos.push(arrItem)
         } );
 
-        console.log('dataPagos', dataPagos);
         // crear pdf
         const pdfDefinition: any = {
           pageSize: {
@@ -58,7 +57,7 @@ export class Ticket{
               style: 'small'
             },
             {
-              text: `RECIBO DE COBRANZA Nro. 000${this.correlativo}`,
+              text: `RECIBO DE CUOTA FAMILIAR Nro. 000${this.correlativo}`,
               alignment: 'center',
               style: 'header',
               margin: [0, 8]
@@ -195,5 +194,10 @@ export class Ticket{
 
           img.src = url;
         });
+      }
+
+      getMes(mes: any | undefined = 0): String{
+        let mesNombre:string = moment().month(Number(mes)-1).format('MMMM');
+        return mesNombre;
       }
 }

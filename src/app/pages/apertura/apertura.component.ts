@@ -6,8 +6,9 @@ import * as moment from 'moment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Usuario } from 'src/app/models/usuario.model';
 import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
-import { Router } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { PagosServicio } from 'src/app/models/pagosservicio.model';
+import { PagoServicioEstado } from '../../models/pagoservicioestado.model';
 
 @Component({
   selector: 'app-apertura',
@@ -21,13 +22,14 @@ export class AperturaComponent implements OnInit {
   caja!: Caja;
   toUpdateCaja! : Caja;
   usuario!: Usuario;
+  totalCajaSel: number = 0;
 
   fechaHoy = moment().format("yyyy-MM-DD");
   cajaForm!: FormGroup;
   estadoCaja: boolean = false;
   panelSeguimiento: boolean = false;
 
-  pagosservicios: any[] = [];
+  pagosservicios: PagosServicio[] = [];
 
   page: number = 1;
   count: number = 0;
@@ -58,11 +60,6 @@ export class AperturaComponent implements OnInit {
     .subscribe({
       next: (resp: Caja[])=>{
         this.cajasArr = resp;
-        // this.cajasArr = resp.map( (item)=> {
-        //   item.fapertura = moment(item.fapertura).toDate()
-        //   item.fcierre = moment(item.fcierre,'DD-MM-yyyy hh:mm:ss').toDate()
-        //   return item;
-        // } );
       },
       error: (error)=>console.log(error)
     });
@@ -119,25 +116,29 @@ export class AperturaComponent implements OnInit {
       fcierre: '',
       ncaja: this.cajaForm.get('ncaja')?.value,
       total: 0,
+      totalefectivo: 0,
+      balance: 0,
+      obs: '',
       usuario: this.usuario
     }
 
     this.cajaService.saveCaja(caja)
     .subscribe({
-      next: (resp)=>{
+      next: (resp:Caja)=>{
         console.log(resp)
         localStorage.setItem('caja_today', resp.fapertura.toString());
-        this.listarCajas();
       },
       error: (error)=>console.log(error),
       complete: ()=>{
+        this.listarCajas();
         this.verificarEstadoCaja();
       }
     });
 
   }
 
-  seguimiento(id: any){
+  seguimiento(id: any):void{
+    this.totalCajaSel = 0;
     this.panelSeguimiento = true;
     this.pagoServicios.tracking(id)
     .subscribe({
@@ -145,22 +146,62 @@ export class AperturaComponent implements OnInit {
         this.pagosservicios = resp.pagosservicios;
         this.caja.idcaja = id;
       },
-      error: error => console.log(error)
+      error: error => console.log(error),
+      complete: () => {
+        this.pagosservicios.map( (item:PagosServicio)=>{
+          this.totalCajaSel += item.montopagado;
+        } );
+      }
     });
   }
 
-
-  setearCaja(cajaSel: Caja){
+  setearCaja(cajaSel: Caja):void{
     // cajaSel.total = 0;
     cajaSel.fcierre = moment().toDate();
-    cajaSel.esta = 0;
+    // cajaSel.esta = 0;
     // devolver caja seteada
     this.toUpdateCaja = cajaSel;
   }
 
-  cerrarCaja(monto:string){
-    this.toUpdateCaja.total = Number(monto);
-    // console.log(this.toUpdateCaja);
+  anularTicket(pago: PagosServicio):void{
+    if (!confirm(`¿Anular ticket ${pago.correlativo} ?`)) {
+      return;
+    }
+
+    let pagoServEstado: PagoServicioEstado = {
+      idpagoestado: 4,
+      descripcion: null
+    }
+
+    let pagoToUpdate: PagosServicio = {
+      ...pago,
+      montopagado : 0.00,
+      montotasas : 0.00,
+      montodescuento : 0.00,
+      esta: 4,
+      pagoServicioEstado: pagoServEstado
+    }
+
+    this.pagoServicios.updatePagosServicio(pagoToUpdate)
+    .subscribe({
+      next: (resp: PagosServicio)=>{
+        if (resp.id != 0 || resp.id != null || resp.id != undefined) {
+          alert(`Pago ${resp.correlativo} anulado correctamente!`);
+        }
+        console.log(resp);
+      },
+      error: error => console.log(error),
+      complete: ()=> {
+        this.listarCajas();
+        this.seguimiento(pago.caja.idcaja);
+      }
+    });
+
+  }
+
+  cerrarCaja():void{
+    this.toUpdateCaja.total = 0.00;
+    this.toUpdateCaja.esta = 0;
     this.cajaService.closeCaja(this.toUpdateCaja)
     .subscribe({
       next: (resp: any)=>{
@@ -169,6 +210,10 @@ export class AperturaComponent implements OnInit {
       error: error => console.log(error),
       complete: ()=> this.listarCajas()
     });
+  }
+
+  calculos(){
+    this.toUpdateCaja.balance = Number(this.toUpdateCaja.totalefectivo - this.toUpdateCaja.total);
   }
 
   onTableDataChange( event: any ){

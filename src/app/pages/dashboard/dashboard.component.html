@@ -6,12 +6,18 @@
         <div class="col-sm-7">
           <div class="card-body">
             <h5 class="card-title text-primary">Bienvenido nuevamente {{ username }} 🎉</h5>
-            <p class="mb-4">
-              <!-- You have done <span class="fw-bold">72%</span> more sales today. Check your new badge in
-              your profile. -->
-            </p>
+            <div *ngIf="caja">
+              <p class="mb-4">
+                <span class="badge rounded-pill bg-label-success">Nro de caja aperturada: <span class="fw-bold">{{caja.idcaja}}</span>.</span>
+              </p>
+              <p>
+                <span class="badge rounded-pill bg-label-warning">Algunas funcionalidades se encuentran en mantenimiento,bajo supervision.</span>
 
-            <a href="javascript:;" class="btn btn-sm btn-outline-primary">Aperturar caja</a>
+              </p>
+
+              <a *ngIf="estadoCaja" routerLink="/dashboard/caja" class="btn btn-sm btn-outline-primary">Aperturar caja</a>
+
+            </div>
           </div>
         </div>
         <div class="col-sm-5 text-center text-sm-left">
@@ -59,7 +65,7 @@
               </div>
             </div>
             <span class="fw-semibold d-block mb-1">Cobrado</span>
-            <h3 class="card-title mb-2">{{ 0.00 | currency:'S/ ' }}</h3>
+            <h3 *ngIf="caja" class="card-title mb-2">{{ caja.total | currency:'S/ ' }}</h3>
             <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +0.00%</small>
           </div>
         </div>
@@ -92,7 +98,7 @@
                 </div>
               </div>
             </div>
-            <span>Pendiente</span>
+            <span>Pendiente {{currentMonth}}</span>
             <h3 class="card-title text-nowrap mb-1">{{ 0.00 | currency:'S/ ' }}</h3>
             <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +0.00%</small>
           </div>

@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Cliente } from '../models/cliente.model';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { TipoCliente } from '../models/tipoCliente.model';
 
 const base_url = environment.base_url;
 
@@ -24,6 +25,15 @@ export class ClienteService {
     return this.http.get(`${base_url}/clientes`);
   }
 
+  listClientsByZona(idzona: number): Observable<Cliente[]>{
+    return this.http.get(`${base_url}/clientes/zona/${idzona}`)
+    .pipe(
+      map( (resp: any)=> {
+        return resp.clientes as Cliente[];
+      })
+    );
+  }
+
   findClients(nombre: string = '', dni:string= '', ape:string=''){
     let miParams = new HttpParams()
                       .set('nombre', nombre)
@@ -40,6 +50,10 @@ export class ClienteService {
 
   getTipoClientes(){
     return this.http.get(`${base_url}/tipoClientes`);
+  }
+
+  getTipoClienteById(idtipo: number):Observable<TipoCliente>{
+    return this.http.get<TipoCliente>(`${base_url}/tipoClientes/${idtipo}`);
   }
 
   saveClient(cliente: Cliente){

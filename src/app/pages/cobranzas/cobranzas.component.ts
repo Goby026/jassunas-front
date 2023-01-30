@@ -23,6 +23,7 @@ import { TipoPagoServicio } from 'src/app/models/tipopagoservicio.model';
 import { PagoServicioEstado } from 'src/app/models/pagoservicioestado.model';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
+import { DateService } from 'src/app/services/date.service';
 
 
 
@@ -44,7 +45,7 @@ export class CobranzasComponent implements OnInit {
   tarifa: number = 0;
   correlativo: number = 0;
 
-  clientes: any[] = [];
+  clientes: Cliente[] = [];
   usuario!: Usuario;
 
   deudas: Deuda[] = [];
@@ -69,6 +70,7 @@ export class CobranzasComponent implements OnInit {
     private costoService: CostoService,
     private pagosService: PagosServiciosService,
     private usuarioService: UsuarioService,
+    public dateService: DateService,
     private router: Router
   ) {}
 
@@ -93,52 +95,14 @@ export class CobranzasComponent implements OnInit {
     });
   }
 
-  buscarCliente(param: any) {
-    this.spinner = true;
-    let paramVal = {
-      nombre: '',
-      dni: '',
-      ape: '',
-    };
-    switch (this.tipoBusqueda) {
-      case 'Nombre':
-        paramVal = {
-          nombre: param.value,
-          dni: '',
-          ape: '',
-        };
-        break;
-      case 'Dni':
-        paramVal = {
-          nombre: '',
-          dni: param.value,
-          ape: '',
-        };
-        break;
-      case 'Apellido':
-        paramVal = {
-          nombre: '',
-          dni: '',
-          ape: param.value,
-        };
-        break;
-      default:
-        break;
-    }
+  buscarCliente(params: any): void {
+    this.clientes = params.clientes;
     this.monto = 0;
-    this.clienteService
-      .findClients(paramVal.nombre, paramVal.dni, paramVal.ape)
-      .subscribe({
-        next: (resp: any) => {
-          this.clientes = resp.clientes;
-        },
-        error: (error) => console.log(error),
-        complete: () => (this.spinner = false),
-      });
+    this.pagos = [];
   }
 
-  mostrarCliente(id: number) {
-    this.panel_pagos = true;
+  mostrarCliente(id: any) {
+    this.panel_pagos = false;
     this.panel_condonacion = true;
     this.monto = 0;
     this.idCliente = id;
@@ -220,7 +184,6 @@ export class CobranzasComponent implements OnInit {
     };
 
     // seteando estado de deudas (2)
-
     this.deudasToUpdate.map((item) => {
        return {
         idtbdeudas: item.idtbdeudas,
@@ -236,21 +199,24 @@ export class CobranzasComponent implements OnInit {
       }
     });
 
+    let pagServDetalles: PagosServicioDetalle[] = this.regPagosDetalle(pagoServicio);
+
     // registrando pagoServicio (tabla fuerte)
-    this.pagosService.savePagoServicio(pagoServicio).subscribe({
-      next: (resp: PagosServicio) => {
+    this.pagosService.savePagosAndDetalles(pagoServicio, pagServDetalles)
+    .subscribe({
+      next: (resp: any) => {
         // registrando detalles de pago de deuda
-        this.correlativo = Number(resp.correlativo);
-        this.regPagosDetalle(resp);
+        this.correlativo = Number(resp.pagosservicio.correlativo);
       },
       error: (error) => console.log(error),
       complete: () => {
         // actualizar estado de las deudas pagadas
         this.actualizarEstadoDeuda(this.deudasToUpdate);
         this.cargarDeudasCliente(this.idCliente);
-        this.pagar();
+        this.pagar(this.monto);
         this.pagos=[];
         this.deudasToUpdate=[];
+        this.monto = 0.0;
       },
     });
   }
@@ -281,7 +247,7 @@ export class CobranzasComponent implements OnInit {
     });
   }
 
-  async pagar() {
+  async pagar(montoPagado: number) {
     let dataPagos: any[] = [];
 
     this.pagos.map((item: ItemTicket) => {
@@ -326,7 +292,7 @@ export class CobranzasComponent implements OnInit {
           style: 'small',
         },
         {
-          text: `RECIBO DE COBRANZA Nro. 000${this.correlativo}`,
+          text: `RECIBO DE CUOTA FAMILIAR Nro. 000${this.correlativo}`,
           alignment: 'center',
           style: 'header',
           margin: [0, 8],
@@ -392,14 +358,14 @@ export class CobranzasComponent implements OnInit {
           },
         },
         {
-          text: `SON: ${this.monto} con 00/100 SOLES`,
+          text: `SON: ${montoPagado} con 00/100 SOLES`,
           alignment: 'left',
           style: 'small',
           margin: [0, 8],
         },
         {
           text: `
-            SUBTOTAL: \t\t S/ ${this.monto}.00 \n
+            SUBTOTAL: \t\t S/ ${montoPagado}.00 \n
             TASAS: \t\t S/ 0.00 \n
             DESCUENTO: \t\t S/ 0.00 \n
             ________________________ \n
@@ -409,7 +375,7 @@ export class CobranzasComponent implements OnInit {
           margin: [0, 8],
         },
         {
-          text: `TOTAL A PAGAR: \t\t S/ ${this.monto}.00`,
+          text: `TOTAL A PAGAR: \t\t S/ ${montoPagado}.00`,
           alignment: 'right',
           style: 'subheader',
           margin: [0, 8],
@@ -442,34 +408,29 @@ export class CobranzasComponent implements OnInit {
   }
 
   // metodo para registrar los detalles del pago (tabla dependiente)
-  regPagosDetalle(pagoServicio: PagosServicio) {
+  regPagosDetalle(pagoServicio: PagosServicio):PagosServicioDetalle[]  {
     let pagosServicioDeta: PagosServicioDetalle;
     let pagServDetalles: PagosServicioDetalle[] = [];
 
     this.pagos.map((itemPago) => {
       pagosServicioDeta = {
         idcabecera: 1,
-        idmes: 8,
+        idmes: itemPago.nmes,
         detalletasas: itemPago.concepto,
-        idanno: 2,
+        idanno: Number(itemPago.nannio) | 0,
         monto: itemPago.monto,
         cliente: this.cliente,
         pagosServicio: pagoServicio,
       };
       pagServDetalles.push(pagosServicioDeta);
     });
-
-    this.pagosService.savePagosServicioDetalle(pagServDetalles).subscribe({
-      next: (resp) => {},
-      error: (error) => console.log(error),
-      complete: () => console.log('Detalles registrados'),
-    });
+    return pagServDetalles;
   }
 
   actualizarEstadoDeuda(deudas: Deuda[]) {
     this.deudaService.updateUserDebts(deudas).subscribe({
       next: (resp: any) => {
-        console.log(resp);
+        // console.log(resp);
       },
       error: (error) => console.log(error),
       complete: () => this.cargarDeudasCliente(this.idCliente),
@@ -477,10 +438,13 @@ export class CobranzasComponent implements OnInit {
   }
 
   setPago(deudaSel: HTMLInputElement, deuda: Deuda) {
-    console.log('usuario---->', this.usuario);
+
     let itemDeuda: ItemTicket = {
       concepto: 'MANTENIMIENTO',
-      fecha: moment(deuda.periodo).format('MM-YYYY'),
+      // fecha: moment(deuda.periodo).format('MM-YYYY'),
+      fecha: this.dateService.getMes( Number(moment(deuda.periodo).month())) + " - "+ moment(deuda.periodo).year(),
+      nmes: moment(deuda.periodo).month() + 1,
+      nannio: moment(deuda.periodo).year(),
       monto: deuda.total,
       id: deuda.idtbdeudas
     };
@@ -497,6 +461,7 @@ export class CobranzasComponent implements OnInit {
         return item.idtbdeudas !== deuda.idtbdeudas;
       });
     }
+    console.log('PAGOS---->>', this.pagos);
     this.operaciones();
   }
 
@@ -519,6 +484,10 @@ export class CobranzasComponent implements OnInit {
   }
 
   setPaneles(opc: string) {
+    if (this.costos.length <= 0) {
+      alert('El cliente seleccionado no tiene configurado sus costos');
+      return;
+    }
     switch (opc) {
       case 'o_pagos':
         this.panel_pagos = true;

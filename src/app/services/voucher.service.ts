@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Voucher } from '../models/voucher.model';
 import { VoucherDetalle } from '../models/voucherdetalle.model';
 
-const voucher_url = environment.voucher_url;
+// const voucher_url = environment.voucher_url;
 const base_url = environment.base_url;
 
 @Injectable({
@@ -16,20 +16,32 @@ export class VoucherService {
 
   getAllVouchers(): Observable<Voucher[]> {
     return this.http
-      .get(`${voucher_url}/vouchers`)
+      .get(`${base_url}/vouchers`)
       .pipe(map((resp: any) => resp.vouchers as Voucher[]));
   }
 
   getVoucherDetails(idvoucher: number): Observable<VoucherDetalle[]> {
     return this.http
-      .get(`${voucher_url}/voucher-detalles/voucher/${idvoucher}`)
+      .get(`${base_url}/voucher-detalles/voucher/${idvoucher}`)
       .pipe(
         map((response: any) => response.voucherdetalles as VoucherDetalle[])
       );
   }
 
+  getVoucherByCliente(nombres: String): Observable<Voucher[]> {
+    return this.http.get(`${base_url}/vouchers/search/${nombres}`).pipe(
+      map( (res:any)=> {
+        return res.vouchers as Voucher[]
+      }),
+      catchError((e) => {
+        console.log(e.error.mensaje);
+        return throwError(e);
+      })
+    );
+  }
+
   saveVoucher(voucher: Voucher): Observable<Voucher> {
-    return this.http.post<Voucher>(`${voucher_url}/vouchers`, voucher);
+    return this.http.post<Voucher>(`${base_url}/vouchers`, voucher);
   }
 
 
@@ -42,7 +54,13 @@ export class VoucherService {
     formData.append('voucher', v);
     formData.append('detalles', d);
 
-    return this.http.post(`${voucher_url}/vouchers/save`, formData);
+    return this.http.post(`${base_url}/vouchers/save`, formData);
+  }
+
+  updateVoucher(voucher: Voucher): Observable<Voucher>{
+
+    return this.http.put<Voucher>(`${base_url}/vouchers/${voucher.idvoucher}`, voucher);
+
   }
 
   uploadFile(archivo: File, id: any): Observable<Voucher> {
@@ -51,7 +69,7 @@ export class VoucherService {
     formData.append('id', id);
 
     return this.http
-      .post<Voucher>(`${voucher_url}/vouchers/upload`, formData)
+      .post<Voucher>(`${base_url}/vouchers/upload`, formData)
       .pipe(
         map((res: any) => {
           return res.voucher as Voucher;
@@ -64,12 +82,12 @@ export class VoucherService {
   }
 
   uploadVoucher(voucher: Voucher): Observable<Voucher> {
-    return this.http.put<Voucher>(`${voucher_url}/vouchers/${voucher.idvoucher}`, voucher);
+    return this.http.put<Voucher>(`${base_url}/vouchers/${voucher.idvoucher}`, voucher);
   }
 
   saveVoucherDetail(detalles: VoucherDetalle[]): Observable<VoucherDetalle[]> {
     return this.http
-      .post(`${voucher_url}/voucher-detalles/service`, detalles)
+      .post(`${base_url}/voucher-detalles/service`, detalles)
       .pipe(
         map((resp: any) => {
           return resp.detalles as VoucherDetalle[];

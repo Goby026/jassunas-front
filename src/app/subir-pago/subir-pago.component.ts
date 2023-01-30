@@ -126,8 +126,6 @@ export class SubirPagoComponent implements OnInit {
           return item;
         });
         this.tblPagos = true;
-
-        console.log('DEUDDDDDDAAAAAAAAS-->>>>>>>>>', this.deudas);
       },
       error: (error) => console.log(error),
       complete: ()=>{

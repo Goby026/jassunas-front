@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { PagesModule } from "./pages/pages.module";
@@ -24,6 +25,7 @@ import { VouchersComponent } from './pages/cobranzas/vouchers/vouchers.component
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgxPaginationModule,
     PagesModule,
     AuthModule
   ],
