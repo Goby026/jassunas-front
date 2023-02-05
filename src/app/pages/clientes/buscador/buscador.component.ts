@@ -12,7 +12,7 @@ export class BuscadorComponent implements OnInit {
   // @Output() clientesSalida: EventEmitter<> = new EventEmitter();
   @Output() salida = new EventEmitter<{clientes:Cliente[], panel:string}>;
 
-  tipoBusqueda = 'Nombre';
+  tipoBusqueda = 'Apellido';
   clientes: Cliente[] = [];
   cliente!:Cliente;
   nombre_completo: string = '';

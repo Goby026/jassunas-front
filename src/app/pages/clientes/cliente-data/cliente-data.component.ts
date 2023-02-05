@@ -11,6 +11,10 @@ import { Costo } from 'src/app/models/costo.model';
 import { Servicio } from 'src/app/models/servicio.model';
 import { Zona } from 'src/app/models/zona.model';
 import { TipoCliente } from 'src/app/models/tipoCliente.model';
+import { Router } from '@angular/router';
+import { Tarifario } from 'src/app/models/tarifario.model';
+import { CostoOtrosService } from 'src/app/services/costo-otros.service';
+import { CostoOtroServicio } from 'src/app/models/costootroservicio.model';
 
 @Component({
   selector: 'app-cliente-data',
@@ -37,7 +41,9 @@ export class ClienteDataComponent implements OnInit {
     private clienteService: ClienteService,
     private costoService: CostoService,
     private servicioService: ServicioService,
-    private zonaService: ZonaService ) { }
+    private zonaService: ZonaService,
+    private costoOtroService: CostoOtrosService,
+    private router: Router ) { }
 
   ngOnInit(): void {
     this.listarServicios();
@@ -127,6 +133,10 @@ export class ClienteDataComponent implements OnInit {
       return;
     }
 
+    if (!confirm('¿Registrar cliente nuevo?')) {
+      return;
+    }
+
     let tipoCli: TipoCliente = this.getTipoCliente(Number(this.clienteForm.get('tipoCliente')?.value));
 
     let zzona: Zona = this.getZona( Number(this.clienteForm.get('zona')?.value) );
@@ -155,12 +165,17 @@ export class ClienteDataComponent implements OnInit {
     // REGISTRAR CLIENTE
     this.clienteService.saveClient(this.cliente)
     .subscribe({
-      next: (resp: any)=>{
-        this.cliente.idclientes = resp.idclientes;
-        this.registrarCosto(this.cliente);
+      next: (resp: Cliente)=>{
+        // this.cliente.idclientes = resp.idclientes;
+        this.cliente = resp;
+        this.registrarCosto(resp);
       },
       error: error => console.log(error),
-      complete: ()=> this.clienteForm.reset()
+      complete: ()=> {
+        this.clienteForm.reset();
+        alert('Cliente registrado correctamente');
+        this.router.navigate(['/dashboard/clientes']);
+      }
     });
 
   }
@@ -194,8 +209,38 @@ export class ClienteDataComponent implements OnInit {
 
     this.costoService.saveCost(this.costo)
     .subscribe({
-      next: (resp: any)=> console.log(resp),
+      next: (resp: Costo)=> {
+        this.costo = resp;
+        this.registrarTarifa(resp);
+      },
       error: error => console.log(error)
+    });
+  }
+
+  // table: tbcostootroservicio
+  registrarTarifa(ccosto: Costo): void {
+
+    // setear tarifario
+    let tarifa: Tarifario = {
+      idtarifario: 2,
+      detalletarifario: null,
+      esta: null,
+      monto: null,
+      servicio: ccosto.servicio,
+    }
+
+    let costoOtro: CostoOtroServicio = {
+      costo: ccosto,
+      tarifario: tarifa
+    }
+
+    this.costoOtroService.saveCostoOtroServicio(costoOtro)
+    .subscribe({
+      next:(resp:CostoOtroServicio)=>{
+        console.log(resp);
+      },
+      error:(error)=> console.error(error),
+      complete:()=> console.info('Tarifa registrada')
     });
   }
 

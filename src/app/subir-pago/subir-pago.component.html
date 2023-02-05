@@ -61,10 +61,16 @@
                         <td>{{'Mantenimiento'}}</td>
                         <td>{{ deuda.saldo | currency: 'S/ ' }}</td>
                         <td>
-                          <span class="badge bg-label-danger me-1">{{deuda.deudaEstado.estado}}</span>
+                          <span *ngIf="deuda.deudaEstado.iddeudaEstado == 3; else pagado" class="badge bg-label-danger me-1">{{deuda.deudaEstado.estado}}</span>
+                          <ng-template #pagado>
+                            <span *ngIf="deuda.deudaEstado.iddeudaEstado == 2; else enProceso" class="badge bg-label-success me-1">{{deuda.deudaEstado.estado}}</span>
+                            <ng-template #enProceso>
+                              <span class="badge bg-label-warning me-1">{{deuda.deudaEstado.estado}}</span>
+                            </ng-template>
+                          </ng-template>
                         </td>
                         <td>
-                          <input
+                          <input *ngIf="deuda.deudaEstado.iddeudaEstado != 2"
                           class="form-check-input"
                           type="checkbox"
                           [value]="deuda.idtbdeudas"

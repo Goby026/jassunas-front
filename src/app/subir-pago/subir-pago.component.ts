@@ -119,11 +119,11 @@ export class SubirPagoComponent implements OnInit {
 
   cargarDeudasCliente(cliente: Cliente) {
     this.busca = false;
-    this.deudaService.getUserDebt(Number(cliente.idclientes))
+    this.deudaService.getAllUserDebt(Number(cliente.idclientes))
     .subscribe({
       next: (resp: Deuda[]) => {
-        this.deudas = resp.map((item)=>{
-          return item;
+        this.deudas = resp.filter((item)=>{
+          return item.deudaEstado.iddeudaEstado !== 2;
         });
         this.tblPagos = true;
       },

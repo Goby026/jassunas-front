@@ -32,6 +32,15 @@ export class DeudaService {
     // return this.http.get(`${base_url}/deudas/buscar/${idCliente}`);
   }
 
+  // obtener todas las deudas
+  getAllUserDebt(idCliente: number){
+    return this.http.get(`${base_url}/deudas/buscar/${idCliente}`)
+    .pipe(
+      map( (resp: any) => resp.deudas as Deuda[])
+     );
+    // return this.http.get(`${base_url}/deudas/buscar/${idCliente}`);
+  }
+
   // listar deudas por zona y por año
   geDebtsByZoneAndYear(idzona: number, year: number): Observable<Deuda[]> {
     return this.http.get(`${base_url}/deudas/buscar-zona/${idzona}/${year}`)
@@ -43,7 +52,10 @@ export class DeudaService {
   }
 
   //()=> actualizar estado de deudas
-  updateUserDebts(deuda: Deuda[]){
-    return this.http.put(`${base_url}/deudas/service`, deuda);
+  updateUserDebts(deuda: Deuda[]): Observable<Deuda[]> {
+    return this.http.put(`${base_url}/deudas/service`, deuda)
+    .pipe(
+      map( (res: any)=> res.deudas as Deuda[])
+    );
   }
 }

@@ -74,11 +74,15 @@ export class VouchersComponent implements OnInit {
   verificarEstadoCaja() {
     this.cajaService.getCajaStatus().subscribe({
       next: (resp: Caja) => {
-        if (resp.esta !== 1) {
-          alert('Caja no esta aperturada');
-          this.router.navigate(['/dashboard/caja']);
-        } else {
-          this.caja = resp;
+        if (resp) {
+          if (resp.esta !== 1) {
+            alert('Caja no esta aperturada');
+            this.router.navigate(['/dashboard/caja']);
+          } else {
+            this.caja = resp;
+          }
+        }else{
+          alert('No hay resultados de vouchers');
         }
       },
       error: (error) => console.log(error),
@@ -290,8 +294,7 @@ export class VouchersComponent implements OnInit {
         next: (resp: Voucher[]) => {
           this.vouchers = resp;
         },
-        error: (error) => console.log(error),
-        complete: () => console.log('Busqueda realizada correctamente'),
+        error: (error) => console.log(error)
       });
     }
 

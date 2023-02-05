@@ -56,7 +56,7 @@ export class ClienteService {
     return this.http.get<TipoCliente>(`${base_url}/tipoClientes/${idtipo}`);
   }
 
-  saveClient(cliente: Cliente){
-    return this.http.post(`${base_url}/clientes`, cliente);
+  saveClient(cliente: Cliente): Observable<Cliente>{
+    return this.http.post<Cliente>(`${base_url}/clientes`, cliente);
   }
 }

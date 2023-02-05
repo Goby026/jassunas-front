@@ -6,7 +6,7 @@
         <div class="col-sm-7">
           <div class="card-body">
             <h5 class="card-title text-primary">Bienvenido nuevamente {{ username }} 🎉</h5>
-            <div *ngIf="caja">
+            <div *ngIf="caja; else noCaja">
               <p class="mb-4">
                 <span class="badge rounded-pill bg-label-success">Nro de caja aperturada: <span class="fw-bold">{{caja.idcaja}}</span>.</span>
               </p>
@@ -18,6 +18,12 @@
               <a *ngIf="estadoCaja" routerLink="/dashboard/caja" class="btn btn-sm btn-outline-primary">Aperturar caja</a>
 
             </div>
+            <ng-template #noCaja>
+              <button class="btn btn-info" routerLink="/dashboard/caja">
+                <i class='bx bx-wallet'></i>
+                Aperturar Caja
+              </button>
+            </ng-template>
           </div>
         </div>
         <div class="col-sm-5 text-center text-sm-left">
@@ -47,7 +53,7 @@
                   class="rounded"
                 />
               </div>
-              <div class="dropdown">
+              <!-- <div class="dropdown">
                 <button
                   class="btn p-0"
                   type="button"
@@ -62,9 +68,9 @@
                   <a class="dropdown-item" href="javascript:void(0);">Ver más</a>
                   <a class="dropdown-item" href="javascript:void(0);">Eliminar</a>
                 </div>
-              </div>
+              </div> -->
             </div>
-            <span class="fw-semibold d-block mb-1">Cobrado</span>
+            <span *ngIf="caja" class="fw-semibold d-block mb-1">Cobrado caja {{caja.idcaja}}</span>
             <h3 *ngIf="caja" class="card-title mb-2">{{ caja.total | currency:'S/ ' }}</h3>
             <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +0.00%</small>
           </div>
@@ -81,7 +87,7 @@
                   class="rounded"
                 />
               </div>
-              <div class="dropdown">
+              <!-- <div class="dropdown">
                 <button
                   class="btn p-0"
                   type="button"
@@ -96,7 +102,7 @@
                   <a class="dropdown-item" href="javascript:void(0);">Ver más</a>
                   <a class="dropdown-item" href="javascript:void(0);">Eliminar</a>
                 </div>
-              </div>
+              </div> -->
             </div>
             <span>Pendiente {{currentMonth}}</span>
             <h3 class="card-title text-nowrap mb-1">{{ 0.00 | currency:'S/ ' }}</h3>

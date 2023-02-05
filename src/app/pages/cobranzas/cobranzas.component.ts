@@ -81,11 +81,15 @@ export class CobranzasComponent implements OnInit {
   verificarEstadoCaja() {
     this.cajaService.getCajaStatus().subscribe({
       next: (resp: Caja) => {
-        if (resp.esta !== 1) {
-          alert('Caja no esta aperturada');
-          this.router.navigate(['/dashboard/caja']);
-        } else {
-          this.caja = resp;
+        if (resp) {
+          if (resp.esta !== 1) {
+            alert('Caja no esta aperturada');
+            this.router.navigate(['/dashboard/caja']);
+          } else {
+            this.caja = resp;
+          }
+        }else{
+          alert('No hay resultado de cobranzas');
         }
       },
       error: (error) => console.log(error),
@@ -259,7 +263,6 @@ export class CobranzasComponent implements OnInit {
       dataPagos.push(arrItem);
     });
 
-    console.log('dataPagos', dataPagos);
     // crear pdf
     const pdfDefinition: any = {
       pageSize: {
@@ -461,7 +464,6 @@ export class CobranzasComponent implements OnInit {
         return item.idtbdeudas !== deuda.idtbdeudas;
       });
     }
-    console.log('PAGOS---->>', this.pagos);
     this.operaciones();
   }
 

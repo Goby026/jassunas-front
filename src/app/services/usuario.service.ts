@@ -54,12 +54,12 @@ export class UsuarioService {
   }
 
   setUsuarioPerfil(username:string):void{
-    console.log('USERNAME------->', username);
+    // console.log('USERNAME------->', username);
     this.http.get(`${base_url}/usuario/${username}`)
     .subscribe({
       next: (resp) => {
-        console.log('RESP----->', resp);
-        // localStorage.setItem('usuario', JSON.stringify(resp));
+        // console.log('RESP----->', resp);
+        localStorage.setItem('usuario', JSON.stringify(resp));
       },
       error: error=> console.log(error)
     });

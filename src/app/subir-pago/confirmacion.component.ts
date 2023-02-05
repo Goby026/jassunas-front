@@ -127,6 +127,7 @@ export class ConfirmacionComponent implements OnInit {
       },
       error: (error) => {alert(error.message)},
       complete: () => {
+        this.actualizarEstadoDeuda();
         let voucherRegistrado = JSON.stringify(this.regVoucher);
         this.router.navigate(['/upload-pago', voucherRegistrado]);
       }
@@ -178,24 +179,24 @@ export class ConfirmacionComponent implements OnInit {
     // });
   }
 
-  // actualizarEstadoDeuda(){
-  //   let estadodeuda : DeudaEstado = {
-  //     iddeudaEstado : 4,
-  //     estado: null,
-  //     valor: null
-  //   }
-  //   let update_deudas: Deuda[] = this.pagos.map( ( deuda: Deuda )=> {
+  actualizarEstadoDeuda(){
+    let estadodeuda : DeudaEstado = {
+      iddeudaEstado : 4,
+      estado: null,
+      valor: null
+    }
+    let update_deudas: Deuda[] = this.pagos.map( ( deuda: Deuda )=> {
 
-  //     deuda.deudaEstado = estadodeuda
+      deuda.deudaEstado = estadodeuda
 
-  //     return deuda as Deuda;
-  //   } );
+      return deuda;
+    } );
 
-  //   this.deudaService.updateUserDebts(update_deudas)
-  //   .subscribe({
-  //     next: (resp)=>console.log(resp),
-  //     error: (error)=>console.log('ERROR', error)
-  //   });
+    this.deudaService.updateUserDebts(update_deudas)
+    .subscribe({
+      next: (resp)=>console.log(resp),
+      error: (error)=>console.log('ERROR', error)
+    });
 
-  // }
+  }
 }

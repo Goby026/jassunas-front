@@ -61,4 +61,9 @@ export class LoginComponent implements OnInit {
   setRemember(valor: boolean){
     this.remember = valor;
   }
+
+  mantenimiento(){
+    alert('Funcionalidad en mantenimiento');
+    return;
+  }
 }

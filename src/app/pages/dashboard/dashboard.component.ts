@@ -35,15 +35,19 @@ export class DashboardComponent implements OnInit {
     this.cajaService.getCajaStatus()
     .subscribe({
       next: (resp: Caja)=>{
-        if(resp.esta!==1){
-          this.estadoCaja = true;
-        }else{
-          this.estadoCaja = false;
+        if (resp) {
           this.caja = resp;
+          if(resp.esta!==1){
+            this.estadoCaja = true;
+          }else{
+            this.estadoCaja = false;
+          }
+        }else{
+          alert('No hay resultado de caja');
         }
       },
-      error: error=> console.log(error),
-      complete: ()=> console.log(this.caja)
+      error: error=> console.error(error),
+      complete: ()=> console.info(this.caja)
     });
   }
 

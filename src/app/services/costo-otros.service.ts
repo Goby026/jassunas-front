@@ -23,10 +23,20 @@ export class CostoOtrosService {
     }
   }
 
-  updateCostoOtroServicio(costoOtro: CostoOtroServicio): Observable<CostoOtroServicio> {
+  updateCostoOtroServicio(
+    costoOtro: CostoOtroServicio
+  ): Observable<CostoOtroServicio> {
     return this.http.put<CostoOtroServicio>(
       `${base_url}/costo-otros/${costoOtro.id}`,
       costoOtro
+    );
+  }
+
+  saveCostoOtroServicio(costoOtro: CostoOtroServicio): Observable<CostoOtroServicio> {
+    return this.http.post(`${base_url}/costo-otros`,
+      costoOtro
+    ).pipe(
+      map( (res:any)=> res.costootro as CostoOtroServicio )
     );
   }
 }

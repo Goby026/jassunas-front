@@ -29,7 +29,7 @@ export class AdelantosComponent implements OnInit {
 
   datos: any[] = [];
   anios: number[] = [];
-  anio = moment().year();
+  anio = moment().year()-1;
   anioSel: any = 0;
   anioHtml: any;
   // idCosto: number = 0;
@@ -264,6 +264,11 @@ export class AdelantosComponent implements OnInit {
     });
   }
 
+
+  verArregloPagos(){
+    console.log(this.arregloPagar);
+  }
+
   registrarPagoServiciosDetalles(pagoServicio: PagosServicio):PagosServicioDetalle[] {
     let arrPagosServiciosDetalles: PagosServicioDetalle[] = [];
     this.arregloPagar.map( (item)=>{
@@ -308,22 +313,16 @@ export class AdelantosComponent implements OnInit {
         let mesesSinPagar: ItemTicket[] = totalMeses.filter( item1 => !mesesPagados.some( item2 => item2.nmes === item1.nmes ) );
 
         this.spinner = false;
-
         this.meses = mesesSinPagar;
-
       }
     });
-
-
   }
-
-
 
   operarMonto(){
     this.monto = 0;
     this.arregloPagar.forEach( (item)=>{
-      this.monto += item.monto
-    } );
+      this.monto += item.monto!
+    });
   }
 
 }

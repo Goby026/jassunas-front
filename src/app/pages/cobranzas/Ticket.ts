@@ -197,7 +197,13 @@ export class Ticket{
       }
 
       getMes(mes: any | undefined = 0): String{
-        let mesNombre:string = moment().month(Number(mes)-1).format('MMMM');
-        return mesNombre;
+
+        if (typeof(mes) !== "string"){
+          let mesNombre:string = moment().month(Number(mes)-1).format('MMMM');
+          return mesNombre;
+        }
+
+        return mes;
+
       }
 }

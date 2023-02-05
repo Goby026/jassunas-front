@@ -69,14 +69,19 @@ export class AperturaComponent implements OnInit {
     this.cajaService.getCajaStatus()
     .subscribe({
       next: (resp: Caja)=>{
-        if(resp.esta!==1){
-          this.estadoCaja = true;
-        }else{
-          this.estadoCaja = false;
+        if (resp) {
           this.caja = resp;
+          if(resp.esta!==1){
+            this.estadoCaja = true;
+          }else{
+            this.estadoCaja = false;
+          }
+        }else{
+          alert('No hay resultado de caja');
+          this.estadoCaja = true;
         }
       },
-      error: error=> console.log(error)
+      error: error=> console.error(error)
     });
   }
 
@@ -109,6 +114,12 @@ export class AperturaComponent implements OnInit {
 
   aperturarCaja(){
 
+    if (!this.cajaForm.valid) {
+      alert('Indique correctamente los datos!');
+      return;
+    }
+
+
     let caja: Caja = {
       efectivoape: this.cajaForm.get('efectivoape')?.value,
       esta: 1,
@@ -125,11 +136,11 @@ export class AperturaComponent implements OnInit {
     this.cajaService.saveCaja(caja)
     .subscribe({
       next: (resp:Caja)=>{
-        console.log(resp)
         localStorage.setItem('caja_today', resp.fapertura.toString());
       },
       error: (error)=>console.log(error),
       complete: ()=>{
+        alert('Caja aperturada correctamente');
         this.listarCajas();
         this.verificarEstadoCaja();
       }
@@ -143,6 +154,7 @@ export class AperturaComponent implements OnInit {
     this.pagoServicios.tracking(id)
     .subscribe({
       next: (resp: any)=>{
+        // console.log('RESP--->', resp.pagosservicios);
         this.pagosservicios = resp.pagosservicios;
         this.caja.idcaja = id;
       },
@@ -212,7 +224,7 @@ export class AperturaComponent implements OnInit {
     });
   }
 
-  calculos(){
+  calculos():void{
     this.toUpdateCaja.balance = Number(this.toUpdateCaja.totalefectivo - this.toUpdateCaja.total);
   }
 

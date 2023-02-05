@@ -1,6 +1,6 @@
 export interface ItemTicket{
     concepto: string,
-    monto: number
+    monto: number | null,
     fecha?: Date | string,
     mes?: string | number,
     nmes?: number,

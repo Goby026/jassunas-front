@@ -13,7 +13,10 @@
           <div class="row gx-3 gy-2 align-items-center">
             <div class="col-md-3">
               <label class="form-label" for="selectCaja">CAJA</label>
-              <select class="form-select" id="selectCaja" formControlName="ncaja">
+              <select
+                class="form-select"
+                id="selectCaja"
+                formControlName="ncaja">
                 <option value="CAJA PRINCIPAL">CAJA PRINCIPAL</option>
               </select>
             </div>
@@ -25,7 +28,11 @@
 
             <div class="col-md-3">
               <label class="form-label" for="txtMontoInicial">EFECTIVO INICIAL</label>
-              <input type="number" class="form-control" id="txtMontoInicial" formControlName="efectivoape">
+              <input
+                type="number"
+                class="form-control"
+                id="txtMontoInicial"
+                formControlName="efectivoape">
             </div>
             <div class="col-md-3">
               <label class="form-label" for="btnAperturar">&nbsp;</label>
@@ -137,8 +144,8 @@
                 <td> {{ i+1 }} </td>
                 <td> {{ pago.caja.ncaja }} </td>
                 <td> {{ pago.correlativo }} </td>
-                <td> {{ pago.costo.cliente.apepaterno }} {{ pago.costo.cliente.apematerno }} {{
-                  pago.costo.cliente.nombres }}</td>
+                <td> {{ pago.cliente.apepaterno }} {{ pago.cliente.apematerno }} {{
+                  pago.cliente.nombres }}</td>
                 <td>
                   {{ pago.tipoPagoServicios.descripcion}}
                 </td>

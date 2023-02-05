@@ -29,8 +29,8 @@ export class CostoService {
     );
   }
 
-  saveCost(costo: Costo){
-    return this.http.post( `${base_url}/costos`, costo, { headers: this.encabezados } );
+  saveCost(costo: Costo): Observable<Costo>{
+    return this.http.post<Costo>( `${base_url}/costos`, costo);
   }
 
   getCostoById( idCosto: number ): Observable<Costo>{

@@ -6,7 +6,7 @@ export class PagosServicioDetalle {
     public idmes: number | undefined,
     public detalletasas: string,
     public idanno: number,
-    public monto: number,
+    public monto: number | null,
     public cliente: Cliente,
     public pagosServicio: PagosServicio,
     public idcabecera?: number | null,
