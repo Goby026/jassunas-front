@@ -18,6 +18,8 @@ export class BuscadorComponent implements OnInit {
   nombre_completo: string = '';
   spinner: boolean = false;
 
+  cadena: string = '';
+
   constructor(private clienteService: ClienteService) { }
 
   ngOnInit(): void {
@@ -61,11 +63,11 @@ export class BuscadorComponent implements OnInit {
       .subscribe({
         next: (resp: any) => {
           this.clientes = resp.clientes;
-          this.salida.emit({clientes:this.clientes, panel:'x_all'});
         },
         error: (error) => console.log(error),
         complete: () => {
           // param.value = '';
+          this.salida.emit({clientes:this.clientes, panel:'x_all'});
         },
       });
   }
@@ -82,5 +84,23 @@ export class BuscadorComponent implements OnInit {
   //   this.clientes = [];
   // }
 
+
+  buscar(){
+    if (this.cadena.trim().length <= 0) {
+      alert('ingrese nombre');
+      return;
+    }
+
+    this.clienteService.buscarClientes(this.cadena)
+    .subscribe({
+      next: (resp: Cliente[]) => {
+        this.clientes = resp;
+      },
+      error: (error) => console.log(error),
+      complete: () => {
+        this.salida.emit({clientes:this.clientes, panel:'x_all'});
+      }
+    });
+  }
 
 }

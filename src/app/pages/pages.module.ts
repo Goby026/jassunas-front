@@ -26,6 +26,7 @@ import { AuthInterceptorService } from '../interceptors/auth-interceptor.service
 import { BuscadorComponent } from './clientes/buscador/buscador.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { CostoComponent } from './costo/costo.component';
+import { ConfiguracionComponent } from './configuracion/configuracion.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { CostoComponent } from './costo/costo.component';
     CondonacionComponent,
     BuscadorComponent,
     ReportesComponent,
-    CostoComponent
+    CostoComponent,
+    ConfiguracionComponent
   ],
   exports:[
     DashboardComponent,

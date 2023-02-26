@@ -5,7 +5,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-export class Historial{
+export class HistorialReport{
 
     constructor(
         // public correlativo: number | null,

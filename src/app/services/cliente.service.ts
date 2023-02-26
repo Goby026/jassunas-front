@@ -44,6 +44,14 @@ export class ClienteService {
     });
   }
 
+  // buscador mejorado
+  buscarClientes(cadena: string = ''): Observable<Cliente[]>{
+    return this.http.get(`${base_url}/clientes/search/${cadena}`)
+    .pipe(
+      map( (res:any) => res.clientes as Cliente[] )
+    );
+  }
+
   getClientById(id: number): Observable<Cliente>{
     return this.http.get<Cliente>(`${base_url}/clientes/${id}`);
   }
@@ -58,5 +66,9 @@ export class ClienteService {
 
   saveClient(cliente: Cliente): Observable<Cliente>{
     return this.http.post<Cliente>(`${base_url}/clientes`, cliente);
+  }
+
+  updateClient(cliente: Cliente): Observable<Cliente>{
+    return this.http.put<Cliente>(`${base_url}/clientes/${cliente.idclientes}`, cliente);
   }
 }

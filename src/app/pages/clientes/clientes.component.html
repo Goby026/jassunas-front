@@ -171,36 +171,36 @@
 
             <!--EXONERACIONES-->
             <div class="mb-3">
-              <div class="col-md">
-                <label class="form-label">EXONERACIONES</label>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="exo_p"
-                    formControlName="exo_p">
-                  <label class="form-check-label" for="exo_p"> Exo_p </label>
-                </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="exo_a"
-                    formControlName="exo_a">
-                  <label class="form-check-label" for="exo_a"> Exo_a </label>
-                </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="exo_f"
-                    formControlName="exo_f">
-                  <label class="form-check-label" for="exo_f"> Exo_f </label>
-                </div>
-              </div>
+              <label for="exop" class="form-label">Exo_p</label>
+              <select
+                class="form-select"
+                id="exop"
+                formControlName="exo_p">
+                <option value="No">No</option>
+                <option value="Si">Si</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="exoa" class="form-label">Exo_a</label>
+              <select
+                class="form-select"
+                id="exoa"
+                formControlName="exo_a">
+                <option value="No">No</option>
+                <option value="Si">Si</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="exof" class="form-label">Exo_f</label>
+              <select
+                class="form-select"
+                id="exof"
+                formControlName="exo_f">
+                <option value="No">No</option>
+                <option value="Si">Si</option>
+              </select>
             </div>
 
             <!--FECHA INGRESO-->
@@ -230,7 +230,9 @@
                 class="form-select"
                 id="tipoCliente"
                 formControlName="tipoCliente">
-                <option value="1">One</option>
+                <option *ngFor="let tipo of tipoClientes" [value]="tipo.idtipocliente">
+                  {{tipo.descripcion}}
+                </option>
               </select>
             </div>
 
@@ -241,7 +243,9 @@
                 class="form-select"
                 id="zona"
                 formControlName="zona">
-                <option value="1">One</option>
+                <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">
+                  {{ zona.detazona }}
+                </option>
               </select>
             </div>
 
@@ -253,15 +257,15 @@
                 id="estado"
                 formControlName="estado">
                 <option value="0">INACTIVO</option>
-                <option value="1">ACTIVO</option>
+                <option value="1" selected>ACTIVO</option>
               </select>
             </div>
 
             <div class="mb-3">
               <!-- <button>Servicios</button>
               <button>Adicionales</button> -->
-              <!-- <button type="submit" class="btn btn-warning">ACTUALIZAR</button> -->
-              <button (click)="mantenimiento()" type="button" class="btn btn-warning">ACTUALIZAR</button>
+              <button type="submit" class="btn btn-primary">ACTUALIZAR</button>
+              <!-- <button (click)="mantenimiento()" type="button" class="btn btn-warning">ACTUALIZAR</button> -->
             </div>
 
           </form>

@@ -3,9 +3,14 @@
   <h5 class="card-header pt-3">Buscador</h5>
   <div class="card-body">
     <div class="input-group" style="z-index: 1;">
-      <input type="search" class="form-control" aria-label="Text input with dropdown button"
-        (keyup.enter)="buscarCliente(cliente)" #cliente autocomplete="off">
-      <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+      <input
+        type="search"
+        class="form-control"
+        aria-label="Text input with dropdown button"
+        (keyup.enter)="buscar()"
+        autocomplete="off"
+        [(ngModel)]="cadena">
+      <!-- <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
         aria-expanded="false">
         {{tipoBusqueda}}
       </button>
@@ -19,7 +24,7 @@
         <li>
           <a class="dropdown-item" (click)="tipoBusqueda = 'Dni'" style="cursor: pointer;">Dni</a>
         </li>
-      </ul>
+      </ul> -->
     </div>
 
     <!-- <div class="mt-4 d-flex justify-content-center" *ngIf="spinner; else nospinner">

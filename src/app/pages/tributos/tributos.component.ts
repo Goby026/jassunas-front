@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ClienteService } from 'src/app/services/cliente.service';
 import { RequisitoService } from 'src/app/services/requisito.service';
 import { TributoService } from 'src/app/services/tributo.service';
 import { TupaService } from 'src/app/services/tupa.service';

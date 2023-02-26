@@ -168,11 +168,11 @@ export class ClienteDataComponent implements OnInit {
       next: (resp: Cliente)=>{
         // this.cliente.idclientes = resp.idclientes;
         this.cliente = resp;
-        this.registrarCosto(resp);
       },
       error: error => console.log(error),
       complete: ()=> {
         this.clienteForm.reset();
+        this.registrarCosto(this.cliente);
         alert('Cliente registrado correctamente');
         this.router.navigate(['/dashboard/clientes']);
       }
@@ -237,7 +237,7 @@ export class ClienteDataComponent implements OnInit {
     this.costoOtroService.saveCostoOtroServicio(costoOtro)
     .subscribe({
       next:(resp:CostoOtroServicio)=>{
-        console.log(resp);
+        // console.log(resp);
       },
       error:(error)=> console.error(error),
       complete:()=> console.info('Tarifa registrada')

@@ -119,6 +119,9 @@ export class AperturaComponent implements OnInit {
       return;
     }
 
+    if (!confirm('¿Aperturar caja?')) {
+      return;
+    }
 
     let caja: Caja = {
       efectivoape: this.cajaForm.get('efectivoape')?.value,

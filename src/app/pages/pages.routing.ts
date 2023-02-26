@@ -15,6 +15,7 @@ import { TarifarioComponent } from './tarifario/tarifario.component';
 import { VouchersComponent } from './cobranzas/vouchers/vouchers.component';
 import { CarritoComponent } from './cobranzas/carrito/carrito.component';
 import { ReportesComponent } from './reportes/reportes.component';
+import { ConfiguracionComponent } from './configuracion/configuracion.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,7 @@ const routes: Routes = [
       { path: 'vouchers', component: VouchersComponent, data: { titulo: 'Confirmar-Vouchers' } },
       { path: 'carrito', component: CarritoComponent, data: { titulo: 'Pagos' } },
       { path: 'reportes', component: ReportesComponent, data: { titulo: 'Reportes' } },
+      { path: 'configuracion', component: ConfiguracionComponent, data: { titulo: 'Configuración' } },
       // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     ],
   },

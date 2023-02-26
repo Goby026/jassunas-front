@@ -7,7 +7,7 @@ export class Usuario{
     public password?: string,
     public enabled?: boolean,
     public img?: string,
-    public role?: Role[],
+    public roles?: Role[] | undefined,
     public id?: number,
   ){}
 }

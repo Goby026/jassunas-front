@@ -8,7 +8,7 @@ import 'moment/locale/es';
 moment.locale('es');
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { Historial } from '../reports/Historial';
+import { HistorialReport } from '../reports/HistorialReport';
 import { Cliente } from 'src/app/models/cliente.model';
 import { PagosServicio } from 'src/app/models/pagosservicio.model';
 import { Ticket } from '../cobranzas/Ticket';
@@ -43,7 +43,7 @@ export class HistorialComponent implements OnInit {
 
   crearPdf(){
     const nombreCompleto: string = `${this.cliente.apepaterno} ${this.cliente.apematerno} ${this.cliente.nombres}`;
-    const reporte: Historial = new Historial(nombreCompleto,this.pagosDetalle);
+    const reporte: HistorialReport = new HistorialReport(nombreCompleto,this.pagosDetalle);
 
       reporte.reporte();
   }
@@ -53,6 +53,7 @@ export class HistorialComponent implements OnInit {
     this.pagosService.getPagosByCliente(Number(this.cliente.idclientes))
     .subscribe({
       next: (resp:PagosServicio[])=>{
+        console.log('cargando pagos------->', resp);
         this.pagos = resp;
       },
       error: (error)=> console.log(error)

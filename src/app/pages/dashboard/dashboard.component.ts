@@ -46,8 +46,7 @@ export class DashboardComponent implements OnInit {
           alert('No hay resultado de caja');
         }
       },
-      error: error=> console.error(error),
-      complete: ()=> console.info(this.caja)
+      error: error=> console.error(error)
     });
   }
 

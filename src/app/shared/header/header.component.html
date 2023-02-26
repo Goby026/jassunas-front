@@ -27,7 +27,7 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
             <li class="list-none">
-              <a class="dropdown-item" href="#">
+              <a class="dropdown-item">
                 <div class="d-flex">
                   <div class="flex-shrink-0 me-3">
                     <div class="avatar avatar-online">
@@ -35,8 +35,8 @@
                     </div>
                   </div>
                   <div class="flex-grow-1">
-                    <span class="fw-semibold d-block">TEST-USER</span>
-                    <small class="text-muted">Admin</small>
+                    <span *ngIf="usuario" class="fw-semibold d-block">{{usuario.username}}</span>
+                    <small class="text-muted">{{ rol }}</small>
                   </div>
                 </div>
               </a>
@@ -45,13 +45,13 @@
               <div class="dropdown-divider"></div>
             </li>
             <li>
-              <a class="dropdown-item" href="#">
+              <a class="dropdown-item" (click)="mantenimiento()">
                 <i class="bx bx-user me-2"></i>
                 <span class="align-middle">Mi perfil</span>
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="#">
+              <a class="dropdown-item" routerLink="configuracion">
                 <i class="bx bx-cog me-2"></i>
                 <span class="align-middle">Configuración</span>
               </a>
@@ -69,7 +69,7 @@
               <div class="dropdown-divider"></div>
             </li>
             <li>
-              <a (click)="logout()" class="dropdown-item" routerLink="/login">
+              <a (click)="logout()" class="dropdown-item">
                 <i class="bx bx-power-off me-2"></i>
                 <span class="align-middle">Salir</span>
               </a>

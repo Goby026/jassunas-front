@@ -183,9 +183,7 @@ export class AdelantosComponent implements OnInit {
     });
 
     if (checkMes.checked) {
-
       this.arregloPagar.push(month);
-
     }
 
     this.operarMonto();
@@ -289,7 +287,6 @@ export class AdelantosComponent implements OnInit {
 
   mostrarMesesPagar(anio: number, totalMeses: ItemTicket[]){
     //cargar pagos de cliente
-
     this.pagosservicio.getDetallePagosClienteAnio(Number(this.cliente.idclientes), anio)
     .subscribe({
       next: (resp:PagosServicioDetalle[])=>{
@@ -301,13 +298,17 @@ export class AdelantosComponent implements OnInit {
         let mesPagado:ItemTicket;
 
         this.pagosDetalles.forEach( (detalle:PagosServicioDetalle)=>{
-          mesPagado = {
-            concepto: detalle.detalletasas,
-            monto: detalle.monto,
-            nmes: detalle.idmes
-          }
+          // console.log( 'tipo pago servicio', detalle.pagosServicio.tipoPagoServicios.idtipopagosservicio);
 
-          mesesPagados.push(mesPagado);
+          if (detalle.pagosServicio.tipoPagoServicios.idtipopagosservicio !== 2) {
+            mesPagado = {
+              concepto: detalle.detalletasas,
+              monto: detalle.monto,
+              nmes: detalle.idmes
+            }
+
+            mesesPagados.push(mesPagado);
+          }
         });
 
         let mesesSinPagar: ItemTicket[] = totalMeses.filter( item1 => !mesesPagados.some( item2 => item2.nmes === item1.nmes ) );
