@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Subject} from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Cliente } from 'src/app/models/cliente.model';
 import { TipoCliente } from 'src/app/models/tipoCliente.model';
@@ -6,12 +7,17 @@ import { Zona } from 'src/app/models/zona.model';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { ZonaService } from 'src/app/services/zona.service';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css']
 })
-export class ClientesComponent implements OnInit {
+export class ClientesComponent implements OnInit, OnDestroy {
+
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
   title='Lista de clientes';
   cliente!: Cliente;
@@ -37,10 +43,18 @@ export class ClientesComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      language: environment.language
+    }
     this.listarClientes();
     this.crearFormulario();
     this.listarTipoClientes();
     this.listarZonas();
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
   }
 
   crearFormulario(): void{
@@ -71,7 +85,10 @@ export class ClientesComponent implements OnInit {
       next: ( resp:any )=>{
         this.clientes = resp.clientes;
       },
-      error: error=>console.log('ERROR->', error)
+      error: error=>console.log('ERROR->', error),
+      complete: ()=>{
+        this.dtTrigger.next(null);
+      }
     });
   }
 

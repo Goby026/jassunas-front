@@ -123,7 +123,8 @@
       <div class="card-body">
         <!-- <input type="date" class="form-control mb-4" (change)="buscarFecha(fecha.value)" #fecha> -->
         <div class="table-responsive text-nowrap">
-          <table class="table table-sm">
+          <!-- <table class="table table-sm"> -->
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
             <thead>
               <tr>
                 <th>#</th>
@@ -180,13 +181,13 @@
                 </td>
               </tr>
             </tbody>
-            <tfoot>
+            <!-- <tfoot>
               <tr>
                 <td colspan="5">&nbsp;</td>
                 <td> <b>TOTAL</b> </td>
                 <td>{{ totalCajaSel | currency: 'S/ ' }}</td>
               </tr>
-            </tfoot>
+            </tfoot> -->
           </table>
         </div>
       </div>

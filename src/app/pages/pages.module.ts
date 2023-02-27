@@ -27,6 +27,9 @@ import { BuscadorComponent } from './clientes/buscador/buscador.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { CostoComponent } from './costo/costo.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
+import { DataTablesModule } from 'angular-datatables';
+import { FormularioComponent } from './configuracion/formulario.component';
+import { BuscadorDatatableComponent } from './clientes/buscador/buscador-datatable.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +52,9 @@ import { ConfiguracionComponent } from './configuracion/configuracion.component'
     BuscadorComponent,
     ReportesComponent,
     CostoComponent,
-    ConfiguracionComponent
+    ConfiguracionComponent,
+    FormularioComponent,
+    BuscadorDatatableComponent
   ],
   exports:[
     DashboardComponent,
@@ -63,7 +68,8 @@ import { ConfiguracionComponent } from './configuracion/configuracion.component'
     AppRoutingModule,
     NgxPaginationModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DataTablesModule
   ],
   providers: [
     {

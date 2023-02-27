@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Subject} from 'rxjs';
 import { Caja } from 'src/app/models/caja.model';
 import { CajaService } from 'src/app/services/caja.service';
 
@@ -9,13 +10,17 @@ import { PagosServiciosService } from 'src/app/services/pagos-servicios.service'
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { PagosServicio } from 'src/app/models/pagosservicio.model';
 import { PagoServicioEstado } from '../../models/pagoservicioestado.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-apertura',
   templateUrl: './apertura.component.html',
   styleUrls: ['./apertura.component.css']
 })
-export class AperturaComponent implements OnInit {
+export class AperturaComponent implements OnInit, OnDestroy {
+
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
   cajasArr: Caja[] = [];
   cajasArrVerifi: Caja[] = [];
@@ -42,9 +47,20 @@ export class AperturaComponent implements OnInit {
     private usuarioService: UsuarioService) { }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      language: environment.language
+    }
     this.verificarEstadoCaja();
     this.listarCajas();
     this.crearFormularioCaja();
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+    this.dtOptions = {
+      destroy: true
+    }
   }
 
   crearFormularioCaja(){
@@ -166,6 +182,8 @@ export class AperturaComponent implements OnInit {
         this.pagosservicios.map( (item:PagosServicio)=>{
           this.totalCajaSel += item.montopagado;
         } );
+
+        this.dtTrigger.next(null);
       }
     });
   }

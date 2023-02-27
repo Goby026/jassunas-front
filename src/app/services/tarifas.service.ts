@@ -24,6 +24,18 @@ export class TarifasService {
     return this.http.get(`${base_url}/tarifarios/${id}`);
   }
 
+  saveTarifa(tarifario: Tarifario):Observable<Tarifario>{
+    return this.http.post<Tarifario>(`${base_url}/tarifarios`, tarifario);
+  }
+
+  updateTarifa(tarifario: Tarifario): Observable<Tarifario>{
+    return this.http.put<Tarifario>(`${base_url}/tarifarios/${Number(tarifario.idtarifario)}`, tarifario);
+  }
+
+  disableTarifa(tarifario: Tarifario): Observable<Tarifario>{
+    return this.http.post<Tarifario>(`${base_url}/tarifarios/desactivar`,tarifario);
+  }
+
   // getTarifaByClient(){
   //   buscar costo por cliente
   // }

@@ -4,8 +4,7 @@ import { ClienteService } from 'src/app/services/cliente.service';
 
 @Component({
   selector: 'app-buscador',
-  templateUrl: './buscador.component.html',
-  styleUrls: ['./buscador.component.css']
+  templateUrl: './buscador.component.html'
 })
 export class BuscadorComponent implements OnInit {
 
