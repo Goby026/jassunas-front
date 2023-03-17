@@ -41,6 +41,7 @@ export class AdelantosComponent implements OnInit {
   pagosDetalles: PagosServicioDetalle[]= [];
   spinner: boolean = true;
 
+  isDisabled = false;
 
   usuario!: Usuario;
 
@@ -209,6 +210,8 @@ export class AdelantosComponent implements OnInit {
       return;
     }
 
+    this.isDisabled = true;
+
     // seteando tipo de pago
     let tipoPagoS: TipoPagoServicio = {
       descripcion: null,
@@ -258,6 +261,7 @@ export class AdelantosComponent implements OnInit {
         this.setearMeses(this.anioHtml);
         this.arregloPagar = [];
         this.monto = 0.00;
+        this.isDisabled = false;
       }
     });
   }

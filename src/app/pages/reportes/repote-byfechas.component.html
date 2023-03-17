@@ -1,0 +1,99 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <form [formGroup]="pagosForm" (ngSubmit)="listarPagosPorFechas()">
+        <div class="row mb-3">
+            <!-- <label class="col-sm-1 col-form-label" for="basic-default-name">Zona</label>
+            <div class="col-sm-3">
+              <select
+                class="form-select"
+                formControlName="zona">
+                <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">{{ zona.detazona }}</option>
+              </select>
+            </div> -->
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Desde</label>
+            <div class="col-sm-3">
+              <input
+                type="date"
+                class="form-control"
+                formControlName="inicio">
+            </div>
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Hasta</label>
+            <div class="col-sm-3">
+              <input
+                type="date"
+                class="form-control"
+                formControlName="fin">
+            </div>
+
+
+            <div class="col-sm-2">
+              <button type="submit" class="btn btn-info">Ver</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="card-header">
+            Reporte de pagos por fechas
+          </h5>
+        </div>
+        <div class="col-md-6 d-flex justify-content-around align-items-center">
+          <button class="btn btn-primary btn-sm mr-4" (click)="crearPdf()">PDF</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive text-nowrap">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Concepto</th>
+                <th>Servicio</th>
+                <th>Estado</th>
+                <th>Periodo</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let det of pagosDetalles; index as i">
+                <td>
+                  {{i+1}}
+                </td>
+                <td>
+                  {{ det.cliente.apepaterno }} {{ det.cliente.apematerno }} {{ det.cliente.nombres }}
+                </td>
+                <td>
+                  {{ det.detalletasas }}
+                </td>
+                <td>
+                  {{ det.pagosServicio.costo.servicio.detaservicios }}
+                </td>
+                <td>
+                  {{ det.pagosServicio.pagoServicioEstado.descripcion }}
+                </td>
+                <td>
+                  {{ det.idanno }} - {{ det.idmes }}
+                </td>
+                <td>
+                  {{ det.monto | currency: 'S/ ' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

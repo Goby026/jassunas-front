@@ -47,6 +47,7 @@ export class TributosComponent implements OnInit {
   spinner: boolean = false;
 
   itemsTicket: ItemTicket[] = [];
+  isDisabled = false;
 
   @Input() cliente!: Cliente;
   @Input() caja!: Caja;
@@ -144,6 +145,8 @@ export class TributosComponent implements OnInit {
       return;
     }
 
+    this.isDisabled = true;
+
     let tributo: Tributo = {
       usuario: this.usuarioService.getLocalUser().username,
       dettupa: this.tupa.denominacion,
@@ -163,6 +166,7 @@ export class TributosComponent implements OnInit {
       error: error => console.log(error),
       complete: ()=> {
         this.reqSel = [];
+        this.isDisabled = false;
       }
     });
   }

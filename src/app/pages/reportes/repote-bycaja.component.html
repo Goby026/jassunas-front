@@ -1,0 +1,63 @@
+
+<!-- <div class="row" *ngIf="clientePanel"> -->
+  <div class="row">
+    <div class="col-md-6">
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <label for="txtNroCaja" class="form-label">Nro Caja</label>
+          <input type="number" class="form-control" [(ngModel)]="idCaja" />
+          <button class="btn btn-primary mt-2" (click)="crearReporte()">Reporte</button>
+        </div>
+      </div>
+
+      <!-- <div class="card mb-3" *ngIf="zonaPanel"> -->
+      <!-- <div class="card mb-3">
+        <div class="row">
+          <h5 class="col-md-6 card-header">Deudas de cliente {{ 'ASD' }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive text-nowrap">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Cliente</th>
+                  <th>DEUDA</th>
+                  <th>Estado</th>
+                  <th>Periodo</th>
+                  <th>Monto</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let deuda of deudas; index as i">
+                  <td>{{i+1}}
+                  </td>
+                  <td>{{ deuda.cliente.apepaterno }} {{ deuda.cliente.apematerno }} {{ deuda.cliente.nombres }}</td>
+                  <td>
+                    {{ deuda.deudaDescripcion.descripcion }}
+                  </td>
+                  <td>
+                    {{ deuda.deudaEstado.estado }}
+                  </td>
+                  <td>
+                    {{ deuda.periodo }}
+                  </td>
+                  <td>
+                    {{ deuda.saldo | currency: 'S/ ' }}
+                  </td>
+                  <td>
+                    <button class="btn btn-info btn-xs">
+                      Reporte
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div> -->
+
+    </div>
+  </div>

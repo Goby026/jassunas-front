@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { CostoService } from 'src/app/services/costo.service';
 import { DeudaService } from 'src/app/services/deuda.service';
@@ -25,15 +25,17 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DateService } from 'src/app/services/date.service';
 
-
-
 @Component({
   selector: 'app-cobranzas',
   templateUrl: './cobranzas.component.html',
   styleUrls: ['./cobranzas.component.css'],
 })
 export class CobranzasComponent implements OnInit {
+
+  @ViewChild('closeModal') closeModal!: ElementRef;
+
   tipoBusqueda = 'Nombre';
+  isDisabled = false;
 
   idCliente: number = 0;
   nombre_completo: string = '';
@@ -105,15 +107,15 @@ export class CobranzasComponent implements OnInit {
     this.pagos = [];
   }
 
-  mostrarCliente(id: any) {
+  mostrarCliente(cli : any) {
     this.panel_pagos = false;
     this.panel_condonacion = true;
     this.monto = 0;
-    this.idCliente = id;
+    this.idCliente = Number(cli.cliente.idclientes);
 
     // console.log(JSON.stringify(this.idCliente, null, 2));
 
-    this.clienteService.getClientById(id).subscribe({
+    this.clienteService.getClientById(Number(cli.cliente.idclientes)).subscribe({
       next: (resp: Cliente) => {
         this.cliente = resp;
         this.nombre_completo = `${resp.apepaterno} ${resp.apematerno} ${resp.nombres}`;
@@ -121,10 +123,12 @@ export class CobranzasComponent implements OnInit {
       error: (error) => console.log(error),
       complete: ()=>{
         // cargar costos del cliente
-        this.cargarCostosCliente(id);
+        this.cargarCostosCliente(Number(cli.cliente.idclientes));
+        // cerrar modal de clientes
+        this.closeModal.nativeElement.click();
       }
     });
-    this.cargarDeudasCliente(id);
+    this.cargarDeudasCliente(Number(cli.cliente.idclientes));
     this.clientes = [];
   }
 
@@ -149,7 +153,7 @@ export class CobranzasComponent implements OnInit {
   }
 
   // metodo para registrar entidad PagosServicio
-  regPagosServicio() {
+  regPagosServicio():void {
     if (this.pagos.length <= 0 || this.monto === 0) {
       alert('Nada para cobrar');
       return;
@@ -158,6 +162,8 @@ export class CobranzasComponent implements OnInit {
     if (!window.confirm('¿Realizar operación?')) {
       return;
     }
+
+    this.isDisabled = true;
 
     // seteando tipo de pago
     let tipoPago: TipoPagoServicio = {
@@ -211,16 +217,18 @@ export class CobranzasComponent implements OnInit {
       next: (resp: any) => {
         // registrando detalles de pago de deuda
         this.correlativo = Number(resp.pagosservicio.correlativo);
+        this.actualizarEstadoDeuda(this.deudasToUpdate);
+        this.cargarDeudasCliente(this.idCliente);
+        this.pagar(this.monto);
       },
       error: (error) => console.log(error),
       complete: () => {
         // actualizar estado de las deudas pagadas
-        this.actualizarEstadoDeuda(this.deudasToUpdate);
-        this.cargarDeudasCliente(this.idCliente);
-        this.pagar(this.monto);
+
         this.pagos=[];
         this.deudasToUpdate=[];
         this.monto = 0.0;
+        this.isDisabled = false;
       },
     });
   }

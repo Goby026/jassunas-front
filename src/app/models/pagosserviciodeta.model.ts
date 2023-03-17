@@ -10,7 +10,7 @@ export class PagosServicioDetalle {
     public cliente: Cliente,
     public pagosServicio: PagosServicio,
     public idcabecera?: number | null,
-    public iddetalle?: number, //PK
+    public id?: number, //PK
     public created_at?: Date | string,
     public updated_at?: Date | string
   ) {}

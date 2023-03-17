@@ -120,7 +120,7 @@
       </div>
       <div class="card-footer d-flex justify-content-end">
 
-        <button (click)="registrarAdelanto()" type="button" class="btn btn-success">
+        <button (click)="registrarAdelanto()" [disabled]="isDisabled" type="button" class="btn btn-success">
           Emitir recibo
         </button>
         <!-- <button (click)="verArregloPagos()" type="button" class="btn btn-warning">

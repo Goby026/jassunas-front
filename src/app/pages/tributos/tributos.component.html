@@ -108,7 +108,7 @@
       </div>
       <div class="card-footer">
         <div class="d-flex justify-content-end">
-          <button class="btn btn-success" (click)="registrarTributo()">Pagar tributo(s)</button>
+          <button class="btn btn-success" [disabled]="isDisabled" (click)="registrarTributo()">Pagar tributo(s)</button>
           <!-- <button class="btn btn-secondary" (click)="handleMonto()">HnadleMontos</button> -->
         </div>
       </div>

@@ -21,7 +21,7 @@ export class HistorialReport{
         let historialPagos: any[] = [];
 
         this.pagos.map( (item:PagosServicioDetalle)=>{
-          let arrItem: any = [item.iddetalle || 0, moment(item.created_at).format('DD-MM-YYYY'), item.detalletasas, item.pagosServicio.correlativo, `S/ ${item.monto}`, item.pagosServicio.esta];
+          let arrItem: any = [item.id || 0, moment(item.created_at).format('DD-MM-YYYY'), item.detalletasas, item.pagosServicio.correlativo, `S/ ${item.monto}`, item.pagosServicio.esta];
           historialPagos.push(arrItem);
         } );
         // crear pdf

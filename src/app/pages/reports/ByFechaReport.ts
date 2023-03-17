@@ -1,37 +1,33 @@
 import * as moment from 'moment';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { PagosServicio } from 'src/app/models/pagosservicio.model';
+import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-export class CajaReport {
+export class ByFechaReport {
   constructor(
     public titulo: string,
     public total: number,
-    // public nombre_completo: string,
-    // public direccion: string,
+    // public fechaInicio: string,
+    // public fechaFin: string,
     // public monto: number,
-    public pagos: PagosServicio[]
+    public pagos: PagosServicioDetalle[]
   ) {}
 
   public async reporte() {
-    let historialPagos: any[] = [];
-    let total: number = 0;
+    let recordedPagos: any[] = [];
     let fecha = moment().format('MM-DD-YYYY');
     let hora = moment().format('HH:mm');
 
-    this.pagos.map((item: PagosServicio) => {
+    this.pagos.map((item: PagosServicioDetalle) => {
       let arrItem: any = [
         item.id || 0,
         `${item.cliente.apepaterno} ${item.cliente.apematerno} ${item.cliente.nombres}`,
-        `${item.tipoPagoServicios.descripcion}`,
+        `${item.pagosServicio.tipoPagoServicios.descripcion}`,
         moment(item.created_at).format('DD-MM-YYYY'),
-        `S/ ${item.montopagado}.00`
+        `S/ ${item.monto}.00`
       ];
-
-      total += item.montopagado;
-
-      historialPagos.push(arrItem);
+      recordedPagos.push(arrItem);
     });
 
     // crear pdf
@@ -41,7 +37,6 @@ export class CajaReport {
       pageMargins: [ 20, 30, 20, 30 ],
       content: [
         { text: this.titulo, style: 'subheader' },
-        `Reporte de pagos realizados en la caja n°: ${25}`,
         {
           bold: true,
           ul: [`Fecha: ${fecha}`,`Hora: ${hora}`, 'JASS-UÑAS'],
@@ -52,7 +47,7 @@ export class CajaReport {
             widths: [20, '*', 100, 50,50],
             body: [
               ['Id', 'Cliente', 'Servicio', 'Fecha','Monto'],
-              ...historialPagos,
+              ...recordedPagos,
               // [
               //   {
               //     text: `Total: ${this.total}`,
@@ -71,7 +66,7 @@ export class CajaReport {
               [
                 '***',
                 'TOTAL:',
-                `S/ ${total}`
+                `S/ ${this.total}`
               ],
             ],
           },

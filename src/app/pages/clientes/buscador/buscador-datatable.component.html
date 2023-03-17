@@ -1,1 +1,32 @@
-<p>buscador-datatable works!</p>
+<div class="table-responsive text-nowrap">
+  <!-- <table class="table table-sm"> -->
+    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>N° DNI</th>
+        <th>Cliente/Usuario de servicios</th>
+        <th>Estado</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody class="table-border-bottom-0">
+      <tr *ngFor="let cliente of clientes; let i = index">
+        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ cliente.idclientes }}</strong></td>
+        <td>{{ cliente.dni }}</td>
+        <td>
+          <p class="text-primary m-0">{{ cliente.apepaterno }} {{ cliente.apematerno }} {{ cliente.nombres }}
+          </p>
+        </td>
+        <td><span class="badge bg-label-primary me-1">Active</span></td>
+        <td>
+          <button class="btn btn-success btn-sm" (click)="enviarCliente(cliente)">Seleccionar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- <div class="mt-4">
+    <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
+    </pagination-controls>
+  </div> -->
+</div>

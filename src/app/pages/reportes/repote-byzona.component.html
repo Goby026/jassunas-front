@@ -1,0 +1,90 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <form [formGroup]="zonaForm" (ngSubmit)="reporteDeudasZonaAnio()">
+        <div class="row mb-3">
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Zona</label>
+            <div class="col-sm-3">
+              <select
+                class="form-select"
+                formControlName="zona">
+                <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">{{ zona.detazona }}</option>
+              </select>
+            </div>
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Año</label>
+            <div class="col-sm-3">
+              <select
+                class="form-select"
+                name=""
+                formControlName="anio">
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+              </select>
+            </div>
+            <div class="col-sm-2">
+              <button type="submit" class="btn btn-info">Ver</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="row">
+        <h5 class="col-md-6 card-header">Zonas / usuarios</h5>
+        <!-- <div class="col-md-6 d-flex justify-content-end">
+          <button class="btn btn-info btn-xs">PDF</button>
+        </div> -->
+      </div>
+      <div class="card-body">
+        <div class="table-responsive text-nowrap">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>DEUDA</th>
+                <th>Estado</th>
+                <th>Periodo</th>
+                <th>Monto</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let deuda of deudas; index as i">
+                <td>{{i+1}}
+                </td>
+                <td>{{ deuda.cliente.apepaterno }} {{ deuda.cliente.apematerno }} {{ deuda.cliente.nombres }}</td>
+                <td>
+                  {{ deuda.deudaDescripcion.descripcion }}
+                </td>
+                <td>
+                  {{ deuda.deudaEstado.estado }}
+                </td>
+                <td>
+                  {{ deuda.periodo }}
+                </td>
+                <td>
+                  {{ deuda.saldo | currency: 'S/ ' }}
+                </td>
+                <td>
+                  <button class="btn btn-info btn-xs">
+                    Reporte
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

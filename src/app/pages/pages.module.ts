@@ -30,6 +30,11 @@ import { ConfiguracionComponent } from './configuracion/configuracion.component'
 import { DataTablesModule } from 'angular-datatables';
 import { FormularioComponent } from './configuracion/formulario.component';
 import { BuscadorDatatableComponent } from './clientes/buscador/buscador-datatable.component';
+import { RepoteBycajaComponent } from './reportes/repote-bycaja.component';
+import { RepoteByclienteComponent } from './reportes/repote-bycliente.component';
+import { RepoteByzonaComponent } from './reportes/repote-byzona.component';
+import { RepoteBytupaComponent } from './reportes/repote-bytupa.component';
+import { RepoteByfechasComponent } from './reportes/repote-byfechas.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +59,12 @@ import { BuscadorDatatableComponent } from './clientes/buscador/buscador-datatab
     CostoComponent,
     ConfiguracionComponent,
     FormularioComponent,
-    BuscadorDatatableComponent
+    BuscadorDatatableComponent,
+    RepoteBycajaComponent,
+    RepoteByclienteComponent,
+    RepoteByzonaComponent,
+    RepoteBytupaComponent,
+    RepoteByfechasComponent
   ],
   exports:[
     DashboardComponent,
