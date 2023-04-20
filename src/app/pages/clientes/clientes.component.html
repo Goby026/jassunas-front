@@ -17,10 +17,10 @@
 
         <div class="table-responsive text-nowrap">
           <!-- <table class="table table-sm"> -->
-            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
             <thead>
               <tr>
-                <th>#</th>
+                <th>COD-CLI</th>
                 <th>N° DNI</th>
                 <th>Cliente/Usuario de servicios</th>
                 <th>Estado</th>
@@ -29,7 +29,7 @@
             </thead>
             <tbody class="table-border-bottom-0">
               <tr *ngFor="let cliente of clientes; let i = index">
-                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ cliente.idclientes }}</strong></td>
+                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>COD-{{ cliente.codCli }}</strong></td>
                 <td>{{ cliente.dni }}</td>
                 <td>
                   <p class="text-primary m-0">{{ cliente.apepaterno }} {{ cliente.apematerno }} {{ cliente.nombres }}
@@ -47,8 +47,8 @@
                       <a class="dropdown-item" [routerLink]="['/dashboard/tarifarios',cliente.idclientes]"><i
                           class="bx bx-money me-1"></i> Tarifas</a>
 
-                      <a class="dropdown-item" (click)="mantenimiento()" ><i
-                          class="bx bx-credit-card-alt me-1"></i> Costos</a>
+                      <a class="dropdown-item" (click)="mantenimiento()"><i class="bx bx-credit-card-alt me-1"></i>
+                        Costos</a>
 
                       <!-- <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Eliminar</a> -->
                     </div>
@@ -86,98 +86,55 @@
             <!-- DNI -->
             <div class="mb-3">
               <label for="dni" class="form-label">Dni</label>
-              <input
-                type="number"
-                class="form-control"
-                id="dni"
-                formControlName="dni"
-                />
+              <input type="number" class="form-control" id="dni" formControlName="dni" />
             </div>
 
             <!-- NOMBRES -->
             <div class="mb-3">
               <label for="nombres" class="form-label">Nombres</label>
-              <input
-                type="text"
-                class="form-control"
-                id="nombres"
-                formControlName="nombres"
-                />
+              <input type="text" class="form-control" id="nombres" formControlName="nombres" />
             </div>
 
             <!-- APELLIDO PATERNO -->
             <div class="mb-3">
               <label for="apepaterno" class="form-label">Ap. Paterno</label>
-              <input
-                type="text"
-                class="form-control"
-                id="apepaterno"
-                formControlName="apepaterno"
-                />
+              <input type="text" class="form-control" id="apepaterno" formControlName="apepaterno" />
             </div>
 
             <!-- APELLIDO MATERNO -->
             <div class="mb-3">
               <label for="apematerno" class="form-label">Ap. Materno</label>
-              <input
-                type="text"
-                class="form-control"
-                id="apematerno"
-                formControlName="apematerno"
-                />
+              <input type="text" class="form-control" id="apematerno" formControlName="apematerno" />
             </div>
 
             <!--DIRECCION-->
             <div class="mb-3">
               <label for="direccion" class="form-label">Dirección</label>
-              <input
-                type="text"
-                class="form-control"
-                id="direccion"
-                formControlName="direccion"
-                />
+              <input type="text" class="form-control" id="direccion" formControlName="direccion" />
             </div>
 
             <!--FECHA NACIMIENTO-->
             <div class="mb-3">
               <label for="fec_nac" class="form-label">Fec. Nacimiento</label>
-              <input
-                type="date"
-                class="form-control"
-                id="fec_nac"
-                formControlName="fec_nac"
-                />
+              <input type="date" class="form-control" id="fec_nac" formControlName="fec_nac" />
             </div>
 
             <!--NUMERO DE INSTALACIONES-->
             <div class="mb-3">
               <label for="num_instalaciones" class="form-label">Instalaciones</label>
-              <input
-                type="number"
-                class="form-control"
-                id="num_instalaciones"
-                formControlName="num_instalaciones"
-                />
+              <input type="number" class="form-control" id="num_instalaciones" formControlName="num_instalaciones" />
             </div>
 
             <!--NUMERO DE FAMILIAS-->
             <div class="mb-3">
               <label for="num_familias" class="form-label">N. Familias</label>
-              <input
-                type="number"
-                class="form-control"
-                id="num_familias"
-                formControlName="num_familias"
-                />
+              <input type="number" class="form-control" id="num_familias" formControlName="num_familias" />
             </div>
 
             <!--EXONERACIONES-->
             <div class="mb-3">
               <label for="exop" class="form-label">Exo_p</label>
-              <select
-                class="form-select"
-                id="exop"
-                formControlName="exo_p">
+              <select class="form-select" id="exop" formControlName="exo_p">
                 <option value="No">No</option>
                 <option value="Si">Si</option>
               </select>
@@ -185,10 +142,7 @@
 
             <div class="mb-3">
               <label for="exoa" class="form-label">Exo_a</label>
-              <select
-                class="form-select"
-                id="exoa"
-                formControlName="exo_a">
+              <select class="form-select" id="exoa" formControlName="exo_a">
                 <option value="No">No</option>
                 <option value="Si">Si</option>
               </select>
@@ -196,10 +150,7 @@
 
             <div class="mb-3">
               <label for="exof" class="form-label">Exo_f</label>
-              <select
-                class="form-select"
-                id="exof"
-                formControlName="exo_f">
+              <select class="form-select" id="exof" formControlName="exo_f">
                 <option value="No">No</option>
                 <option value="Si">Si</option>
               </select>
@@ -208,30 +159,19 @@
             <!--FECHA INGRESO-->
             <div class="mb-3">
               <label for="fec_ing" class="form-label">Fec. Ingreso</label>
-              <input
-                type="date"
-                class="form-control"
-                id="fec_ing"
-                formControlName="fec_ing"/>
+              <input type="date" class="form-control" id="fec_ing" formControlName="fec_ing" />
             </div>
 
             <!--FECHA BAJA-->
             <div class="mb-3">
               <label for="fec_baja" class="form-label">Fec. Baja</label>
-              <input
-                type="date"
-                class="form-control"
-                id="fec_baja"
-                formControlName="fec_baja"/>
+              <input type="date" class="form-control" id="fec_baja" formControlName="fec_baja" />
             </div>
 
             <!--TIPO CLIENTE-->
             <div class="mb-3">
               <label for="tipoCliente" class="form-label">Tipo de Cliente</label>
-              <select
-                class="form-select"
-                id="tipoCliente"
-                formControlName="tipoCliente">
+              <select class="form-select" id="tipoCliente" formControlName="tipoCliente">
                 <option *ngFor="let tipo of tipoClientes" [value]="tipo.idtipocliente">
                   {{tipo.descripcion}}
                 </option>
@@ -241,10 +181,7 @@
             <!--ZONA-->
             <div class="mb-3">
               <label for="zona" class="form-label">Zona</label>
-              <select
-                class="form-select"
-                id="zona"
-                formControlName="zona">
+              <select class="form-select" id="zona" formControlName="zona">
                 <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">
                   {{ zona.detazona }}
                 </option>
@@ -254,13 +191,16 @@
             <!--ESTADO-->
             <div class="mb-3">
               <label for="estado" class="form-label">Estado</label>
-              <select
-                class="form-select"
-                id="estado"
-                formControlName="estado">
+              <select class="form-select" id="estado" formControlName="estado">
                 <option value="0">INACTIVO</option>
                 <option value="1" selected>ACTIVO</option>
               </select>
+            </div>
+
+            <!--CODIGO DE CLIENTE-->
+            <div class="mb-3">
+              <label for="codCli" class="form-label">Código Cliente</label>
+              <input type="text" class="form-control" id="codCli" formControlName="codCli" />
             </div>
 
             <div class="mb-3">

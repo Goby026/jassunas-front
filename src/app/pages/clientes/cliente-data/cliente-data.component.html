@@ -22,6 +22,19 @@
                   <div *ngIf="f['dni'].errors['required']">Dni es requerido</div>
                 </div>
               </div>
+              <!-- CODIGO CLIENTE -->
+              <div class="mb-1">
+                <label for="txtCodCli" class="form-label">CÓDIGO CLIENTE <span class="text-danger">*</span> </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="txtCodCli"
+                  formControlName="codCli"
+                  [ngClass]="{ 'is-invalid': submitted && f['codCli'].errors }">
+                <div *ngIf="submitted && f['codCli'].errors" class="invalid-feedback">
+                  <div *ngIf="f['codCli'].errors['required']">Código es requerido</div>
+                </div>
+              </div>
               <!-- NOMBRES -->
               <div class="mb-1">
                 <label for="txtNombres" class="form-label">NOMBRES <span class="text-danger">*</span> </label>

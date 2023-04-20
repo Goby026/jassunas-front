@@ -24,6 +24,10 @@ export class CajaService {
     );
   }
 
+  getCajaById(idcaja: number):Observable<Caja>{
+    return this.http.get<Caja>(`${base_url}/cajas/${idcaja}`);
+  }
+
   getAllCajas(): Observable<Caja[]>{
     return this.http.get(`${base_url}/cajas`)
     .pipe(

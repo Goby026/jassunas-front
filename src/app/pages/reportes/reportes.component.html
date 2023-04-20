@@ -1,3 +1,4 @@
+<!-- SELECCION DE TIPO DE REPORTE -->
 <div class="row mb-3">
   <div class="col-md-6">
     <div class="card">
@@ -7,19 +8,24 @@
           <div class="d-flex justify-content-between gap-1">
             <select class="form-select" (change)="selOpc(tipo)" #tipo>
               <option value="0" selected>Seleccionar</option>
-              <!-- <option value="cliente">Pagos por cliente</option>
-              <option value="zona">Deudas por Zona</option>
-              <option value="tupa">Pagos por Tupa</option> -->
+              <option value="cliente">Reporte de deudas</option>
+              <option value="zona">Clientes por Zona</option>
+              <!-- <option value="tupa">Pagos por Tupa</option> -->
               <option value="pago">Pagos por fecha</option>
               <option value="caja">Pagos por caja</option>
             </select>
-            <button *ngIf="clientePanel" class="btn btn-info">Buscar</button>
+            <!-- <button *ngIf="clientePanel" class="btn btn-info">Buscar</button> -->
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
+
+
+
 <!-- <button (click)="getMes()">Ver Mes</button> -->
 
 <!-- REPORTE POR CLIENTE -->

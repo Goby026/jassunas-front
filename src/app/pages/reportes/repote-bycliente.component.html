@@ -2,87 +2,159 @@
 <div class="row">
   <div class="col-md-12">
 
+    <form [formGroup]="clienteForm" (ngSubmit)="reporteDeudas()">
     <div class="card mb-3">
       <div class="card-body">
-        <form [formGroup]="clienteForm" (ngSubmit)="reporteDeudasCliente()">
-        <div class="row mb-3">
+          <div class="row mb-3">
 
-            <label class="col-sm-2 col-form-label" for="basic-default-name">Desde</label>
-            <div class="col-sm-3">
-              <input
-                type="date"
-                class="form-control"
-                formControlName="cinicio">
+            <div class="row">
+              <div class="col">
+                <label class="form-label" for="txtDesde">Desde</label>
+                <input type="date" id="txtDesde" class="form-control" formControlName="cinicio">
+              </div>
+              <div class="col">
+                <label class="form-label" for="txtHasta">Hasta</label>
+                <input type="date" id="txtHasta" class="form-control" formControlName="cfin">
+              </div>
+
+              <!-- CHECKBOXES -->
+
+              <div class="col d-flex align-items-center justify-content-center">
+                <div class="form-check">
+                  <br>
+                  <input class="form-check-input" type="checkbox" id="byZonas" name="cbTipo" (change)="setZonaSelect(cbZonas, cbCliente)" #cbZonas>
+                  <label class="form-check-label" for="byZonas"> ZONAS </label>
+                </div>
+              </div>
+
+              <div class="col d-flex align-items-center justify-content-center">
+                <div class="form-check">
+                  <br>
+                  <input class="form-check-input" type="checkbox" id="byCliente" name="cbTipo" (change)="setClienteButton(cbCliente, cbZonas)" #cbCliente>
+                  <label class="form-check-label" for="byCliente"> CLIENTE </label>
+                </div>
+              </div>
+
             </div>
-
-            <label class="col-sm-2 col-form-label" for="basic-default-name">Hasta</label>
-            <div class="col-sm-3">
-              <input
-                type="date"
-                class="form-control"
-                formControlName="cfin">
-            </div>
-
-
-            <div class="col-sm-2">
-              <button type="submit" class="btn btn-info">Ver</button>
-            </div>
-
           </div>
-        </form>
       </div>
     </div>
 
     <!-- <div class="card mb-3" *ngIf="zonaPanel"> -->
     <div class="card mb-3">
       <div class="row">
-        <h5 class="col-md-6 card-header">Deudas de cliente {{ 'ASD' }}</h5>
-        <!-- <div class="col-md-6 d-flex justify-content-end">
-          <button class="btn btn-info btn-xs">PDF</button>
-        </div> -->
+        <div class="col-md-10">
+
+          <div class="card-header d-flex justify-content-between">
+            <div class="card-title">
+              <h5>Reporte de deudas</h5>
+              <p class="text-primary">{{ nombre_completo }}</p>
+            </div>
+            <div class="mb-3" *ngIf="mostrarZonas">
+              <label for="exampleFormControlSelect1" class="form-label">Zonas</label>
+              <div class="d-flex justify-content-between gap-1">
+                <select class="form-select" (change)="setCodZona(tipo)" #tipo>
+                  <option value="0" selected>Seleccionar</option>
+                  <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">{{zona.detazona}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3" *ngIf="buscarCliente">
+              <label for="exampleFormControlSelect1" class="form-label">Cliente</label>
+              <div class="d-flex justify-content-between gap-1">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#largeModal">
+                  <i class='bx bx-user-pin'></i> Clientes
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary btn-sm mt-5">Mostrar</button>
+        </div>
       </div>
-      <div class="card-body">
-        <div class="table-responsive text-nowrap">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Cliente</th>
-                <th>DEUDA</th>
-                <th>Estado</th>
-                <th>Periodo</th>
-                <th>Monto</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let deuda of deudas; index as i">
-                <td>{{i+1}}
-                </td>
-                <td>{{ deuda.cliente.apepaterno }} {{ deuda.cliente.apematerno }} {{ deuda.cliente.nombres }}</td>
-                <td>
-                  {{ deuda.deudaDescripcion.descripcion }}
-                </td>
-                <td>
-                  {{ deuda.deudaEstado.estado }}
-                </td>
-                <td>
-                  {{ deuda.periodo }}
-                </td>
-                <td>
-                  {{ deuda.saldo | currency: 'S/ ' }}
-                </td>
-                <td>
-                  <button class="btn btn-info btn-xs">
-                    Reporte
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card-body">
+            <div class="table-responsive text-nowrap">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Concepto</th>
+                    <th>Estado</th>
+                    <th>Periodo</th>
+                    <th>Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let deuda of deudas | paginate:{
+                    itemsPerPage: tableSize,
+                    currentPage: page,
+                    totalItems: count} ; index as i">
+                    <td>{{i+1}}
+                    </td>
+                    <td>{{ deuda.cliente.apepaterno }} {{ deuda.cliente.apematerno }} {{ deuda.cliente.nombres }}</td>
+                    <td>
+                      {{ deuda.deudaDescripcion.descripcion }}
+                    </td>
+                    <td>
+                      {{ deuda.deudaEstado.estado }}
+                    </td>
+                    <td>
+                      {{ deuda.periodo | date:'medium' }}
+                    </td>
+                    <td>
+                      {{ deuda.saldo | currency: 'S/ ' }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!--Including the pagination control.-->
+              <div class="mt-3">
+                <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+              </div>
+              <div *ngIf="mostrarZonas" class="mt-4 d-flex justify-content-end">
+                <button (click)="reporteByZona()" class="btn btn-danger btn-sm">Exportar PDF</button>
+              </div>
+              <div *ngIf="buscarCliente" class="mt-4 d-flex justify-content-end">
+                <button (click)="reporteByCliente()" class="btn btn-danger btn-sm">Exportar PDF</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    </form>
 
+  </div>
+</div>
+
+
+<!-- MODAL -->
+<div #closeModal class="modal fade" id="largeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel3">Buscar cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <app-buscador-datatable (salida)="mostrarCliente($event)"></app-buscador-datatable>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          Cerrar
+        </button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
   </div>
 </div>

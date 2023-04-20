@@ -96,7 +96,8 @@
                   </button>
                 </td>
                 <td>
-                  <button (click)="seguimiento(caja.idcaja)" class="btn btn-info btn-xs">Seguimiento</button>
+                  <!-- <button (click)="seguimiento(caja.idcaja)" class="btn btn-info btn-xs">Seguimiento</button> -->
+                  <a [routerLink]="['/dashboard/seguimiento', caja.idcaja]" class="btn btn-info btn-xs">Seguimiento</a>
                 </td>
               </tr>
             </tbody>
@@ -111,90 +112,6 @@
     </div>
   </div>
 </div>
-
-
-<!-- SEGUIMIENTO -->
-<div class="row mt-4" *ngIf="panelSeguimiento">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-header d-flex justify-content-between">
-        <h3>SEGUIMIENTO CAJA {{caja.idcaja}}</h3>
-      </div>
-      <div class="card-body">
-        <!-- <input type="date" class="form-control mb-4" (change)="buscarFecha(fecha.value)" #fecha> -->
-        <div class="table-responsive text-nowrap">
-          <!-- <table class="table table-sm"> -->
-          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Caja</th>
-                <th>Recibo</th>
-                <th>Cliente</th>
-                <th>Concepto</th>
-                <th>Fecha</th>
-                <th>Monto</th>
-                <th>Dcto</th>
-                <th>Cobrado por</th>
-                <th>Estado</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody class="table-border-bottom-0">
-              <tr *ngFor="let pago of pagosservicios; let i = index">
-                <td> {{ i+1 }} </td>
-                <td> {{ pago.caja.ncaja }} </td>
-                <td> {{ pago.correlativo }} </td>
-                <td> {{ pago.cliente.apepaterno }} {{ pago.cliente.apematerno }} {{
-                  pago.cliente.nombres }}</td>
-                <td>
-                  {{ pago.tipoPagoServicios.descripcion}}
-                </td>
-                <td> {{ pago.fecha | date: 'short' }} </td>
-                <td> {{ pago.montopagado | currency: 'S/ ' }} </td>
-                <td> {{ pago.montodescuento | currency: 'S/ ' }} </td>
-                <td> {{ pago.usuario?.username }} </td>
-                <td>
-                  <span class="badge bg-label-primary me-1"
-                    *ngIf=" pago.esta === 1 ;else seguimientoCerrado">Cobrado</span>
-                  <ng-template #seguimientoCerrado>
-                    <span class="badge bg-label-danger me-1">Anulado</span>
-                  </ng-template>
-                </td>
-                <td>
-                  <div *ngIf="pago.esta !== 4" class="dropdown">
-                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                      <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                      <button class="dropdown-item" href="javascript:void(0);" (click)="anularTicket(pago)"><i
-                          class="bx bx-edit-alt me-1"></i> Anular recibo</button>
-                      <!-- <a class="dropdown-item" [routerLink]="['/dashboard/tarifarios',cliente.idclientes]"><i
-                          class="bx bx-money me-1"></i> Tarifas</a>
-
-                      <a class="dropdown-item" (click)="mantenimiento()" ><i
-                          class="bx bx-credit-card-alt me-1"></i> Costos</a> -->
-
-                      <!-- <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Eliminar</a> -->
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-            <!-- <tfoot>
-              <tr>
-                <td colspan="5">&nbsp;</td>
-                <td> <b>TOTAL</b> </td>
-                <td>{{ totalCajaSel | currency: 'S/ ' }}</td>
-              </tr>
-            </tfoot> -->
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <!-- Modal -->
 <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">

@@ -1,0 +1,118 @@
+<!-- FORMULARIO PARA APERTURAR -->
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card mb-4">
+      <h4 class="card-header">Seguimiento caja: {{ idcaja }}</h4>
+      <div class="card-body">
+        <form *ngIf="caja">
+          <div class="row mb-2">
+            <label class="col-sm-2 col-form-label" for="txtObs">Observaciones</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="txtObs" cols="1" rows="5" readonly>
+                {{caja.obs}}
+              </textarea>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-2 col-form-label" for="txtTotal">Total</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="txtTotal" [value]="totalCajaSel | currency: 'S/ ' " readonly>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-2 col-form-label" for="txtBalance">Balance</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="txtBalance" [value]="caja.balance" readonly>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-2 col-form-label" for="txtEstado">Estado</label>
+            <div class="col-sm-10">
+
+              <div class="alert alert-success" role="alert" *ngIf="caja.esta === 1; else cerrado">Abierto</div>
+
+              <ng-template #cerrado>
+                <div class="alert alert-danger" role="alert">Cerrado</div>
+              </ng-template>
+
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="card-body">
+        <!-- SEGUIMIENTO -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <!-- <input type="date" class="form-control mb-4" (change)="buscarFecha(fecha.value)" #fecha> -->
+                <div class="table-responsive text-nowrap">
+                  <!-- <table class="table table-sm"> -->
+                  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Caja</th>
+                        <th>Recibo</th>
+                        <th>Cliente</th>
+                        <th>Concepto</th>
+                        <th>Fecha</th>
+                        <th>Monto</th>
+                        <th>Dcto</th>
+                        <th>Cobrado por</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                      <tr *ngFor="let pago of pagosservicios; let i = index">
+                        <td> {{ i+1 }} </td>
+                        <td> {{ pago.caja.ncaja }} </td>
+                        <td> {{ pago.correlativo }} </td>
+                        <td> {{ pago.cliente.apepaterno }} {{ pago.cliente.apematerno }} {{
+                          pago.cliente.nombres }}</td>
+                        <td>
+                          {{ pago.tipoPagoServicios.descripcion}}
+                        </td>
+                        <td> {{ pago.fecha | date: 'short' }} </td>
+                        <td> {{ pago.montopagado | currency: 'S/ ' }} </td>
+                        <td> {{ pago.montodescuento | currency: 'S/ ' }} </td>
+                        <td> {{ pago.usuario?.username }} </td>
+                        <td>
+                          <span class="badge bg-label-primary me-1"
+                            *ngIf=" pago.esta === 1 ;else seguimientoCerrado">Cobrado</span>
+                          <ng-template #seguimientoCerrado>
+                            <span class="badge bg-label-danger me-1">Anulado</span>
+                          </ng-template>
+                        </td>
+                        <td>
+                          <p *ngIf="caja.esta !== 1; else noAnular">--</p>
+
+                          <ng-template #noAnular>
+                            <div *ngIf="pago.esta !== 4" class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                              <button class="dropdown-item" href="javascript:void(0);" (click)="anularTicket(pago)"><i
+                                  class="bx bx-edit-alt me-1"></i> Anular recibo</button>
+                            </div>
+                          </div>
+                          </ng-template>
+
+
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

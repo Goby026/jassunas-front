@@ -21,10 +21,12 @@ export class ClienteService {
 
   constructor( private http: HttpClient ) { }
 
+  /* LISTAR TODOS LOS CLIENTES */
   listClients(){
     return this.http.get(`${base_url}/clientes`);
   }
 
+  /* LISTAR CLIENTES POR ZONA*/
   listClientsByZona(idzona: number): Observable<Cliente[]>{
     return this.http.get(`${base_url}/clientes/zona/${idzona}`)
     .pipe(

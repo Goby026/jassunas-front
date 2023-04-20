@@ -35,7 +35,6 @@ export class ClientesComponent implements OnInit, OnDestroy {
   tableSize: number = 15;
   tableSizes: number[] = [5,10,15,20];
 
-
   constructor(
     private clienteService: ClienteService,
     private zonaService: ZonaService,
@@ -55,6 +54,9 @@ export class ClientesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.dtOptions = {
+      destroy: true
+    }
   }
 
   crearFormulario(): void{
@@ -75,7 +77,8 @@ export class ClientesComponent implements OnInit, OnDestroy {
       'fec_baja':new FormControl(null),
       'tipoCliente':new FormControl(null, Validators.required),
       'zona':new FormControl(null, Validators.required),
-      'estado':new FormControl(null, Validators.required)
+      'estado':new FormControl(null, Validators.required),
+      'codCli':new FormControl(0, Validators.required),
     });
   }
 
@@ -145,6 +148,7 @@ export class ClientesComponent implements OnInit, OnDestroy {
       'tipoCliente':this.cliente.tipoCliente.idtipocliente,
       'zona':this.cliente.zona.idtbzonas,
       'estado':this.cliente.estado,
+      'codCli':this.cliente.codCli,
     })
   }
 
@@ -182,6 +186,7 @@ export class ClientesComponent implements OnInit, OnDestroy {
       tipoCliente: tipoCli[0],
       zona: z[0],
       estado: this.clienteForm.get('estado')?.value,
+      codCli: this.clienteForm.get('codCli')?.value,
     }
 
     this.clienteService.updateClient(clienteUpdate)

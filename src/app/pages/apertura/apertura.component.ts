@@ -1,103 +1,84 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {Subject} from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { Caja } from 'src/app/models/caja.model';
 import { CajaService } from 'src/app/services/caja.service';
 
 import * as moment from 'moment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Usuario } from 'src/app/models/usuario.model';
-import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import { PagosServicio } from 'src/app/models/pagosservicio.model';
-import { PagoServicioEstado } from '../../models/pagoservicioestado.model';
-import { environment } from 'src/environments/environment';
+
+
 
 @Component({
   selector: 'app-apertura',
   templateUrl: './apertura.component.html',
-  styleUrls: ['./apertura.component.css']
+  styleUrls: ['./apertura.component.css'],
 })
-export class AperturaComponent implements OnInit, OnDestroy {
+export class AperturaComponent implements OnInit {
 
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
 
   cajasArr: Caja[] = [];
   cajasArrVerifi: Caja[] = [];
   caja!: Caja;
-  toUpdateCaja! : Caja;
+  toUpdateCaja!: Caja;
   usuario!: Usuario;
-  totalCajaSel: number = 0;
 
-  fechaHoy = moment().format("yyyy-MM-DD");
+
+  fechaHoy = moment().format('yyyy-MM-DD');
   cajaForm!: FormGroup;
   estadoCaja: boolean = false;
   panelSeguimiento: boolean = false;
 
-  pagosservicios: PagosServicio[] = [];
-
+  /* PAGINACION */
   page: number = 1;
   count: number = 0;
   tableSize: number = 10;
-  tableSizes: number[] = [5,10,15,20];
+  tableSizes: number[] = [5, 10, 15, 20];
 
   constructor(
     private cajaService: CajaService,
-    private pagoServicios: PagosServiciosService,
-    private usuarioService: UsuarioService) { }
+    private usuarioService: UsuarioService
+  ) {}
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      language: environment.language
-    }
     this.verificarEstadoCaja();
     this.listarCajas();
     this.crearFormularioCaja();
   }
 
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-    this.dtOptions = {
-      destroy: true
-    }
-  }
-
-  crearFormularioCaja(){
+  crearFormularioCaja() {
     this.cajaForm = new FormGroup({
-      'ncaja': new FormControl('',Validators.required),
-      'efectivoape': new FormControl(0.0, Validators.required)
+      ncaja: new FormControl('', Validators.required),
+      efectivoape: new FormControl(0.0, Validators.required),
     });
     this.usuario = this.usuarioService.getLocalUser();
   }
 
-  listarCajas(){
-    this.cajaService.getAllCajas()
-    .subscribe({
-      next: (resp: Caja[])=>{
+  listarCajas() {
+    this.cajaService.getAllCajas().subscribe({
+      next: (resp: Caja[]) => {
         this.cajasArr = resp;
       },
-      error: (error)=>console.log(error)
+      error: (error) => console.log(error),
     });
   }
 
-  verificarEstadoCaja(){
-    this.cajaService.getCajaStatus()
-    .subscribe({
-      next: (resp: Caja)=>{
+  verificarEstadoCaja() {
+    this.cajaService.getCajaStatus().subscribe({
+      next: (resp: Caja) => {
         if (resp) {
           this.caja = resp;
-          if(resp.esta!==1){
+          if (resp.esta !== 1) {
             this.estadoCaja = true;
-          }else{
+          } else {
             this.estadoCaja = false;
           }
-        }else{
+        } else {
           alert('No hay resultado de caja');
           this.estadoCaja = true;
         }
       },
-      error: error=> console.error(error)
+      error: (error) => console.error(error),
     });
   }
 
@@ -118,18 +99,16 @@ export class AperturaComponent implements OnInit, OnDestroy {
   //   });
   // }
 
-  buscarFecha(fecha: string){
-    this.cajaService.findCajaByDate(fecha)
-    .subscribe({
-       next: (resp)=>{
+  buscarFecha(fecha: string) {
+    this.cajaService.findCajaByDate(fecha).subscribe({
+      next: (resp) => {
         this.cajasArr = resp;
       },
-      error: (error)=>console.log(error)
+      error: (error) => console.log(error),
     });
   }
 
-  aperturarCaja(){
-
+  aperturarCaja() {
     if (!this.cajaForm.valid) {
       alert('Indique correctamente los datos!');
       return;
@@ -149,46 +128,25 @@ export class AperturaComponent implements OnInit, OnDestroy {
       totalefectivo: 0,
       balance: 0,
       obs: '',
-      usuario: this.usuario
-    }
+      usuario: this.usuario,
+    };
 
-    this.cajaService.saveCaja(caja)
-    .subscribe({
-      next: (resp:Caja)=>{
+    this.cajaService.saveCaja(caja).subscribe({
+      next: (resp: Caja) => {
         localStorage.setItem('caja_today', resp.fapertura.toString());
       },
-      error: (error)=>console.log(error),
-      complete: ()=>{
+      error: (error) => console.log(error),
+      complete: () => {
         alert('Caja aperturada correctamente');
         this.listarCajas();
         this.verificarEstadoCaja();
-      }
-    });
-
-  }
-
-  seguimiento(id: any):void{
-    this.totalCajaSel = 0;
-    this.panelSeguimiento = true;
-    this.pagoServicios.tracking(id)
-    .subscribe({
-      next: (resp: any)=>{
-        // console.log('RESP--->', resp.pagosservicios);
-        this.pagosservicios = resp.pagosservicios;
-        this.caja.idcaja = id;
       },
-      error: error => console.log(error),
-      complete: () => {
-        this.pagosservicios.map( (item:PagosServicio)=>{
-          this.totalCajaSel += item.montopagado;
-        } );
-
-        this.dtTrigger.next(null);
-      }
     });
   }
 
-  setearCaja(cajaSel: Caja):void{
+
+
+  setearCaja(cajaSel: Caja): void {
     // cajaSel.total = 0;
     cajaSel.fcierre = moment().toDate();
     // cajaSel.esta = 0;
@@ -196,68 +154,34 @@ export class AperturaComponent implements OnInit, OnDestroy {
     this.toUpdateCaja = cajaSel;
   }
 
-  anularTicket(pago: PagosServicio):void{
-    if (!confirm(`¿Anular ticket ${pago.correlativo} ?`)) {
-      return;
-    }
 
-    let pagoServEstado: PagoServicioEstado = {
-      idpagoestado: 4,
-      descripcion: null
-    }
 
-    let pagoToUpdate: PagosServicio = {
-      ...pago,
-      montopagado : 0.00,
-      montotasas : 0.00,
-      montodescuento : 0.00,
-      esta: 4,
-      pagoServicioEstado: pagoServEstado
-    }
-
-    this.pagoServicios.updatePagosServicio(pagoToUpdate)
-    .subscribe({
-      next: (resp: PagosServicio)=>{
-        if (resp.id != 0 || resp.id != null || resp.id != undefined) {
-          alert(`Pago ${resp.correlativo} anulado correctamente!`);
-        }
-        console.log(resp);
-      },
-      error: error => console.log(error),
-      complete: ()=> {
-        this.listarCajas();
-        this.seguimiento(pago.caja.idcaja);
-      }
-    });
-
-  }
-
-  cerrarCaja():void{
-    this.toUpdateCaja.total = 0.00;
+  cerrarCaja(): void {
+    this.toUpdateCaja.total = 0.0;
     this.toUpdateCaja.esta = 0;
-    this.cajaService.closeCaja(this.toUpdateCaja)
-    .subscribe({
-      next: (resp: any)=>{
+    this.cajaService.closeCaja(this.toUpdateCaja).subscribe({
+      next: (resp: any) => {
         console.log(resp);
       },
-      error: error => console.log(error),
-      complete: ()=> this.listarCajas()
+      error: (error) => console.log(error),
+      complete: () => this.listarCajas(),
     });
   }
 
-  calculos():void{
-    this.toUpdateCaja.balance = Number(this.toUpdateCaja.totalefectivo - this.toUpdateCaja.total);
+  calculos(): void {
+    this.toUpdateCaja.balance = Number(
+      this.toUpdateCaja.totalefectivo - this.toUpdateCaja.total
+    );
   }
 
-  onTableDataChange( event: any ){
+  onTableDataChange(event: any) {
     this.page = event;
     this.listarCajas();
   }
 
-  onTableSizeChange(event: any):void{
+  onTableSizeChange(event: any): void {
     this.tableSize = event.target.value;
     this.page = 1;
     this.listarCajas();
   }
-
 }

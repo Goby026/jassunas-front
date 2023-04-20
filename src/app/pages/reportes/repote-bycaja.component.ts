@@ -9,7 +9,7 @@ import { PagosServicio } from '../../models/pagosservicio.model';
 })
 export class RepoteBycajaComponent implements OnInit {
 
-  public idCaja: number = 43;
+  public idCaja: number = 0;
   public pagos!: PagosServicio[];
 
   constructor( private pagosServiciosService:PagosServiciosService ) { }
@@ -18,6 +18,11 @@ export class RepoteBycajaComponent implements OnInit {
   }
 
   crearReporte(){
+
+    if(this.idCaja <= 0){
+      alert('Nro de caja inválido');
+      return;
+    }
 
     let total: number = 0.0;
 

@@ -35,6 +35,7 @@ import { RepoteByclienteComponent } from './reportes/repote-bycliente.component'
 import { RepoteByzonaComponent } from './reportes/repote-byzona.component';
 import { RepoteBytupaComponent } from './reportes/repote-bytupa.component';
 import { RepoteByfechasComponent } from './reportes/repote-byfechas.component';
+import { SeguimientoComponent } from './apertura/seguimiento/seguimiento.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { RepoteByfechasComponent } from './reportes/repote-byfechas.component';
     RepoteByclienteComponent,
     RepoteByzonaComponent,
     RepoteBytupaComponent,
-    RepoteByfechasComponent
+    RepoteByfechasComponent,
+    SeguimientoComponent
   ],
   exports:[
     DashboardComponent,

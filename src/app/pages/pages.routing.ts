@@ -16,6 +16,7 @@ import { VouchersComponent } from './cobranzas/vouchers/vouchers.component';
 import { CarritoComponent } from './cobranzas/carrito/carrito.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
+import { SeguimientoComponent } from './apertura/seguimiento/seguimiento.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,7 @@ const routes: Routes = [
       { path: 'carrito', component: CarritoComponent, data: { titulo: 'Pagos' } },
       { path: 'reportes', component: ReportesComponent, data: { titulo: 'Reportes' } },
       { path: 'configuracion', component: ConfiguracionComponent, data: { titulo: 'Configuración' } },
+      { path: 'seguimiento/:idcaja', component: SeguimientoComponent, data: { titulo: 'Seguimiento' } },
       // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     ],
   },

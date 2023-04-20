@@ -71,7 +71,8 @@ export class ClienteDataComponent implements OnInit {
       'fec_baja': new FormControl(moment().format('YYYY-MM-DD')),
       'tipoCliente': new FormControl(),
       'zona': new FormControl(),
-      'estado': new FormControl(1)
+      'estado': new FormControl(1),
+      'codCli': new FormControl(0, Validators.required)
     });
   }
 
@@ -159,7 +160,8 @@ export class ClienteDataComponent implements OnInit {
       fec_baja: this.clienteForm.get('fec_baja')?.value,
       tipoCliente: tipoCli,
       zona: zzona,
-      estado: '1'
+      estado: '1',
+      codCli: this.clienteForm.get('codCli')?.value,
     }
 
     // REGISTRAR CLIENTE

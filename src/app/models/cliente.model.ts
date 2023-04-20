@@ -20,6 +20,7 @@ export class Cliente {
     public tipoCliente: TipoCliente,
     public zona: Zona,
     public estado: string,
+    public codCli: string,
     public created_at?: Date,
     public updated_at?: Date,
     public idclientes?: number | string

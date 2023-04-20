@@ -9,53 +9,89 @@ import { Deuda } from '../models/deuda.model';
 const base_url = environment.base_url;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DeudaService {
-
-  constructor( private http: HttpClient ) { }
+  constructor(private http: HttpClient) {}
 
   // obtener deudas con estado pendiente
-  getUserDebt(idCliente: number){
-    return this.http.get(`${base_url}/deudas/buscar/${idCliente}`)
-    .pipe(
-      map( (resp: any) =>{
-        if(resp){
-          return resp.deudas.filter( (item:any)=>{
+  getUserDebt(idCliente: number) {
+    return this.http.get(`${base_url}/deudas/buscar/${idCliente}`).pipe(
+      map((resp: any) => {
+        if (resp) {
+          return resp.deudas.filter((item: any) => {
             return item.deudaEstado.iddeudaEstado === 3;
           });
-        }else{
-          return []
+        } else {
+          return [];
         }
       })
-     );
+    );
     // return this.http.get(`${base_url}/deudas/buscar/${idCliente}`);
   }
 
-  // obtener todas las deudas
-  getAllUserDebt(idCliente: number){
-    return this.http.get(`${base_url}/deudas/buscar/${idCliente}`)
-    .pipe(
-      map( (resp: any) => resp.deudas as Deuda[])
-     );
+  /* TODAS LAS DEUDAS */
+  getAllUserDebt(idCliente: number) {
+    return this.http
+      .get(`${base_url}/deudas/buscar/${idCliente}`)
+      .pipe(map((resp: any) => resp.deudas as Deuda[]));
     // return this.http.get(`${base_url}/deudas/buscar/${idCliente}`);
   }
 
-  // listar deudas por zona y por año
+  /* DEUDAS POR ZONA Y POR AÑO */
   geDebtsByZoneAndYear(idzona: number, year: number): Observable<Deuda[]> {
-    return this.http.get(`${base_url}/deudas/buscar-zona/${idzona}/${year}`)
-    .pipe(
-      map( (resp: any) =>{
+    return this.http
+      .get(`${base_url}/deudas/buscar-zona/${idzona}/${year}`)
+      .pipe(
+        map((resp: any) => {
+          return resp.deudas as Deuda[];
+        })
+      );
+  }
+
+  /* DEUDAS POR ZONA Y POR RANGO DE FECHAS */
+  geDebtsByZoneAndDateRange(
+    idzona: number,
+    desde: String,
+    hasta: String
+  ): Observable<Deuda[]> {
+    return this.http
+      .get(`${base_url}/deudas/buscar-zona/${idzona}/${desde}/${hasta}`)
+      .pipe(
+        map((resp: any) => {
+          return resp.deudas as Deuda[];
+        })
+      );
+  }
+
+  /* DEUDAS POR CLIENTE Y POR RANGO DE FECHAS */
+  geDebtsByClientAndDateRange(
+    idcliente: number,
+    desde: String,
+    hasta: String
+  ): Observable<Deuda[]> {
+    return this.http
+      .get(`${base_url}/deudas/buscar-cliente/${idcliente}/${desde}/${hasta}`)
+      .pipe(
+        map((resp: any) => {
+          return resp.deudas as Deuda[];
+        })
+      );
+  }
+
+  /* DEUDAS POR ZONA*/
+  geDebtsByZone(idzona: number): Observable<Deuda[]> {
+    return this.http.get(`${base_url}/deudas/buscar-zona/${idzona}`).pipe(
+      map((resp: any) => {
         return resp.deudas as Deuda[];
       })
-     );
+    );
   }
 
   //()=> actualizar estado de deudas
   updateUserDebts(deuda: Deuda[]): Observable<Deuda[]> {
-    return this.http.put(`${base_url}/deudas/service`, deuda)
-    .pipe(
-      map( (res: any)=> res.deudas as Deuda[])
-    );
+    return this.http
+      .put(`${base_url}/deudas/service`, deuda)
+      .pipe(map((res: any) => res.deudas as Deuda[]));
   }
 }
