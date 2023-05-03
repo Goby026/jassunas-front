@@ -90,7 +90,11 @@
                       {{ cli.zona.detazona }}
                     </td>
                     <td>
-                      {{ cli.estado }}
+                      <span *ngIf="cli.estado === 1; else inactivo" class="badge bg-success">Habilitado</span>
+
+                      <ng-template #inactivo>
+                        <span class="badge bg-danger">Deshabilidato</span>
+                      </ng-template>
                     </td>
                   </tr>
                 </tbody>

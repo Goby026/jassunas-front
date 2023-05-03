@@ -22,11 +22,12 @@ export class ReportesComponent implements OnInit {
   tupaPanel: boolean = false;
   pagoPanel: boolean = false;
   cajaPanel: boolean = false;
+  tributo: boolean = false;
 
-  clientes: Cliente[] = [];
-  zonas: Zona[] = [];
-  deudas: Deuda[] = [];
-  nombre_completo: string = '';
+  // clientes: Cliente[] = [];
+  // zonas: Zona[] = [];
+  // deudas: Deuda[] = [];
+  // nombre_completo: string = '';
 
   constructor() {}
 
@@ -46,6 +47,7 @@ export class ReportesComponent implements OnInit {
         this.tupaPanel = false;
         this.pagoPanel = false;
         this.cajaPanel = false;
+        this.tributo = false;
         break;
       case 'zona':
         this.clientePanel = false;
@@ -53,6 +55,7 @@ export class ReportesComponent implements OnInit {
         this.tupaPanel = false;
         this.pagoPanel = false;
         this.cajaPanel = false;
+        this.tributo = false;
         break;
       case 'tupa':
         this.clientePanel = false;
@@ -60,6 +63,7 @@ export class ReportesComponent implements OnInit {
         this.tupaPanel = true;
         this.pagoPanel = false;
         this.cajaPanel = false;
+        this.tributo = false;
         break;
       case 'pago':
         this.clientePanel = false;
@@ -67,6 +71,7 @@ export class ReportesComponent implements OnInit {
         this.tupaPanel = false;
         this.pagoPanel = true;
         this.cajaPanel = false;
+        this.tributo = false;
         break;
       case 'caja':
           this.clientePanel = false;
@@ -74,6 +79,15 @@ export class ReportesComponent implements OnInit {
           this.tupaPanel = false;
           this.pagoPanel = false;
           this.cajaPanel = true;
+          this.tributo = false;
+          break;
+      case 'tributo':
+          this.clientePanel = false;
+          this.zonaPanel = false;
+          this.tupaPanel = false;
+          this.pagoPanel = false;
+          this.cajaPanel = false;
+          this.tributo = true;
           break;
 
       default:
@@ -82,6 +96,7 @@ export class ReportesComponent implements OnInit {
         this.tupaPanel = false;
         this.pagoPanel = false;
         this.cajaPanel = false;
+        this.tributo = false;
         break;
     }
   }

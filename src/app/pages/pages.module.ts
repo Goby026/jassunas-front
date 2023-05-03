@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { AppRoutingModule } from '../app-routing.module';
@@ -21,14 +22,13 @@ import { TarifarioComponent } from './tarifario/tarifario.component';
 import { TributosComponent } from './tributos/tributos.component';
 import { HistorialComponent } from './historial/historial.component';
 import { CondonacionComponent } from './cobranzas/condonacion/condonacion.component';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from '../interceptors/auth-interceptor.service';
 import { BuscadorComponent } from './clientes/buscador/buscador.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { CostoComponent } from './costo/costo.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
 import { DataTablesModule } from 'angular-datatables';
-import { FormularioComponent } from './configuracion/formulario.component';
+
 import { BuscadorDatatableComponent } from './clientes/buscador/buscador-datatable.component';
 import { RepoteBycajaComponent } from './reportes/repote-bycaja.component';
 import { RepoteByclienteComponent } from './reportes/repote-bycliente.component';
@@ -36,6 +36,13 @@ import { RepoteByzonaComponent } from './reportes/repote-byzona.component';
 import { RepoteBytupaComponent } from './reportes/repote-bytupa.component';
 import { RepoteByfechasComponent } from './reportes/repote-byfechas.component';
 import { SeguimientoComponent } from './apertura/seguimiento/seguimiento.component';
+import { ReporteBytributoComponent } from './reportes/reporte-bytributo.component';
+import { EgresosComponent } from './egresos/egresos.component';
+import { EgresoformComponent } from './egresos/egresoform.component';
+import { ConfigTarifasComponent } from './configuracion/config-tarifas/config-tarifas.component';
+import { FormularioComponent } from './configuracion/config-tarifas/formulario.component';
+import { CateEgresosComponent } from './configuracion/cate-egresos/cate-egresos.component';
+import { FormCateComponent } from './configuracion/cate-egresos/form-cate.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +73,13 @@ import { SeguimientoComponent } from './apertura/seguimiento/seguimiento.compone
     RepoteByzonaComponent,
     RepoteBytupaComponent,
     RepoteByfechasComponent,
-    SeguimientoComponent
+    SeguimientoComponent,
+    ReporteBytributoComponent,
+    EgresosComponent,
+    EgresoformComponent,
+    ConfigTarifasComponent,
+    CateEgresosComponent,
+    FormCateComponent
   ],
   exports:[
     DashboardComponent,

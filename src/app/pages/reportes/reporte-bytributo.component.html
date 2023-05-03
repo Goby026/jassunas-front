@@ -1,0 +1,92 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <form [formGroup]="requisitoForm" (ngSubmit)="listarPagosTributos()">
+        <div class="row mb-3">
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Tributo</label>
+            <div class="col-sm-2">
+              <select
+                class="form-select"
+                formControlName="tributo">
+                <option value="">Seleccionar</option>
+                <option *ngFor="let req of requisitos" [value]="req.codrequi">{{ req.requisitos }}</option>
+              </select>
+            </div>
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Desde</label>
+            <div class="col-sm-2">
+              <input
+                type="date"
+                class="form-control"
+                formControlName="inicio">
+            </div>
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Hasta</label>
+            <div class="col-sm-2">
+              <input
+                type="date"
+                class="form-control"
+                formControlName="fin">
+            </div>
+
+
+            <div class="col-sm-2 d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary">Ver</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="card-header">
+            Reporte de pagos por tributo y fechas
+          </h5>
+        </div>
+        <div class="col-md-6 d-flex justify-content-around align-items-center">
+          <button class="btn btn-primary btn-sm mr-4" (click)="crearPdf()">PDF</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive text-nowrap">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Dirección</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detalle of detalles; index as i">
+                <td>
+                  {{i+1}}
+                </td>
+                <td>
+                  {{ detalle.cliente.apepaterno }} {{ detalle.cliente.apematerno }} {{ detalle.cliente.nombres }}
+                </td>
+                <td>
+                  {{ detalle.direccion }}
+                </td>
+                <td>
+                  {{ detalle.createdAt }}
+                </td>
+                <td>
+                  {{ detalle.monto }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

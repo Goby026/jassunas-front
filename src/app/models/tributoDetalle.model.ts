@@ -16,7 +16,7 @@ export class TributoDetalle {
     public requisito:Requisito,
     public tributo:Tributo,
     public id?:number, //PK
-    public created_at?:Date | string,
+    public createdAt?:Date | string,
     public updated_at?:Date | string,
   ) {}
 }

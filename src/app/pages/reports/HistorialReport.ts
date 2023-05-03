@@ -1,4 +1,4 @@
-import { ItemHistorial } from 'src/app/interfaces/items-historial-interface';
+// import { ItemHistorial } from 'src/app/interfaces/items-historial-interface';
 import * as moment from 'moment';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -54,7 +54,14 @@ export class HistorialReport{
                   ...historialPagos
                 ]
               }
-            }
+            },
+            {
+              image: await this.getBase64ImageFromURL(
+                '../../../assets/img/jass.png'
+              ),
+              width: 90,
+              alignment: 'center',
+            },
           ],
           styles: {
             header: {

@@ -84,6 +84,13 @@ export class ByZonaReport {
             ],
           },
         },
+        {
+          image: await this.getBase64ImageFromURL(
+            '../../../assets/img/jass.png'
+          ),
+          width: 90,
+          alignment: 'center',
+        },
       ],
       styles: {
         header: {

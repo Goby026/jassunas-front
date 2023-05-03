@@ -1,0 +1,60 @@
+<div class="row">
+  <div class="col-md-8 mb-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4 class="card-title" style="text-transform: uppercase;">Tarifas</h4>
+          <button class="btn btn-primary" (click)="nuevo()">
+            <i class='bx bxs-plus-square'></i>
+          </button>
+        </div>
+        <hr>
+        <!-- <table class="table table-sm"> -->
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>DETALLE</th>
+              <th>MONTO</th>
+              <th>ESTADO</th>
+              <th>Editar</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th>ID</th>
+              <th>DETALLE</th>
+              <th>MONTO</th>
+              <th>ESTADO</th>
+              <th>Editar</th>
+            </tr>
+          </tfoot>
+          <tbody class="table-border-bottom-0">
+            <tr *ngFor="let tarifa of tarifas">
+              <td>{{ tarifa.idtarifario }}</td>
+              <td>{{ tarifa.detalletarifario }}</td>
+              <td>{{ tarifa.monto | currency: 'S/ ' }}</td>
+              <td>
+                <!-- <input *ngIf="tarifa.esta === 1; else noActivo" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked=""> -->
+                <div class="form-check form-switch">
+                  <input *ngIf="tarifa.esta === 1; else noActivo" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked="true" (click)="modificarEstado(activado, tarifa)" #activado>
+                  <!-- <label class="form-check-label" for="flexSwitchCheckChecked"></label> -->
+                </div>
+                <ng-template #noActivo>
+                  <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" (click)="modificarEstado(activado, tarifa)" #activado>
+                </ng-template>
+              </td>
+              <td>
+                <button class="btn btn-warning btn-sm" (click)="editar(tarifa.idtarifario)"><i class='bx bx-edit'></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <app-formulario *ngIf="form" [tarifas]="tarifas" [id]="idTarifa" (cerrar)="closeForm($event)" (actualizar)="recargarTarifas($event)"></app-formulario>
+  </div>
+</div>

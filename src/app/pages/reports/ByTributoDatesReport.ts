@@ -1,33 +1,37 @@
 import * as moment from 'moment';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
+import { TributoDetalle } from 'src/app/models/tributoDetalle.model';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-export class ByFechaReport {
+export class ByTributoDatesReport {
   constructor(
     public titulo: string,
-    public total: number,
-    // public fechaInicio: string,
-    // public fechaFin: string,
+    // public total: number,
+    public fechaInicio: string,
+    public fechaFin: string,
     // public monto: number,
-    public pagos: PagosServicioDetalle[]
+    public detalles: TributoDetalle[]
   ) {}
 
   public async reporte() {
-    let recordedPagos: any[] = [];
+    let recordDetalles: any[] = [];
     let fecha = moment().format('MM-DD-YYYY');
+    let inicio = moment(this.fechaInicio).format('MM-DD-YYYY');
+    let fin = moment(this.fechaFin).format('MM-DD-YYYY');
     let hora = moment().format('HH:mm');
+    let total = 0;
 
-    this.pagos.map((item: PagosServicioDetalle) => {
+    this.detalles.map((item: TributoDetalle) => {
       let arrItem: any = [
         item.id || 0,
         `${item.cliente.apepaterno} ${item.cliente.apematerno} ${item.cliente.nombres}`,
-        `${item.pagosServicio.tipoPagoServicios.descripcion}`,
-        moment(item.created_at).format('DD-MM-YYYY'),
+        `${item.direccion}`,
+        moment(item.createdAt).format('DD-MM-YYYY'),
         `S/ ${item.monto}.00`
       ];
-      recordedPagos.push(arrItem);
+      recordDetalles.push(arrItem);
+      total += 1;
     });
 
     // crear pdf
@@ -42,19 +46,16 @@ export class ByFechaReport {
           ul: [`Fecha: ${fecha}`,`Hora: ${hora}`, 'JASS-UÑAS'],
         },
         {
+          bold: false,
+          ul: [`Desde: ${inicio} Hasta: ${fin}`],
+        },
+        {
           style: 'tableExample',
           table: {
             widths: [20, '*', 100, 50,50],
             body: [
-              ['Id', 'Cliente', 'Servicio', 'Fecha','Monto'],
-              ...recordedPagos,
-              // [
-              //   {
-              //     text: `Total: ${this.total}`,
-              //     italics: true,
-              //     color: 'gray',
-              //   },
-              // ],
+              ['#', 'Cliente', 'Dirección', 'Fecha','Monto'],
+              ...recordDetalles,
             ],
           },
         },
@@ -64,9 +65,9 @@ export class ByFechaReport {
             widths: ['*', 50,50],
             body: [
               [
-                '***',
-                'TOTAL:',
-                `S/ ${this.total}`
+                '************',
+                '#CANT:',
+                `${total}`
               ],
             ],
           },
@@ -77,7 +78,7 @@ export class ByFechaReport {
             widths: ['*'],
             body: [
               [
-                'Sistema de gestión de pagos de la Junta Administradora de Agua Potable de Uñas',
+                `Sistema de gestión de pagos de la Junta Administradora de Agua Potable de Uñas - Hyo ${moment().year()}`,
               ],
             ],
           },

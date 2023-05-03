@@ -32,7 +32,7 @@ export class RepoteBycajaComponent implements OnInit {
       error: (err)=> console.log(err),
       complete: ()=>{
         let reporte = new CajaReport(
-          'Reporte de Caja',
+          `Reporte de Caja ${this.idCaja}`,
           total,
           this.pagos
           );

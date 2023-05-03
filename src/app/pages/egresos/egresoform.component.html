@@ -1,0 +1,87 @@
+<div class="card mb-4">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <h5 class="mb-0">Nuevo egreso</h5>
+    <small *ngIf="egresoFiltered" class="text-danger float-end">Nro caja: {{egresoFiltered[0].caja.idcaja }}</small>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="egresoForm" (ngSubmit)="registrar()">
+      <div class="row mb-3" *ngIf="tiposEgresos">
+        <label class="col-sm-4 col-form-label" for="txtCategoria">Categoría</label>
+        <div class="col-sm-8">
+          <div class="input-group input-group-merge">
+            <span class="input-group-text"><i class='bx bxs-collection'></i></span>
+            <select class="form-select" id="txtCategoria" formControlName="tipoEgreso">
+              <!-- <option>Seleccionar</option> -->
+              <option *ngFor="let tipo of tiposEgresos" [value]="tipo.idtipoegreso">{{tipo.descripcion}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label" for="txtRegistro">N° Registro</label>
+        <div class="col-sm-8">
+          <div class="input-group input-group-merge">
+            <span id="txtRegistro2" class="input-group-text"><i class='bx bx-file-blank'></i></span>
+            <input type="text" id="txtRegistro" class="form-control" placeholder="#" formControlName="nregistro">
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label" for="txtFecha">Fecha</label>
+        <div class="col-sm-8">
+          <div class="input-group input-group-merge">
+            <span class="input-group-text"><i class='bx bxs-calendar'></i></span>
+            <input type="date" id="txtFecha" class="form-control" formControlName="fecha">
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label" for="txtDocumento">Documento</label>
+        <div class="col-sm-8">
+          <div class="input-group input-group-merge">
+            <span id="txtDocumento2" class="input-group-text"><i class='bx bx-spreadsheet'></i></span>
+            <input type="text" id="txtDocumento" class="form-control" formControlName="documento">
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label" for="txtNombreRazon">Nombre / Razon Social</label>
+        <div class="col-sm-8">
+          <div class="input-group input-group-merge">
+            <span id="txtNombreRazon2" class="input-group-text"><i class="bx bx-buildings"></i></span>
+            <input type="text" id="txtNombreRazon" class="form-control" formControlName="nombrerazon">
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-sm-4 form-label" for="txtDetalle">Detalle</label>
+        <div class="col-sm-8">
+          <div class="input-group input-group-merge">
+            <span id="txtDetalle" class="input-group-text"><i class='bx bx-edit-alt'></i></span>
+            <textarea class="form-control" id="txtDetalle" rows="3" formControlName="detalle"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-sm-4 form-label" for="txtImporte">Importe</label>
+        <div class="col-sm-8">
+          <div class="input-group input-group-merge">
+            <span id="txtImporte2" class="input-group-text"><i class='bx bx-money'></i></span>
+            <input type="number" id="txtImporte" class="form-control" formControlName="importe">
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-end">
+        <div class="col-sm-10">
+          <button *ngIf="id === 0; else actualiza" type="submit" class="btn btn-primary">Registrar</button>
+          <ng-template #actualiza>
+            <button type="button" class="btn btn-warning" (click)="actualizarEgreso(id)">Actualizar</button>
+          </ng-template>
+          <button type="button" class="btn btn-danger" (click)="close
+          ()">Cancelar</button>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

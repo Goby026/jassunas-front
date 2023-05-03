@@ -1,0 +1,30 @@
+<div class="card mb-4">
+  <h5 class="card-header">Formulario Categorias Egresos</h5>
+  <form [formGroup]="categoriasForm" (ngSubmit)="registrarCategoria()">
+    <div class="card-body">
+
+      <div class="mb-3">
+        <label for="dataListDescripcion" class="form-label">Descripción</label>
+        <input
+          class="form-control"
+          list="datalistOptions"
+          id="dataListDescripcion"
+          placeholder="Escribe para buscar..."
+          formControlName="descripcion">
+        <datalist id="datalistOptions">
+          <option *ngFor="let tipo of tipoEgresos" [value]="tipo.descripcion
+        "></option>
+        </datalist>
+      </div>
+
+    </div>
+
+    <div class="card-footer border-top d-flex justify-content-around">
+      <button *ngIf="id === 0; else actualiza" type="submit" class="btn btn-primary">Registrar</button>
+      <ng-template #actualiza>
+        <button type="button" class="btn btn-warning" (click)="actualizarTipo()">Actualizar</button>
+      </ng-template>
+      <button type="button" class="btn btn-danger" (click)="close()">Cancelar</button>
+    </div>
+  </form>
+</div>

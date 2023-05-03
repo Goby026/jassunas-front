@@ -6,8 +6,7 @@ import { TarifasService } from 'src/app/services/tarifas.service';
 
 @Component({
   selector: 'app-formulario',
-  templateUrl: './formulario.component.html',
-  styleUrls: ['./formulario.component.css'],
+  templateUrl: './formulario.component.html'
 })
 export class FormularioComponent implements OnInit {
   @Input() tarifas!: Tarifario[];
@@ -80,6 +79,7 @@ export class FormularioComponent implements OnInit {
     }
   }
 
+  // MODIFICAR
   actualizarTarifa(): void {
     if (!this.tarifaForm.valid) {
       alert('Ingrese correctamente los datos!');

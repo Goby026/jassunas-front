@@ -1,5 +1,5 @@
 <!-- FORMULARIO PARA APERTURAR -->
-<div class="row mb-4">
+<div class="row mb-4" *ngIf="caja">
   <div class="col-md-12">
     <div class="card mb-4">
       <h4 class="card-header">Seguimiento caja: {{ idcaja }}</h4>
@@ -14,25 +14,39 @@
             </div>
           </div>
           <div class="row mb-2">
-            <label class="col-sm-2 col-form-label" for="txtTotal">Total</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="txtTotal" [value]="totalCajaSel | currency: 'S/ ' " readonly>
+            <label class="col-sm-2 col-form-label" for="txtTotal">Total ingresos</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control text-primary" id="txtTotal" [value]="caja.total | currency: 'S/ ' " readonly>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-2 col-form-label" for="txtEgresos">Total egresos</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control text-danger" id="txtEgresos"
+                [value]="totalEgresos | currency: 'S/ ' " readonly>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label class="col-sm-2 col-form-label" for="txtContabilizado">Total contabilizado</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control text-warning" id="txtContabilizado"
+                [value]="caja.totalefectivo | currency: 'S/ ' " readonly>
             </div>
           </div>
           <div class="row mb-2">
             <label class="col-sm-2 col-form-label" for="txtBalance">Balance</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="txtBalance" [value]="caja.balance" readonly>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="txtBalance" [value]="balance | currency: 'S/ '" readonly>
             </div>
           </div>
           <div class="row">
             <label class="col-sm-2 col-form-label" for="txtEstado">Estado</label>
-            <div class="col-sm-10">
+            <div class="col-sm-6">
 
-              <div class="alert alert-success" role="alert" *ngIf="caja.esta === 1; else cerrado">Abierto</div>
+              <div class="alert alert-success" role="alert" *ngIf="caja.esta === 1; else cerrado">Caja aperturada</div>
 
               <ng-template #cerrado>
-                <div class="alert alert-danger" role="alert">Cerrado</div>
+                <div class="alert alert-danger" role="alert">Caja cerrada</div>
               </ng-template>
 
             </div>
@@ -43,69 +57,152 @@
       <div class="card-body">
         <!-- SEGUIMIENTO -->
         <div class="row">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-body">
-                <!-- <input type="date" class="form-control mb-4" (change)="buscarFecha(fecha.value)" #fecha> -->
-                <div class="table-responsive text-nowrap">
-                  <!-- <table class="table table-sm"> -->
-                  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Caja</th>
-                        <th>Recibo</th>
-                        <th>Cliente</th>
-                        <th>Concepto</th>
-                        <th>Fecha</th>
-                        <th>Monto</th>
-                        <th>Dcto</th>
-                        <th>Cobrado por</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-border-bottom-0">
-                      <tr *ngFor="let pago of pagosservicios; let i = index">
-                        <td> {{ i+1 }} </td>
-                        <td> {{ pago.caja.ncaja }} </td>
-                        <td> {{ pago.correlativo }} </td>
-                        <td> {{ pago.cliente.apepaterno }} {{ pago.cliente.apematerno }} {{
-                          pago.cliente.nombres }}</td>
-                        <td>
-                          {{ pago.tipoPagoServicios.descripcion}}
-                        </td>
-                        <td> {{ pago.fecha | date: 'short' }} </td>
-                        <td> {{ pago.montopagado | currency: 'S/ ' }} </td>
-                        <td> {{ pago.montodescuento | currency: 'S/ ' }} </td>
-                        <td> {{ pago.usuario?.username }} </td>
-                        <td>
-                          <span class="badge bg-label-primary me-1"
-                            *ngIf=" pago.esta === 1 ;else seguimientoCerrado">Cobrado</span>
-                          <ng-template #seguimientoCerrado>
-                            <span class="badge bg-label-danger me-1">Anulado</span>
-                          </ng-template>
-                        </td>
-                        <td>
-                          <p *ngIf="caja.esta !== 1; else noAnular">--</p>
+          <div class="col-xl-12">
+            <h6 class="text-muted">Detalles de caja</h6>
+            <div class="nav-align-top mb-2">
+              <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                <li class="nav-item">
+                  <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home"
+                    aria-selected="false">
+                    <i class="tf-icons bx bx-receipt"></i> Pagos
+                    <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-warning">{{ pagosservicios.length }}</span>
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile"
+                    aria-selected="true">
+                    <i class="tf-icons bx bxs-receipt"></i> Egresos <span
+                      class="badge rounded-pill badge-center h-px-20 w-px-20 bg-warning">{{ egresos.length }}</span>
+                  </button>
+                </li>
+              </ul>
+              <div class="tab-content">
 
-                          <ng-template #noAnular>
-                            <div *ngIf="pago.esta !== 4" class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                              <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                              <button class="dropdown-item" href="javascript:void(0);" (click)="anularTicket(pago)"><i
-                                  class="bx bx-edit-alt me-1"></i> Anular recibo</button>
-                            </div>
-                          </div>
-                          </ng-template>
+                <!-- PAGOS -->
+                <div class="tab-pane fade active show" id="navs-pills-justified-home" role="tabpanel">
+                  <div class="card-body">
+                    <!-- <input type="date" class="form-control mb-4" (change)="buscarFecha(fecha.value)" #fecha> -->
+                    <div class="table-responsive text-nowrap">
+                      <!-- <table class="table table-sm"> -->
+                      <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Caja</th>
+                            <th>Recibo</th>
+                            <th>Cliente</th>
+                            <th>Concepto</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Dcto</th>
+                            <th>Cobrado por</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                          </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0">
+                          <tr *ngFor="let pago of pagosservicios; let i = index">
+                            <td> {{ i+1 }} </td>
+                            <td> {{ pago.caja.ncaja }} </td>
+                            <td> {{ pago.correlativo }} </td>
+                            <td> {{ pago.cliente.apepaterno }} {{ pago.cliente.apematerno }} {{
+                              pago.cliente.nombres }}</td>
+                            <td>
+                              {{ pago.tipoPagoServicios.descripcion}}
+                            </td>
+                            <td> {{ pago.fecha | date: 'short' }} </td>
+                            <td> {{ pago.montopagado | currency: 'S/ ' }} </td>
+                            <td> {{ pago.montodescuento | currency: 'S/ ' }} </td>
+                            <td> {{ pago.usuario?.username }} </td>
+                            <td>
+                              <span class="badge bg-label-primary me-1"
+                                *ngIf=" pago.esta === 1 ;else seguimientoCerrado">Cobrado</span>
+                              <ng-template #seguimientoCerrado>
+                                <span class="badge bg-label-danger me-1">Anulado</span>
+                              </ng-template>
+                            </td>
+                            <td>
+                              <p *ngIf="caja.esta !== 1; else noAnular">--</p>
+
+                              <ng-template #noAnular>
+                                <div *ngIf="pago.esta !== 4" class="dropdown">
+                                  <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                    data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                  </button>
+                                  <div class="dropdown-menu">
+                                    <button class="dropdown-item" href="javascript:void(0);"
+                                      (click)="anularTicket(pago)"><i class="bx bx-edit-alt me-1"></i> Anular
+                                      recibo</button>
+                                  </div>
+                                </div>
+                              </ng-template>
 
 
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- EGRESOS -->
+                <div class="tab-pane fade" id="navs-pills-justified-profile" role="tabpanel">
+                  <div class="table-responsive text-nowrap">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>N° REGISTRO</th>
+                          <th>FECHA</th>
+                          <th>DOCUMENTO</th>
+                          <th>NOMBRE / RAZON SOCIAL</th>
+                          <th>IMPORTE</th>
+                          <th>ESTADO</th>
+                          <th>ACCION</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let egreso of egresos; index as i ">
+                          <td>{{i+1}}
+                          </td>
+                          <td>{{ egreso.nregistro }}</td>
+                          <td>
+                            {{ egreso.fecha | date: 'medium' }}
+                          </td>
+                          <td>
+                            {{ egreso.documento }}
+                          </td>
+                          <td>
+                            {{ egreso.nombrerazon }}
+                          </td>
+                          <td>
+                            {{ egreso.importe | currency: 'S/ ' }}
+                          </td>
+                          <td>
+                            <span *ngIf="egreso.estado === 1; else inactivo"
+                              class="badge bg-success">Activo</span>
+
+                            <ng-template #inactivo>
+                              <span class="badge bg-danger">Anulado</span>
+                            </ng-template>
+                          </td>
+                          <td>
+                            <!-- <button class="btn btn-warning btn-sm" (click)="editar(egreso.idegreso)"><i class='bx bxs-edit'></i></button> -->
+                            <button *ngIf="egreso.estado === 1" class="btn btn-danger btn-sm"><i class='bx bx-task-x' (click)="anularEgreso(egreso)"></i></button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!--Including the pagination control.-->
+                    <div class="mt-4">
+                      <!-- <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
+                      </pagination-controls> -->
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

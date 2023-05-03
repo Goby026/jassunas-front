@@ -41,7 +41,6 @@ export class CajaReport {
       pageMargins: [ 20, 30, 20, 30 ],
       content: [
         { text: this.titulo, style: 'subheader' },
-        `Reporte de pagos realizados en la caja n°: ${25}`,
         {
           bold: true,
           ul: [`Fecha: ${fecha}`,`Hora: ${hora}`, 'JASS-UÑAS'],
@@ -86,6 +85,13 @@ export class CajaReport {
               ],
             ],
           },
+        },
+        {
+          image: await this.getBase64ImageFromURL(
+            '../../../assets/img/jass.png'
+          ),
+          width: 90,
+          alignment: 'center',
         },
       ],
       styles: {

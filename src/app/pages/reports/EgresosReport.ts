@@ -1,34 +1,40 @@
 import * as moment from 'moment';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
+import { Egreso } from 'src/app/models/egreso.model';
+import { TipoEgreso } from 'src/app/models/tipoegreso.model';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-export class ByFechaReport {
+export class EgresosReport {
   constructor(
     public titulo: string,
     public total: number,
-    // public fechaInicio: string,
-    // public fechaFin: string,
+    // public nombre_completo: string,
+    // public direccion: string,
     // public monto: number,
-    public pagos: PagosServicioDetalle[]
+    public egresos: Egreso[],
+    public tipos: TipoEgreso[],
   ) {}
 
   public async reporte() {
-    let recordedPagos: any[] = [];
+    let historialPagos: any[] = [];
+    let total: number = 0;
     let fecha = moment().format('MM-DD-YYYY');
     let hora = moment().format('HH:mm');
 
-    this.pagos.map((item: PagosServicioDetalle) => {
-      let arrItem: any = [
-        item.id || 0,
-        `${item.cliente.apepaterno} ${item.cliente.apematerno} ${item.cliente.nombres}`,
-        `${item.pagosServicio.tipoPagoServicios.descripcion}`,
-        moment(item.created_at).format('DD-MM-YYYY'),
-        `S/ ${item.monto}.00`
-      ];
-      recordedPagos.push(arrItem);
-    });
+    // this.egresos.map((item: Egreso) => {
+    //   let arrItem: any = [
+    //     item.id || 0,
+    //     `${item.cliente.apepaterno} ${item.cliente.apematerno} ${item.cliente.nombres}`,
+    //     `${item.tipoPagoServicios.descripcion}`,
+    //     moment(item.created_at).format('DD-MM-YYYY'),
+    //     `S/ ${item.montopagado}.00`
+    //   ];
+
+    //   total += item.montopagado;
+
+    //   historialPagos.push(arrItem);
+    // });
 
     // crear pdf
     const pdfDefinition: any = {
@@ -46,8 +52,8 @@ export class ByFechaReport {
           table: {
             widths: [20, '*', 100, 50,50],
             body: [
-              ['Id', 'Cliente', 'Servicio', 'Fecha','Monto'],
-              ...recordedPagos,
+              ['N° Reg.', 'Fecha', 'Documento', 'Nombre/Razon Social','Detalle', 'Importe'],
+              ...historialPagos,
               // [
               //   {
               //     text: `Total: ${this.total}`,
@@ -66,7 +72,7 @@ export class ByFechaReport {
               [
                 '***',
                 'TOTAL:',
-                `S/ ${this.total}`
+                `S/ ${total}`
               ],
             ],
           },

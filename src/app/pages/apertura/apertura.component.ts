@@ -126,6 +126,7 @@ export class AperturaComponent implements OnInit {
       ncaja: this.cajaForm.get('ncaja')?.value,
       total: 0,
       totalefectivo: 0,
+      totalegresos: 0,
       balance: 0,
       obs: '',
       usuario: this.usuario,

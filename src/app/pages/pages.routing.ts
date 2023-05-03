@@ -17,6 +17,9 @@ import { CarritoComponent } from './cobranzas/carrito/carrito.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
 import { SeguimientoComponent } from './apertura/seguimiento/seguimiento.component';
+import { EgresosComponent } from './egresos/egresos.component';
+import { ConfigTarifasComponent } from './configuracion/config-tarifas/config-tarifas.component';
+import { CateEgresosComponent } from './configuracion/cate-egresos/cate-egresos.component';
 
 const routes: Routes = [
   {
@@ -37,8 +40,12 @@ const routes: Routes = [
       { path: 'vouchers', component: VouchersComponent, data: { titulo: 'Confirmar-Vouchers' } },
       { path: 'carrito', component: CarritoComponent, data: { titulo: 'Pagos' } },
       { path: 'reportes', component: ReportesComponent, data: { titulo: 'Reportes' } },
-      { path: 'configuracion', component: ConfiguracionComponent, data: { titulo: 'Configuración' } },
+      { path: 'configuracion', component: ConfiguracionComponent, data: { titulo: 'Configuración' }, children: [
+        { path: 'config-tarifas', component: ConfigTarifasComponent, data: { titulo: 'Tarifas' } },
+        { path: 'cate-egresos', component: CateEgresosComponent, data: { titulo: 'Categorías Egresos' } },
+      ] },
       { path: 'seguimiento/:idcaja', component: SeguimientoComponent, data: { titulo: 'Seguimiento' } },
+      { path: 'egresos', component: EgresosComponent, data: { titulo: 'Egresos' } }
       // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     ],
   },

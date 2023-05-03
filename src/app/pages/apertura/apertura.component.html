@@ -65,6 +65,7 @@
                 <th>Inicio</th>
                 <th>Final</th>
                 <th>Usuario</th>
+                <th>Egresos</th>
                 <th>Total. Arqueo</th>
                 <th>Estado</th>
                 <th>Acción</th>
@@ -82,6 +83,7 @@
                 <td> {{ caja.fapertura | date: 'short' }} </td>
                 <td> {{ caja.fcierre | date: 'short' }} </td>
                 <td> {{ caja.usuario?.username }} </td>
+                <td> {{ caja.totalegresos | currency: 'S/ ' }} </td>
                 <td> {{ caja.total | currency: 'S/ ' }} </td>
                 <td>
                   <span class="badge bg-label-primary me-1" *ngIf=" caja.esta === 1 ;else cajaCerrada">Activo</span>

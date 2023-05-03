@@ -19,8 +19,8 @@ export class RequisitoService {
     });
   }
 
-  getReqById(codrequi: number){
-    return this.http.get(`${base_url}/requisitos/${codrequi}`);
+  getReqById(codrequi: number): Observable<Requisito>{
+    return this.http.get<Requisito>(`${base_url}/requisitos/${codrequi}`);
   }
 
   getAllRequisitos(): Observable<Requisito[]>{

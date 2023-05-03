@@ -8,6 +8,7 @@ export class Caja {
     public fcierre: Date | string,
     public total: number,
     public totalefectivo: number,
+    public totalegresos: number,
     public balance: number,
     public obs: string,
     public esta: number,

@@ -19,7 +19,7 @@ export class Cliente {
     public fec_baja: Date,
     public tipoCliente: TipoCliente,
     public zona: Zona,
-    public estado: string,
+    public estado: string | number,
     public codCli: string,
     public created_at?: Date,
     public updated_at?: Date,
