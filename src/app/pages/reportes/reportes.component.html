@@ -14,6 +14,7 @@
               <option value="pago">Pagos por fecha</option>
               <option value="caja">Pagos por caja</option>
               <option value="tributo">Pagos por tributo</option>
+              <option value="egreso">Egresos</option>
             </select>
             <!-- <button *ngIf="clientePanel" class="btn btn-info">Buscar</button> -->
           </div>
@@ -46,3 +47,6 @@
 
 <!-- REPORTE PAGOS POR TRIBUTO -->
 <app-reporte-bytributo *ngIf="tributo"></app-reporte-bytributo>
+
+<!-- REPORTE DE EGRESOS -->
+<app-reporte-egresos *ngIf="egreso"></app-reporte-egresos>

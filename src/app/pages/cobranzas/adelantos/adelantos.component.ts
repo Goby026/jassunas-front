@@ -29,7 +29,7 @@ export class AdelantosComponent implements OnInit {
 
   datos: any[] = [];
   anios: number[] = [];
-  anio = moment().year()-1;
+  anio = moment().year()-6;
   anioSel: any = 0;
   anioHtml: any;
   // idCosto: number = 0;
@@ -62,7 +62,7 @@ export class AdelantosComponent implements OnInit {
   }
 
   setearArregloAnios(){
-    for(let i = this.anio; i < this.anio+5; i++){
+    for(let i = this.anio; i < this.anio+8; i++){
       this.anios.push(i);
     }
   }
@@ -184,6 +184,7 @@ export class AdelantosComponent implements OnInit {
     });
 
     if (checkMes.checked) {
+      month.nannio = Number(this.anioSel);
       this.arregloPagar.push(month);
     }
 

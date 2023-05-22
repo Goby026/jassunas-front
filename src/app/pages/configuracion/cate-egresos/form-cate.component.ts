@@ -21,11 +21,12 @@ export class FormCateComponent implements OnInit {
 
   ngOnInit(): void {
     this.crearFormulario();
+    this.mostrarTarifa();
   }
 
   crearFormulario(): void {
     this.categoriasForm = new FormGroup({
-      descripcion: new FormControl('', Validators.required)
+      descripcion: new FormControl(null, Validators.required)
     });
   }
 

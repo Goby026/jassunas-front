@@ -83,8 +83,8 @@ export class CateEgresosComponent implements OnInit, OnDestroy {
 
   editar(id: any): void {
     this.form = false;
+    this.idTipoEgreso = id;
     setTimeout(() => {
-      this.idTipoEgreso = id;
       this.form = true;
     }, 200);
   }

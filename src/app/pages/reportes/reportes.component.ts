@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Cliente } from 'src/app/models/cliente.model';
-import { Deuda } from 'src/app/models/deuda.model';
-import { Zona } from 'src/app/models/zona.model';
 
 import * as moment from 'moment';
 import 'moment/locale/es';
@@ -23,6 +20,7 @@ export class ReportesComponent implements OnInit {
   pagoPanel: boolean = false;
   cajaPanel: boolean = false;
   tributo: boolean = false;
+  egreso: boolean = false;
 
   // clientes: Cliente[] = [];
   // zonas: Zona[] = [];
@@ -48,6 +46,7 @@ export class ReportesComponent implements OnInit {
         this.pagoPanel = false;
         this.cajaPanel = false;
         this.tributo = false;
+        this.egreso = false;
         break;
       case 'zona':
         this.clientePanel = false;
@@ -56,6 +55,7 @@ export class ReportesComponent implements OnInit {
         this.pagoPanel = false;
         this.cajaPanel = false;
         this.tributo = false;
+        this.egreso = false;
         break;
       case 'tupa':
         this.clientePanel = false;
@@ -64,6 +64,7 @@ export class ReportesComponent implements OnInit {
         this.pagoPanel = false;
         this.cajaPanel = false;
         this.tributo = false;
+        this.egreso = false;
         break;
       case 'pago':
         this.clientePanel = false;
@@ -72,6 +73,7 @@ export class ReportesComponent implements OnInit {
         this.pagoPanel = true;
         this.cajaPanel = false;
         this.tributo = false;
+        this.egreso = false;
         break;
       case 'caja':
           this.clientePanel = false;
@@ -80,6 +82,7 @@ export class ReportesComponent implements OnInit {
           this.pagoPanel = false;
           this.cajaPanel = true;
           this.tributo = false;
+          this.egreso = false;
           break;
       case 'tributo':
           this.clientePanel = false;
@@ -88,6 +91,16 @@ export class ReportesComponent implements OnInit {
           this.pagoPanel = false;
           this.cajaPanel = false;
           this.tributo = true;
+          this.egreso = false;
+          break;
+      case 'egreso':
+          this.clientePanel = false;
+          this.zonaPanel = false;
+          this.tupaPanel = false;
+          this.pagoPanel = false;
+          this.cajaPanel = false;
+          this.tributo = false;
+          this.egreso = true;
           break;
 
       default:
@@ -97,6 +110,7 @@ export class ReportesComponent implements OnInit {
         this.pagoPanel = false;
         this.cajaPanel = false;
         this.tributo = false;
+        this.egreso = false;
         break;
     }
   }

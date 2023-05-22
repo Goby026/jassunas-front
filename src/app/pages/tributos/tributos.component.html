@@ -55,7 +55,7 @@
         <div class="row">
           <!-- Small table -->
           <div class="col-md">
-            <table class="table table-sm">
+            <table class="table table-sm mb-3">
               <thead>
                 <tr>
                   <th>#</th>
@@ -83,7 +83,17 @@
                 </tr>
               </tbody>
             </table>
+
             <hr>
+
+            <div class="mb-3">
+              <label class="col-md-4 col-form-label">Observación</label>
+              <div class="col-md-12 mb-1">
+                <textarea class="form-control text-info" [(ngModel)]="observacion" id=""rows="4">
+                </textarea>
+              </div>
+            </div>
+
             <div class="mb-3 row mx-4">
               <label class="col-md-8 col-form-label">Sub-Total</label>
               <div class="col-md-4 mb-1">

@@ -1,14 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor( private router: Router ) { }
 
-  // isAuthenticated(): boolean {
-  //   let payload = localStorage.getItem('token');
-  //   return false;
+  constructor() {
+  }
+
+  // getDataUsuario(){
+  //   console.log('usuario', this.usuario);
+  //   this.cargarBien().subscribe();
+  //   return {
+  //     'usuario': this.usuario,
+  //     'roles': this.roles,
+  //     'rol': this.rol,
+  //   };
   // }
 }

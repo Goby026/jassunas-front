@@ -22,8 +22,8 @@ import { Costo } from 'src/app/models/costo.model';
 import { Caja } from 'src/app/models/caja.model';
 import { TipoPagoServicio } from 'src/app/models/tipopagoservicio.model';
 import { PagoServicioEstado } from 'src/app/models/pagoservicioestado.model';
-import { Ticket } from '../cobranzas/Ticket';
 import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
+import { TicketTributo } from '../cobranzas/TicketTributo';
 
 
 @Component({
@@ -39,6 +39,8 @@ export class TributosComponent implements OnInit {
   reqSel: Requisito[] = [];
   costos: Costo[] = [];
   tributosDetalle: TributoDetalle[] = [];  //MAIN
+  tributo!: Tributo;  //para mostrar la observacion
+  observacion: string = '';
   // cliente!: Cliente;
   nombre_completo: string = '';
   subTotal: number = 0;
@@ -147,9 +149,9 @@ export class TributosComponent implements OnInit {
 
     this.isDisabled = true;
 
-    let tributo: Tributo = {
+    let trib: Tributo = {
       usuario: this.usuarioService.getLocalUser().username,
-      dettupa: this.tupa.denominacion,
+      dettupa: this.observacion,
       detrequisito: this.tupa.denominacion,
       subtotal: this.subTotal,
       cliente: this.cliente,
@@ -157,14 +159,15 @@ export class TributosComponent implements OnInit {
       correlativo: null
     }
 
-    this.tributoService.saveTributo(tributo)
+    this.tributoService.saveTributo(trib)
     .subscribe({
       next: (resp:Tributo)=>{
-        this.registrarDetalleTributo(resp);
-        this.registrarPagosAndDetalles(resp);
+        this.tributo = resp;
       },
       error: error => console.log(error),
       complete: ()=> {
+        this.registrarDetalleTributo(this.tributo);
+        this.registrarPagosAndDetalles(this.tributo);
         this.reqSel = [];
         this.isDisabled = false;
       }
@@ -238,6 +241,7 @@ export class TributosComponent implements OnInit {
       usuario: this.usuarioService.getLocalUser(),
       esta: 1,
       correlativo: null,
+      observacion: this.observacion,
       caja: this.caja,
       cliente: tributo.cliente,
       tipoPagoServicios: tipoPago,
@@ -249,29 +253,18 @@ export class TributosComponent implements OnInit {
     this.pagosserviciosService.savePagosAndDetalles(pagoServicio, detallesPago)
     .subscribe({
       next: (resp: any)=> {
-
         resp.detalles.map((detalle:any)=>{
-
           let arrItem:ItemTicket = {
             concepto: detalle.detalletasas,
-            mes: '--',
             monto:detalle.monto
           }
-
           this.itemsTicket.push(arrItem);
 
         });
 
         // CREANDO EL TICKET [✔]
-        const ticket: Ticket = new Ticket(
-          Number(resp.pagosservicio.correlativo),
-          Number(resp.pagosservicio.cliente.idclientes),
-          `${resp.pagosservicio.cliente.apepaterno} ${resp.pagosservicio.cliente.apematerno} ${resp.pagosservicio.cliente.nombres}`,
-          resp.pagosservicio.cliente.direccion,
-          resp.pagosservicio.montopagado,
-          this.itemsTicket);
+        this.crearTicket(resp.pagosservicio ,resp.detalles);
 
-        ticket.pagar();
       },
       error: error => console.log(error),
       complete: () => {
@@ -279,6 +272,20 @@ export class TributosComponent implements OnInit {
         this.reqSel = [];
       }
     });
+  }
+
+  crearTicket(pago: PagosServicio, detallesPago: PagosServicioDetalle[]){
+    const ticket: TicketTributo = new TicketTributo(
+      // Number(resp.pagosservicio.correlativo),
+      // Number(resp.pagosservicio.cliente.idclientes),
+      `${pago.cliente.apepaterno} ${pago.cliente.apematerno} ${pago.cliente.nombres}`,
+      pago.cliente.direccion,
+      pago.montopagado,
+      pago,
+      detallesPago,
+      );
+
+    ticket.pagar();
   }
 
   setearDetalles(pagoServicio: PagosServicio): PagosServicioDetalle[] {

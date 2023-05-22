@@ -27,14 +27,13 @@ import { DateService } from 'src/app/services/date.service';
 
 @Component({
   selector: 'app-cobranzas',
-  templateUrl: './cobranzas.component.html',
-  styleUrls: ['./cobranzas.component.css'],
+  templateUrl: './cobranzas.component.html'
 })
 export class CobranzasComponent implements OnInit {
 
   @ViewChild('closeModal') closeModal!: ElementRef;
 
-  tipoBusqueda = 'Nombre';
+  // tipoBusqueda = 'Nombre';
   isDisabled = false;
 
   idCliente: number = 0;
@@ -63,7 +62,7 @@ export class CobranzasComponent implements OnInit {
   panel_historial: boolean = false;
   panel_condonacion: boolean = false;
   panel_adelantos: boolean = false;
-  spinner: boolean = false;
+  // spinner: boolean = false;
 
   constructor(
     private clienteService: ClienteService,
@@ -108,8 +107,10 @@ export class CobranzasComponent implements OnInit {
   }
 
   mostrarCliente(cli : any) {
-    this.panel_pagos = false;
-    this.panel_condonacion = true;
+    // console.log(cli);
+    // this.cargarCostosCliente(cli.cliente.idclientes);
+    this.setPaneles(cli.panel);
+
     this.monto = 0;
     this.idCliente = Number(cli.cliente.idclientes);
 
@@ -123,7 +124,7 @@ export class CobranzasComponent implements OnInit {
       error: (error) => console.log(error),
       complete: ()=>{
         // cargar costos del cliente
-        this.cargarCostosCliente(Number(cli.cliente.idclientes));
+        this.cargarCostosCliente(this.idCliente);
         // cerrar modal de clientes
         this.closeModal.nativeElement.click();
       }
@@ -494,10 +495,11 @@ export class CobranzasComponent implements OnInit {
   }
 
   setPaneles(opc: string) {
-    if (this.costos.length <= 0) {
-      alert('El cliente seleccionado no tiene configurado sus costos');
-      return;
-    }
+    // console.log('costos---->', this.costos);
+    // if (this.costos.length <= 0 || this.costos === undefined) {
+    //   alert('El cliente seleccionado no tiene configurado sus costos');
+    //   return;
+    // }
     switch (opc) {
       case 'o_pagos':
         this.panel_pagos = true;
@@ -534,6 +536,13 @@ export class CobranzasComponent implements OnInit {
         this.panel_condonacion = false;
         this.panel_adelantos = true;
         break;
+      case 'close':
+        this.panel_pagos = true;
+        this.panel_tributos = false;
+        this.panel_historial = false;
+        this.panel_condonacion = false;
+        this.panel_adelantos = false;
+        break;
       case 'x_all':
         this.panel_pagos = false;
         this.panel_tributos = false;
@@ -559,6 +568,18 @@ export class CobranzasComponent implements OnInit {
         this.panel_historial = false;
         this.panel_condonacion = false;
         this.panel_adelantos = false;
+        this.idCliente = 0;
+        this.nombre_completo = '';
+        this.direccion = '';
+        this.zona = '';
+        this.tipoCliente = '';
+        this.num_familias = '';
+        this.num_instalaciones = '';
+        this.tarifa = 0;
+        this.clientes = [];
+        this.deudas = [];
+        this.pagos = [];
+        this.monto = 0;
         break;
     }
   }

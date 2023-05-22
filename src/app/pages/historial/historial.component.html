@@ -34,7 +34,7 @@
                 </td>
                 <td>
                   <button
-                    (click)="printVoucher(pago)"
+                    (click)="mostrarConcepto(pago)"
                     class="btn btn-info btn-xs"
                     data-bs-toggle="modal"
                     data-bs-target="#modalCenter">
@@ -51,7 +51,7 @@
                   </ng-template>
                 </td>
                 <td>
-                  <button class="btn btn-primary btn-sm" (click)="printVoucher(pago, true)" *ngIf="pago.esta !== 4">Recibo</button>
+                  <button class="btn btn-primary btn-sm" (click)="mostrarConcepto(pago, true)" *ngIf="pago.esta !== 4">Recibo</button>
                 </td>
               </tr>
             </tbody>
@@ -83,8 +83,10 @@
           <div class="modal-body">
             <ul class="list-group" *ngIf="pagosDetalle">
               <li *ngFor="let detalle of pagosDetalle; index as i" class="list-group-item d-flex align-items-center">
-                {{i+1}} - <i class="bx bx-purchase-tag-alt me-2"></i>
-                {{ detalle.detalletasas }} - {{ dateService.getMes(detalle.idmes) }}
+                <div>
+                  {{i+1}} - <i class="bx bx-purchase-tag-alt me-2"></i>
+                  {{ detalle.detalletasas }} - {{ dateService.getMes(detalle.idmes) }}
+                </div>
               </li>
             </ul>
           </div>

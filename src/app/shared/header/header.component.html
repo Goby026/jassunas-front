@@ -45,12 +45,12 @@
               <div class="dropdown-divider"></div>
             </li>
             <li>
-              <a class="dropdown-item" (click)="mantenimiento()">
+              <a class="dropdown-item" role="button" (click)="mantenimiento()">
                 <i class="bx bx-user me-2"></i>
                 <span class="align-middle">Mi perfil</span>
               </a>
             </li>
-            <li>
+            <li *ngIf="rol === 'ADMIN_ROLE'">
               <a class="dropdown-item" routerLink="configuracion">
                 <i class="bx bx-cog me-2"></i>
                 <span class="align-middle">Configuración</span>
@@ -69,7 +69,7 @@
               <div class="dropdown-divider"></div>
             </li>
             <li>
-              <a (click)="logout()" class="dropdown-item">
+              <a (click)="logout()" role="button" class="dropdown-item cursor">
                 <i class="bx bx-power-off me-2"></i>
                 <span class="align-middle">Salir</span>
               </a>

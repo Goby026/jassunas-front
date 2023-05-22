@@ -21,6 +21,7 @@ export class PagosServicio{
       public pagoServicioEstado: PagoServicioEstado,
       public tipoPagoServicios: TipoPagoServicio,
       public id?: number, //PK
+      public observacion?: string | null,
       public created_at?: Date | string,
       public updated_at?: Date | string,
     ){}

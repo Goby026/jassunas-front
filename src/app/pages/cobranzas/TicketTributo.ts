@@ -3,29 +3,31 @@ import 'moment/locale/es';
 moment.locale('es');
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
+import { PagosServicio } from 'src/app/models/pagosservicio.model';
+import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-export class Ticket{
+export class TicketTributo{
 
     constructor(
-        public correlativo: number | null,
-        public idCliente: number,
+        // public correlativo: number | null,
+        // public idCliente: number,
         public nombre_completo: string,
         public direccion: string,
         public monto: number,
-        public pagos:ItemTicket[],
-        public fechaPago?: string | ''
+        public pago: PagosServicio,
+        public pagos:PagosServicioDetalle[],
+        // public tributo: Tributo,
+        // public fechaPago?: string | ''
     ){}
 
-    public async pagar( observacion: string = '' ){
+    public async pagar(){
 
         let dataPagos: any[] = [];
 
-        this.pagos.map( (item:ItemTicket)=>{
+        this.pagos.map( (item)=>{
           let arrItem = [
-            item.concepto,
-            `${this.getMes(item.mes)} - ${item.nannio}`,
+            item.detalletasas,
             `S/ ${item.monto}`]
           dataPagos.push(arrItem)
         } );
@@ -61,7 +63,7 @@ export class Ticket{
               style: 'small'
             },
             {
-              text: `RECIBO DE CUOTA FAMILIAR Nro. 000${this.correlativo}`,
+              text: `RECIBO DE CUOTA FAMILIAR Nro. 000${this.pago.correlativo}`,
               alignment: 'center',
               style: 'header',
               margin: [0, 8]
@@ -75,7 +77,7 @@ export class Ticket{
                   width: 50,
                 },
                 {
-                  text: `${this.idCliente} - ${this.nombre_completo}`,
+                  text: `${this.pago.cliente.idclientes} - ${this.nombre_completo}`,
                   style: 'small',
                   // width: 60,
                 }
@@ -105,7 +107,7 @@ export class Ticket{
                   width: 50,
                 },
                 {
-                  text: `${moment(this.fechaPago).format('DD-MM-YYYY')}`,
+                  text: `${moment(this.pago.created_at).format('DD-MM-YYYY')}`,
                   // text: this.fechaPago,
                   style: 'small',
                   // width: 60,
@@ -115,12 +117,18 @@ export class Ticket{
             {
               style: 'tableExample',
               table: {
-                widths: ['*', '*', 40],
+                widths: ['*', 40],
                 body: [
-                  ['CONCEPTOS', 'MES', 'S.TOTAL'],
+                  ['CONCEPTOS', 'S.TOTAL'],
                   ...dataPagos
                 ]
               }
+            },
+            {
+              text: `OBSERVACION: ${this.pago.observacion}`,
+              alignment: 'left',
+              style: 'small',
+              margin: [0, 8]
             },
             {
               text: `SON: ${this.monto} con 00/100 SOLES`,

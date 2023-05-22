@@ -1,9 +1,9 @@
     <!-- Menu -->
     <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme h-100">
       <div class="app-brand demo">
-        <a href="index.html" class="app-brand-link">
+        <a href="./" class="app-brand-link">
           <span class="app-brand-logo demo">
-            <svg
+            <!-- <svg
               width="25"
               viewBox="0 0 25 42"
               version="1.1"
@@ -55,9 +55,10 @@
                   </g>
                 </g>
               </g>
-            </svg>
+            </svg> -->
+            <img [src]="logo" alt="logo" style="width: 80px;">
           </span>
-          <span class="app-brand-text demo menu-text fw-bolder ms-2">JASSUÑAS</span>
+          <!-- <span class="app-brand-text demo menu-text fw-bolder ms-2"> 2023 </span> -->
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -69,62 +70,67 @@
 
       <ul class="menu-inner py-1">
         <!-- Dashboard -->
-        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="/dashboard" class="menu-link">
             <i class="menu-icon tf-icons bx bx-home-circle"></i>
             <div data-i18n="Analytics">Tablero</div>
           </a>
+        </li> -->
+
+        <li *ngFor="let item of menuItems" class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <a [routerLink]="item.path" class="menu-link">
+            <i [class]="item.icono"></i>
+            <div data-i18n="Analytics">{{ item.titulo }}</div>
+          </a>
         </li>
 
         <!-- Caja -->
-        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="caja" class="menu-link">
             <i class="menu-icon tf-icons bx bxs-bank"></i>
             <div data-i18n="Analytics">Caja</div>
           </a>
-        </li>
+        </li> -->
 
         <!-- EGRESOS -->
-        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="egresos" class="menu-link">
-            <!-- <i class='menu-icon tf-icons bx bx-money'></i> -->
             <i class='menu-icon tf-icons bx bx-wallet'></i>
             <div data-i18n="Analytics">Egresos</div>
           </a>
-        </li>
+        </li> -->
 
         <!-- Cobranzas -->
-        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="cobranzas" class="menu-link">
             <i class='menu-icon tf-icons bx bx-money'></i>
             <div data-i18n="Analytics">Cobranzas</div>
           </a>
-        </li>
+        </li> -->
 
         <!-- Vouchers -->
-        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="vouchers" class="menu-link">
             <i class='menu-icon tf-icons bx bx-credit-card'></i>
             <div data-i18n="Analytics">Vouchers</div>
           </a>
-        </li>
+        </li> -->
 
         <!-- Clientes -->
-        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="clientes" class="menu-link">
             <i class='menu-icon tf-icons bx bx-user'></i>
             <div data-i18n="Analytics">Clientes</div>
           </a>
-        </li>
+        </li> -->
 
         <!-- Reportes -->
-        <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <a routerLink="reportes" class="menu-link">
-            <!-- <i class='menu-icon tf-icons bx bx-user'></i> -->
             <i class='menu-icon tf-icons bx bxs-report'></i>
             <div data-i18n="Analytics">Reportes</div>
           </a>
-        </li>
+        </li> -->
 
         <!-- Zonas -->
         <!-- <li class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">

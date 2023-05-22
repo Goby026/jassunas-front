@@ -43,6 +43,7 @@ import { ConfigTarifasComponent } from './configuracion/config-tarifas/config-ta
 import { FormularioComponent } from './configuracion/config-tarifas/formulario.component';
 import { CateEgresosComponent } from './configuracion/cate-egresos/cate-egresos.component';
 import { FormCateComponent } from './configuracion/cate-egresos/form-cate.component';
+import { ReporteEgresosComponent } from './reportes/reporte-egresos/reporte-egresos.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { FormCateComponent } from './configuracion/cate-egresos/form-cate.compon
     EgresoformComponent,
     ConfigTarifasComponent,
     CateEgresosComponent,
-    FormCateComponent
+    FormCateComponent,
+    ReporteEgresosComponent
   ],
   exports:[
     DashboardComponent,

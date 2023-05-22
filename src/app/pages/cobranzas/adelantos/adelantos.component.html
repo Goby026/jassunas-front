@@ -48,8 +48,8 @@
                     <td>
                       <div class="form-check">
                         <input (change)="agregarMes(mesSelected, mes)" class="form-check-input" type="checkbox"
-                          [value]="mes.nmes" id="{{'checkMes'+i}}" #mesSelected>
-                        <label class="form-check-label" for="{{'checkMes'+i}}"> {{mes.mes}} </label>
+                          [value]="mes.nmes" id="{{'checkMes'+i}}" #mesSelected />
+                        <label class="form-check-label" for="{{'checkMes'+i}}"> {{mes.mes}} - {{ anioSel }} </label>
                       </div>
                     </td>
                     <td>

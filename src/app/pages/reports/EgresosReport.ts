@@ -8,12 +8,8 @@ import { TipoEgreso } from 'src/app/models/tipoegreso.model';
 export class EgresosReport {
   constructor(
     public titulo: string,
-    public total: number,
-    // public nombre_completo: string,
-    // public direccion: string,
-    // public monto: number,
     public egresos: Egreso[],
-    public tipos: TipoEgreso[],
+    // public tipos: TipoEgreso[],
   ) {}
 
   public async reporte() {
@@ -22,19 +18,21 @@ export class EgresosReport {
     let fecha = moment().format('MM-DD-YYYY');
     let hora = moment().format('HH:mm');
 
-    // this.egresos.map((item: Egreso) => {
-    //   let arrItem: any = [
-    //     item.id || 0,
-    //     `${item.cliente.apepaterno} ${item.cliente.apematerno} ${item.cliente.nombres}`,
-    //     `${item.tipoPagoServicios.descripcion}`,
-    //     moment(item.created_at).format('DD-MM-YYYY'),
-    //     `S/ ${item.montopagado}.00`
-    //   ];
+    this.egresos.map((item: Egreso) => {
+      let arrItem: any = [
+        item.tipoEgreso.descripcion,
+        item.nregistro || 0,
+        `${item.fecha}`,
+        `${item.documento}`,
+        `${item.nombrerazon}`,
+        `${item.detalle}`,
+        `S/ ${item.importe}.00`
+      ];
 
-    //   total += item.montopagado;
+      total += Number(item.importe);
 
-    //   historialPagos.push(arrItem);
-    // });
+      historialPagos.push(arrItem);
+    });
 
     // crear pdf
     const pdfDefinition: any = {
@@ -50,9 +48,9 @@ export class EgresosReport {
         {
           style: 'tableExample',
           table: {
-            widths: [20, '*', 100, 50,50],
+            widths: ['*',50, 90, 50,'*', '*', '*',50],
             body: [
-              ['N° Reg.', 'Fecha', 'Documento', 'Nombre/Razon Social','Detalle', 'Importe'],
+              ['Categoría','N° Reg.', 'Fecha', 'Documento', 'Nombre/Razon Social','Detalle', 'Importe'],
               ...historialPagos,
               // [
               //   {
