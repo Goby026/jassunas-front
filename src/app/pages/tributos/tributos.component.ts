@@ -28,8 +28,7 @@ import { TicketTributo } from '../cobranzas/TicketTributo';
 
 @Component({
   selector: 'app-tributos',
-  templateUrl: './tributos.component.html',
-  styleUrls: ['./tributos.component.css']
+  templateUrl: './tributos.component.html'
 })
 export class TributosComponent implements OnInit {
 
@@ -163,11 +162,11 @@ export class TributosComponent implements OnInit {
     .subscribe({
       next: (resp:Tributo)=>{
         this.tributo = resp;
+        this.registrarDetalleTributo(resp);
+        this.registrarPagosAndDetalles(resp);
       },
       error: error => console.log(error),
       complete: ()=> {
-        this.registrarDetalleTributo(this.tributo);
-        this.registrarPagosAndDetalles(this.tributo);
         this.reqSel = [];
         this.isDisabled = false;
       }
@@ -200,9 +199,8 @@ export class TributosComponent implements OnInit {
     .subscribe({
       next: (resp)=> console.log(resp),
       error: error => console.log(error),
-      complete: () => {
-
-      }
+      // complete: () => {
+      // }
     });
 
   }

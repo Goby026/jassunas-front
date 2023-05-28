@@ -34,7 +34,7 @@ export class TributoService {
     return this.http.get(`${base_url}/tributo-detalles/reporte/${codrequi}/${desde}/${hasta}`).pipe(
       map( (res: any)=> {
         return res.detalles as TributoDetalle[];
-      } )
+      })
     );
   }
 }
