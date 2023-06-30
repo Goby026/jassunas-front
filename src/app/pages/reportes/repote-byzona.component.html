@@ -39,7 +39,9 @@
             <label class="col-sm-1 col-form-label" for="basic-default-name">Zona</label>
             <div class="col-sm-3">
               <select class="form-select" formControlName="zona">
-                <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">{{ zona.detazona }}</option>
+                <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">
+                  {{ zona.detazona }}
+                </option>
               </select>
             </div>
 

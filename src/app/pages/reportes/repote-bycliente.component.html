@@ -7,35 +7,50 @@
       <div class="card-body">
           <div class="row mb-3">
 
-            <div class="row">
-              <div class="col">
-                <label class="form-label" for="txtDesde">Desde</label>
-                <input type="date" id="txtDesde" class="form-control" formControlName="cinicio">
-              </div>
-              <div class="col">
-                <label class="form-label" for="txtHasta">Hasta</label>
-                <input type="date" id="txtHasta" class="form-control" formControlName="cfin">
-              </div>
-
-              <!-- CHECKBOXES -->
-
-              <div class="col d-flex align-items-center justify-content-center">
-                <div class="form-check">
-                  <br>
-                  <input class="form-check-input" type="checkbox" id="byZonas" name="cbTipo" (change)="setZonaSelect(cbZonas, cbCliente)" #cbZonas>
-                  <label class="form-check-label" for="byZonas"> ZONAS </label>
-                </div>
-              </div>
-
-              <div class="col d-flex align-items-center justify-content-center">
-                <div class="form-check">
-                  <br>
-                  <input class="form-check-input" type="checkbox" id="byCliente" name="cbTipo" (change)="setClienteButton(cbCliente, cbZonas)" #cbCliente>
-                  <label class="form-check-label" for="byCliente"> CLIENTE </label>
-                </div>
-              </div>
-
+            <div class="col">
+              <label class="form-label" for="txtDesde">Desde</label>
+              <input type="date" id="txtDesde" class="form-control" formControlName="cinicio">
             </div>
+            <div class="col">
+              <label class="form-label" for="txtHasta">Hasta</label>
+              <input type="date" id="txtHasta" class="form-control" formControlName="cfin">
+            </div>
+
+            <div class="col">
+              <label for="selectZonaCliente" class="form-label">De</label>
+              <select class="form-select" id="selectZonaCliente" aria-label="select zona o cliente" (change)=selectZonaCliente(select) #select>
+                <option selected="">Seleccionar zona / socio </option>
+                <option value="1">Zona</option>
+                <option value="2">Socio</option>
+              </select>
+            </div>
+
+            <div class="col">
+              <label for="selectZonaCliente" class="form-label">Estado</label>
+              <select class="form-select" id="selectZonaCliente" aria-label="select zona o cliente" (change)="setEstadoPago(pago)" #pago>
+                <option value="0" selected>Seleccionar pago / deuda </option>
+                <!-- <option value="1">Todos</option> -->
+                <option value="2">Pagado</option>
+                <option value="3">Deuda</option>
+              </select>
+            </div>
+
+            <!-- <div class="col d-flex align-items-center justify-content-center">
+              <div class="form-check">
+                <br>
+                <input class="form-check-input" type="checkbox" id="byZonas" name="cbTipo" (change)="setZonaSelect(cbZonas, cbCliente)" #cbZonas>
+                <label class="form-check-label" for="byZonas"> ZONAS </label>
+              </div>
+            </div>
+
+            <div class="col d-flex align-items-center justify-content-center">
+              <div class="form-check">
+                <br>
+                <input class="form-check-input" type="checkbox" id="byCliente" name="cbTipo" (change)="setClienteButton(cbCliente, cbZonas)" #cbCliente>
+                <label class="form-check-label" for="byCliente"> CLIENTE </label>
+              </div>
+            </div> -->
+
           </div>
       </div>
     </div>
@@ -104,13 +119,19 @@
                       {{ deuda.deudaEstado.estado }}
                     </td>
                     <td>
-                      {{ deuda.periodo | date:'medium' }}
+                      {{ deuda.periodo | date:'short' }}
                     </td>
                     <td>
                       {{ deuda.saldo | currency: 'S/ ' }}
                     </td>
                   </tr>
                 </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5" class="text-end">TOTAL</td>
+                    <td *ngIf="total > 0">{{ total}}</td>
+                  </tr>
+                </tfoot>
               </table>
               <!--Including the pagination control.-->
               <div class="mt-3">

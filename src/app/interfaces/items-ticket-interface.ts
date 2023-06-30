@@ -6,5 +6,6 @@ export interface ItemTicket{
     mes?: string | number,
     nmes?: number,
     nannio?: number,
+    estado?: number,
     id?: number,
 }

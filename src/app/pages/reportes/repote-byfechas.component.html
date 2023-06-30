@@ -66,7 +66,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let det of pagosDetalles; index as i">
+              <tr *ngFor="let det of pagosDetalles| paginate:{
+                itemsPerPage: tableSize,
+                currentPage: page,
+                totalItems: count}; let i = index">
                 <td>
                   {{i+1}}
                 </td>
@@ -91,6 +94,10 @@
               </tr>
             </tbody>
           </table>
+          <div class="mt-4">
+            <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
+            </pagination-controls>
+          </div>
         </div>
       </div>
     </div>

@@ -76,10 +76,10 @@
                   {{ detalle.direccion }}
                 </td>
                 <td>
-                  {{ detalle.createdAt }}
+                  {{ detalle.createdAt | date: 'short' }}
                 </td>
                 <td>
-                  {{ detalle.monto }}
+                  {{ detalle.monto | currency: 'S/ ' }}
                 </td>
               </tr>
             </tbody>

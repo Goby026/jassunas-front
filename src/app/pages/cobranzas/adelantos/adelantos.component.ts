@@ -309,14 +309,18 @@ export class AdelantosComponent implements OnInit {
             mesPagado = {
               concepto: detalle.detalletasas,
               monto: detalle.monto,
-              nmes: detalle.idmes
+              nmes: detalle.idmes,
+              estado: detalle.pagosServicio.pagoServicioEstado.idpagoestado
             }
 
             mesesPagados.push(mesPagado);
           }
         });
 
-        let mesesSinPagar: ItemTicket[] = totalMeses.filter( item1 => !mesesPagados.some( item2 => item2.nmes === item1.nmes ) );
+        let mesesSinPagar: ItemTicket[] = totalMeses.filter( item1 => {
+          return !mesesPagados.some( item2 => {
+            return item2.nmes === item1.nmes && item2.estado !== 4
+          })});
 
         this.spinner = false;
         this.meses = mesesSinPagar;

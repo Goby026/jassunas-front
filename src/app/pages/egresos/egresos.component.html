@@ -1,18 +1,22 @@
 <div class="row">
   <div class="col-md-8">
-
     <div class="card mb-3">
       <div class="card-body">
-        <div class="card-header d-flex align-items-center justify-content-between">
-
+        <div
+          class="card-header d-flex align-items-center justify-content-between"
+        >
           <h5 class="card-title m-0 me-2">REGISTRO DE EGRESOS</h5>
 
           <!-- <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#basicModal">
             <i class='bx bxs-plus-circle'></i>
           </button> -->
 
-          <button type="button" class="btn btn-primary btn-sm" (click)="nuevo()">
-            <i class='bx bxs-plus-circle'></i>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="nuevo()"
+          >
+            <i class="bx bxs-plus-circle"></i>
           </button>
 
           <!--
@@ -40,13 +44,11 @@
               </div>
             </div>
           </div> -->
-
         </div>
       </div>
     </div>
-<div class="card mb-3">
-
-    <!-- <div class="row card-header">
+    <div class="card mb-3">
+      <!-- <div class="row card-header">
       <div class="col">
         <input class="form-control" type="datetime-local" id="html5-datetime-local-input" />
       </div>
@@ -62,73 +64,78 @@
     </div>
     <hr> -->
 
-    <div class="card-body">
-      <div *ngIf="tablaEgresos" class="table-responsive text-nowrap">
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>N° REGISTRO</th>
-              <th>FECHA</th>
-              <th>CATEGORÍA</th>
-              <th>NOMBRE / RAZON SOCIAL</th>
-              <th>IMPORTE</th>
-              <th>ESTADO</th>
-              <th>ACCION</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let egreso of egresos; index as i ">
-              <td>{{i+1}}
-              </td>
-              <td>{{ egreso.nregistro }}</td>
-              <td>
-                {{ egreso.fecha | date: 'short' }}
-              </td>
-              <td>
-                {{ egreso.tipoEgreso.descripcion }}
-              </td>
-              <td>
-                {{ egreso.nombrerazon }}
-              </td>
-              <td>
-                {{ egreso.importe | currency: 'S/ ' }}
-              </td>
-              <td>
-                <span *ngIf="egreso.estado === 1; else inactivo" class="badge bg-success">Activo</span>
+      <div class="card-body">
+        <div *ngIf="tablaEgresos" class="table-responsive text-nowrap">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>N° REGISTRO</th>
+                <th>FECHA</th>
+                <th>CATEGORÍA</th>
+                <th>NOMBRE / RAZON SOCIAL</th>
+                <th>IMPORTE</th>
+                <th>ESTADO</th>
+                <th>ACCION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let egreso of egresos; index as i">
+                <td>{{ i + 1 }}</td>
+                <td>{{ egreso.nregistro }}</td>
+                <td>
+                  {{ egreso.fecha | date : "short" }}
+                </td>
+                <td>
+                  {{ egreso.tipoEgreso.descripcion }}
+                </td>
+                <td>
+                  {{ egreso.nombrerazon }}
+                </td>
+                <td>
+                  {{ egreso.importe | currency : "S/ " }}
+                </td>
+                <td>
+                  <span
+                    *ngIf="egreso.estado === 1; else inactivo"
+                    class="badge bg-success"
+                    >Activo</span
+                  >
 
-                <ng-template #inactivo>
-                  <span class="badge bg-danger">Anulado</span>
-                </ng-template>
-              </td>
-              <td>
-                <button class="btn btn-warning btn-sm" (click)="editar(egreso.idegreso)"><i class='bx bxs-edit'></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <!--Including the pagination control.-->
-        <div class="mt-4">
-          <!-- <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
+                  <ng-template #inactivo>
+                    <span class="badge bg-danger">Anulado</span>
+                  </ng-template>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-warning btn-sm"
+                    (click)="editar(egreso.idegreso)"
+                  >
+                    <i class="bx bxs-edit"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!--Including the pagination control.-->
+          <div class="mt-4">
+            <!-- <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
           </pagination-controls> -->
+          </div>
         </div>
       </div>
     </div>
   </div>
-  </div>
 
   <div class="col-md-4">
-
     <app-egresoform
       [caja]="caja"
       [egresos]="egresos"
       [id]="idegreso"
       (cerrar)="closeForm($event)"
       (actualizar)="recargarEgresos($event)"
-      *ngIf="form">
+      *ngIf="form"
+    >
     </app-egresoform>
-
   </div>
-
-
 </div>

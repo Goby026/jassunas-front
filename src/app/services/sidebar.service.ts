@@ -39,16 +39,22 @@ export class SidebarService {
       roles: ['ADMIN_ROLE','CAJA_ROLE']
     },
     {
+      titulo: 'Multas',
+      icono: 'menu-icon tf-icons bx bx-money',
+      path: 'multas',
+      roles: ['ADMIN_ROLE','CAJA_ROLE']
+    },
+    {
       titulo: 'Vouchers',
       icono: 'menu-icon tf-icons bx bx-credit-card',
       path: 'vouchers',
       roles: ['ADMIN_ROLE','CAJA_ROLE']
     },
     {
-      titulo: 'Clientes',
+      titulo: 'Socios',
       icono: 'menu-icon tf-icons bx bx-user',
       path: 'clientes',
-      roles: ['ADMIN_ROLE']
+      roles: ['ADMIN_ROLE','CAJA_ROLE','SECRETARIA_ROLE']
     },
     {
       titulo: 'Reportes',

@@ -62,12 +62,14 @@ export class RepoteByzonaComponent implements OnInit {
 
     this.mostrarTabla = true;
 
-    this.deudaService.geDebtsByZone(this.zonaForm.get('zona')?.value)
+    this.deudaService.geDebtsByZone(Number(this.zonaForm.get('zona')?.value))
     .subscribe({
-      next: (resp: Deuda[])=>this.deudas = resp,
+      next: (resp: Deuda[])=>{
+        this.deudas = resp
+      },
       error: error=>console.log(error),
       complete: ()=> {
-
+        console.log(this.deudas);
       }
     });
 
@@ -108,6 +110,7 @@ export class RepoteByzonaComponent implements OnInit {
     this.clienteService.listClientsByZona(this.zonaForm.get('zona')?.value)
     .subscribe({
       next: (resp: Cliente[])=>{
+        console.log(resp);
         this.clientes = resp.filter( (item: Cliente)=> {
           return item.nombres !== null;
         } );

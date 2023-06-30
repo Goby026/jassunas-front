@@ -105,6 +105,15 @@ export class PagosServiciosService {
       .pipe(map((resp: any) => resp.pagosdeta as PagosServicioDetalle[]));
   }
 
+  // OBTENER PAGOS POR TRIBUTO
+  getPagosTributos( idTributo: number, desde: string, hasta: string ): Observable<PagosServicio[]> {
+    return this.http.get<PagosServicio[]>(`${base_url}/pagos-servicio/tributo/${idTributo}/${desde}/${hasta}`).pipe(
+      map( (res: any)=> {
+        return res.pagos as PagosServicio[];
+      })
+    );
+  }
+
   tracking(idCaja: number) {
     return this.http.get(`${base_url}/pagos-servicio/caja/${idCaja}`);
   }

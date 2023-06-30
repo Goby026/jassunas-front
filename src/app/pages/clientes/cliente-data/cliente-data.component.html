@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <form [formGroup]="clienteForm">
       <div class="card mb-4">
-        <h5 class="card-header">Datos de cliente</h5>
+        <h5 class="card-header">Datos de Socio</h5>
 
         <div class="card-body">
 
@@ -24,7 +24,7 @@
               </div>
               <!-- CODIGO CLIENTE -->
               <div class="mb-1">
-                <label for="txtCodCli" class="form-label">CÓDIGO CLIENTE <span class="text-danger">*</span> </label>
+                <label for="txtCodCli" class="form-label">CÓDIGO SOCIO <span class="text-danger">*</span> </label>
                 <input
                   type="text"
                   class="form-control"
@@ -171,7 +171,7 @@
               </div>
               <!-- TIPO CLIENTE -->
               <div class="mb-1">
-                <label for="selectTipoCliente" class="form-label">Tipo de cliente <span class="text-danger">*</span> </label>
+                <label for="selectTipoCliente" class="form-label">Tipo de socio <span class="text-danger">*</span> </label>
                 <select
                   class="form-select"
                   id="selectTipoCliente"
@@ -184,7 +184,7 @@
                   </option>
                 </select>
                 <div *ngIf="submitted && f['tipoCliente'].errors" class="invalid-feedback">
-                  <div *ngIf="f['tipoCliente'].errors['required']">Tipo de cliente requerido</div>
+                  <div *ngIf="f['tipoCliente'].errors['required']">Tipo de socio requerido</div>
                 </div>
               </div>
               <!-- ZONA -->
@@ -198,7 +198,7 @@
                   <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">{{ zona.detazona }}</option>
                 </select>
                 <div *ngIf="submitted && f['zona'].errors" class="invalid-feedback">
-                  <div *ngIf="f['zona'].errors['required']">Tipo de cliente requerido</div>
+                  <div *ngIf="f['zona'].errors['required']">Tipo de socio requerido</div>
                 </div>
               </div>
               <!-- ESTADO -->

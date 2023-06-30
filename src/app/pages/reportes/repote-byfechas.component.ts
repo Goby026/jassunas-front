@@ -14,6 +14,12 @@ export class RepoteByfechasComponent implements OnInit {
   pagosForm!: FormGroup;
   pagosDetalles: PagosServicioDetalle[] = [];
 
+    /* PAGINACION */
+    page: number = 1;
+    count: number = 0;
+    tableSize: number = 10;
+    tableSizes: number[] = [5, 10, 15, 20];
+
   constructor(private pagosService: PagosServiciosService) { }
 
   ngOnInit(): void {
@@ -68,6 +74,17 @@ export class RepoteByfechasComponent implements OnInit {
     );
 
     pdf.reporte();
+  }
+
+  onTableDataChange(event: any) {
+    this.page = event;
+    // this.listarCajas();
+  }
+
+  onTableSizeChange(event: any): void {
+    this.tableSize = event.target.value;
+    this.page = 1;
+    // this.listarCajas();
   }
 
 }

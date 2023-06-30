@@ -44,6 +44,7 @@ import { FormularioComponent } from './configuracion/config-tarifas/formulario.c
 import { CateEgresosComponent } from './configuracion/cate-egresos/cate-egresos.component';
 import { FormCateComponent } from './configuracion/cate-egresos/form-cate.component';
 import { ReporteEgresosComponent } from './reportes/reporte-egresos/reporte-egresos.component';
+import { TipomultasComponent } from './configuracion/tipomultas/tipomultas.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { ReporteEgresosComponent } from './reportes/reporte-egresos/reporte-egre
     ConfigTarifasComponent,
     CateEgresosComponent,
     FormCateComponent,
-    ReporteEgresosComponent
+    ReporteEgresosComponent,
+    TipomultasComponent
   ],
   exports:[
     DashboardComponent,

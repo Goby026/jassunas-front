@@ -5,6 +5,7 @@ import { TributoDetalle } from 'src/app/models/tributoDetalle.model';
 import { RequisitoService } from 'src/app/services/requisito.service';
 import { TributoService } from 'src/app/services/tributo.service';
 import { ByTributoDatesReport } from '../reports/ByTributoDatesReport';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-reporte-bytributo',
@@ -19,8 +20,10 @@ export class ReporteBytributoComponent implements OnInit {
   requisitos!: Requisito[];
   req!: Requisito[];
 
-  constructor( private tributoService: TributoService,
-    private requisitoService: RequisitoService ) { }
+  constructor(
+    private tributoService: TributoService,
+    private requisitoService: RequisitoService
+     ) { }
 
   ngOnInit(): void {
     this.crearFormulario();
@@ -49,13 +52,18 @@ export class ReporteBytributoComponent implements OnInit {
       return;
     }
 
+    let f_inicial: string = moment(this.requisitoForm.get('inicio')?.value).format('yyyy-MM-DD');
+    let f_final: string = moment(this.requisitoForm.get('fin')?.value).add(1, 'days').format('yyyy-MM-DD');
+
     this.tributoService.getDetallesTributoDates(
       Number(this.requisitoForm.get('tributo')?.value),
-      this.requisitoForm.get('inicio')?.value,
-      this.requisitoForm.get('fin')?.value,
+      f_inicial,
+      f_final,
     )
     .subscribe({
-      next: (resp)=> this.detalles = resp,
+      next: (resp)=> {
+        this.detalles = resp
+      },
       error: (err)=> console.log(err),
       complete: ()=> {
         this.req = this.requisitos.filter( (item)=>{
@@ -73,10 +81,13 @@ export class ReporteBytributoComponent implements OnInit {
       return;
     }
 
+    let f_inicial: string = moment(this.requisitoForm.get('inicio')?.value).format('yyyy-MM-DD');
+    let f_final: string = moment(this.requisitoForm.get('fin')?.value).format('yyyy-MM-DD');
+
     let reporte: ByTributoDatesReport = new ByTributoDatesReport(
       `REPORTE DE PAGOS POR: [${this.req[0].requisitos}]`,
-      this.requisitoForm.get('inicio')?.value,
-      this.requisitoForm.get('fin')?.value,
+      f_inicial,
+      f_final,
       this.detalles
     );
 

@@ -20,6 +20,7 @@ import { SeguimientoComponent } from './apertura/seguimiento/seguimiento.compone
 import { EgresosComponent } from './egresos/egresos.component';
 import { ConfigTarifasComponent } from './configuracion/config-tarifas/config-tarifas.component';
 import { CateEgresosComponent } from './configuracion/cate-egresos/cate-egresos.component';
+import { MultasComponent } from './cobranzas/multas/multas.component';
 
 const routes: Routes = [
   {
@@ -29,13 +30,15 @@ const routes: Routes = [
     children: [
       { path: '', component: DashboardComponent, data: { titulo: 'Dashboard' } },
       { path: 'zonas', component: ZonasComponent, data: { titulo: 'Zonas' } },
-      { path: 'cobranzas', component: CobranzasComponent, data: { titulo: 'Cobranzas' } },
-      { path: 'clientes', component: ClientesComponent, data: { titulo: 'Clientes' } },
+      { path: 'cobranzas', component: CobranzasComponent, data: { titulo: 'Cobranzas' }, children: [
+        { path: 'multas', component: MultasComponent, data: { titulo: 'Multas' } }
+      ] },
+      { path: 'clientes', component: ClientesComponent, data: { titulo: 'Socios' } },
       { path: 'historial/:idCliente', component: HistorialComponent, data: { titulo: 'Historial' } },
       { path: 'tributos/:idCliente', component: TributosComponent, data: { titulo: 'Tributos' } },
       { path: 'adelantos/:idCliente', component: AdelantosComponent, data: { titulo: 'Adelantos' } },
       { path: 'tarifarios/:idClientes', component: TarifarioComponent, data: { titulo: 'Tarifarios' } },
-      { path: 'cliente-data', component: ClienteDataComponent, data: { titulo: 'Cliente-data' } },
+      { path: 'cliente-data', component: ClienteDataComponent, data: { titulo: 'Socio-data' } },
       { path: 'caja', component: AperturaComponent, data: { titulo: 'Caja' } },
       { path: 'vouchers', component: VouchersComponent, data: { titulo: 'Confirmar-Vouchers' } },
       { path: 'carrito', component: CarritoComponent, data: { titulo: 'Pagos' } },
@@ -45,7 +48,8 @@ const routes: Routes = [
         { path: 'cate-egresos', component: CateEgresosComponent, data: { titulo: 'Categorías Egresos' } },
       ] },
       { path: 'seguimiento/:idcaja', component: SeguimientoComponent, data: { titulo: 'Seguimiento' } },
-      { path: 'egresos', component: EgresosComponent, data: { titulo: 'Egresos' } }
+      { path: 'egresos', component: EgresosComponent, data: { titulo: 'Egresos' } },
+      // { path: 'multas', component: MultasComponent, data: { titulo: 'Multas' } }
       // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     ],
   },

@@ -3,8 +3,10 @@
   <div class="col-md-12 d-flex align-items-end">
     <!-- <button class="btn btn-info">Buscador</button> -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#largeModal">
-      <i class='bx bx-user-pin'></i> Clientes
+      <i class='bx bx-user-pin'></i> Buscar Socio
     </button>
+
+    <a routerLink="multas">Multas</a>
   </div>
 </div>
 
@@ -14,7 +16,7 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel3">Buscar cliente</h5>
+            <h5 class="modal-title" id="exampleModalLabel3">Buscar socio</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -163,6 +165,8 @@
       </div>
     </div>
   </div>
+
+  <router-outlet></router-outlet>
 
 </div>
 

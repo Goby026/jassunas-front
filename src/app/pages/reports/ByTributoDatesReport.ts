@@ -7,20 +7,17 @@ import { TributoDetalle } from 'src/app/models/tributoDetalle.model';
 export class ByTributoDatesReport {
   constructor(
     public titulo: string,
-    // public total: number,
     public fechaInicio: string,
     public fechaFin: string,
-    // public monto: number,
     public detalles: TributoDetalle[]
   ) {}
 
   public async reporte() {
     let recordDetalles: any[] = [];
     let fecha = moment().format('MM-DD-YYYY');
-    let inicio = moment(this.fechaInicio).format('MM-DD-YYYY');
-    let fin = moment(this.fechaFin).format('MM-DD-YYYY');
     let hora = moment().format('HH:mm');
     let total = 0;
+    let cantidad = 0;
 
     this.detalles.map((item: TributoDetalle) => {
       let arrItem: any = [
@@ -31,7 +28,8 @@ export class ByTributoDatesReport {
         `S/ ${item.monto}.00`
       ];
       recordDetalles.push(arrItem);
-      total += 1;
+      total += Number(item.monto);
+      cantidad += 1;
     });
 
     // crear pdf
@@ -47,7 +45,7 @@ export class ByTributoDatesReport {
         },
         {
           bold: false,
-          ul: [`Desde: ${inicio} Hasta: ${fin}`],
+          ul: [`Desde: ${moment(this.fechaInicio).format('DD-MM-YYYY')} Hasta: ${ moment(this.fechaFin).format('DD-MM-YYYY')}`],
         },
         {
           style: 'tableExample',
@@ -66,8 +64,21 @@ export class ByTributoDatesReport {
             body: [
               [
                 '************',
+                'TOTAL:',
+                `S/ ${total}`
+              ],
+            ],
+          },
+        },
+        {
+          style: 'tableExample',
+          table: {
+            widths: ['*', 50,50],
+            body: [
+              [
+                '************',
                 '#CANT:',
-                `${total}`
+                `${cantidad}`
               ],
             ],
           },
