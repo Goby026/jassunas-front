@@ -35,12 +35,21 @@
         </form> -->
 
         <form [formGroup]="zonaForm" (ngSubmit)="clientesByZona()">
-          <div class="row mb-3">
+          <div class="row mb-3 d-flex justify-content-between">
             <label class="col-sm-1 col-form-label" for="basic-default-name">Zona</label>
             <div class="col-sm-3">
               <select class="form-select" formControlName="zona">
                 <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">
                   {{ zona.detazona }}
+                </option>
+              </select>
+            </div>
+
+            <label class="col-sm-2 col-form-label text-center" for="basic-default-name">TIPO DE SOCIO</label>
+            <div class="col-sm-3">
+              <select class="form-select" formControlName="tiposocio">
+                <option *ngFor="let tipo of tipoClientes" [value]="tipo.idtipocliente">
+                  {{ tipo.descripcion }}
                 </option>
               </select>
             </div>
@@ -59,7 +68,8 @@
         <div class="col-md-12">
           <div class="card-header d-flex justify-content-between">
             <h5 class="card-title">Clientes / Zona</h5>
-            <button (click)="reporte()" class="btn btn-primary btn-sm">PDF</button>
+            <button class="btn btn-success" (click)="excelExport()"><i class='bx bx-file'></i> Reporte excel</button>
+            <button (click)="reporte()" class="btn btn-primary btn-sm"><i class='bx bxs-file-pdf' ></i></button>
           </div>
         </div>
       </div>

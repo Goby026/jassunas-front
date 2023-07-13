@@ -58,8 +58,10 @@ export class ClienteService {
     return this.http.get<Cliente>(`${base_url}/clientes/${id}`);
   }
 
-  getTipoClientes(){
-    return this.http.get(`${base_url}/tipoClientes`);
+  getTipoClientes(): Observable<TipoCliente[]>{
+    return this.http.get(`${base_url}/tipoClientes`).pipe(
+      map( (res:any)=> res.tipoClientes as TipoCliente[] )
+    );
   }
 
   getTipoClienteById(idtipo: number):Observable<TipoCliente>{

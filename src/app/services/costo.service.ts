@@ -36,4 +36,8 @@ export class CostoService {
   getCostoById( idCosto: number ): Observable<Costo>{
     return this.http.get<Costo>(`${base_url}/costos/${idCosto}` , { headers: this.encabezados });
   }
+
+  updateCosto( costo: Costo ): Observable<Costo>{
+    return this.http.put<Costo>(`${base_url}/costos/${costo.codcosto}`, costo);
+  }
 }

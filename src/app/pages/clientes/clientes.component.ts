@@ -8,11 +8,12 @@ import { ClienteService } from 'src/app/services/cliente.service';
 import { ZonaService } from 'src/app/services/zona.service';
 
 import { environment } from 'src/environments/environment';
+import { CostoService } from 'src/app/services/costo.service';
+import { Costo } from 'src/app/models/costo.model';
 
 @Component({
   selector: 'app-clientes',
-  templateUrl: './clientes.component.html',
-  styleUrls: ['./clientes.component.css']
+  templateUrl: './clientes.component.html'
 })
 export class ClientesComponent implements OnInit, OnDestroy {
 
@@ -22,6 +23,7 @@ export class ClientesComponent implements OnInit, OnDestroy {
   title='Lista de clientes';
   cliente!: Cliente;
   clientes: Cliente[] = [];
+  costo!: Costo;
   panel: boolean = false;
   clienteForm!: FormGroup;
 
@@ -38,7 +40,8 @@ export class ClientesComponent implements OnInit, OnDestroy {
   constructor(
     private clienteService: ClienteService,
     private zonaService: ZonaService,
-    private tipoClienteService: ClienteService
+    private tipoClienteService: ClienteService,
+    private costoService: CostoService,
     ) { }
 
   ngOnInit(): void {
@@ -165,7 +168,7 @@ export class ClientesComponent implements OnInit, OnDestroy {
 
     let z: Zona[] = this.zonas.filter( (item) => item.idtbzonas === Number(this.clienteForm.get('zona')?.value) );
 
-    let tipoCli: TipoCliente[] = this.tipoClientes.filter( (item)=>item.idtipocliente === Number(this.clienteForm.get('tipoCliente')?.value) );
+    let tipoCli: TipoCliente[] = this.tipoClientes.filter( (item)=>item.idtipocliente == Number(this.clienteForm.get('tipoCliente')?.value) );
 
     let clienteUpdate : Cliente = {
       idclientes: this.cliente.idclientes,
@@ -189,13 +192,54 @@ export class ClientesComponent implements OnInit, OnDestroy {
       codCli: this.clienteForm.get('codCli')?.value,
     }
 
+    // console.log(clienteUpdate);
+
     this.clienteService.updateClient(clienteUpdate)
     .subscribe({
       next: (resp: Cliente)=>{
         console.log(resp);
       },
       error: (error)=> console.error(error),
-      complete:()=>this.listarClientes()
+      complete:()=>{
+        this.listarClientes()
+        // tambien actualizar tipo de cliente en los costos
+
+        this.cargarCostosCliente(Number(this.cliente.idclientes));
+
+      }
+    });
+  }
+
+  cargarCostosCliente(idCli: number){
+    this.costoService.getCostsByClient(idCli)
+    .subscribe({
+      next: (resp: Costo[]) => {
+        this.costo = resp[0];
+      },
+      error: (error) => console.log(error),
+      complete: ()=> {
+        this.actualizarCosto(this.costo);
+      }
+    });
+  }
+
+  actualizarCosto(costo: Costo){
+    let newCosto: Costo = {...costo};
+
+    let dataCosto: Costo = {
+      ...newCosto,
+      tpousuario : costo.cliente.tipoCliente.descripcion,
+      tpovivienda: 'UNIFAMILIAR'
+    }
+    this.costoService.updateCosto(dataCosto)
+    .subscribe({
+      next: (resp: Costo) => {
+        console.log(resp);
+      },
+      error: (error) => console.log(error),
+      complete: ()=> {
+        'costo actualizado OK'
+      }
     });
   }
 

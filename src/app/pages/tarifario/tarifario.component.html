@@ -10,7 +10,7 @@
               <th>#</th>
               <th>Servicio</th>
               <th>Inicio servicio</th>
-              <th>Tipo usuario</th>
+              <th>Tipo socio</th>
               <th>Tipo vivienda</th>
               <th>Integrantes</th>
               <th>Exoneraciones</th>
@@ -23,7 +23,7 @@
             <tr *ngFor="let costo of costos; let i = index">
               <td>{{i+1}}</td>
               <td>{{ costo.servicio.detaservicios }}</td>
-              <td>{{ costo.fecha_inicio_servicio }}</td>
+              <td>{{ costo.fecha_inicio_servicio | date: 'short' }}</td>
               <td>{{ costo.tpousuario }}</td>
               <td>{{ costo.tpovivienda }}</td>
               <td>{{ costo.nrointegrante }}</td>
