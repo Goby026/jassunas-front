@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CostoOtrosService } from '../../../services/costo-otros.service';
 import * as moment from 'moment';
 import { Tarifario } from 'src/app/models/tarifario.model';
@@ -15,17 +15,20 @@ import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
 import { PagoServicioEstado } from 'src/app/models/pagoservicioestado.model';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
+import { CostoService } from 'src/app/services/costo.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ClienteService } from 'src/app/services/cliente.service';
+import { CajaService } from 'src/app/services/caja.service';
 
 @Component({
   selector: 'app-adelantos',
-  templateUrl: './adelantos.component.html',
-  styleUrls: ['./adelantos.component.css']
+  templateUrl: './adelantos.component.html'
 })
 export class AdelantosComponent implements OnInit {
 
-  @Input() costos!: Costo[];
-  @Input() cliente!: Cliente;
-  @Input() caja!: Caja;
+  caja!: Caja;
+  cliente!: Cliente;
+  costos!: Costo[];
 
   datos: any[] = [];
   anios: number[] = [];
@@ -46,19 +49,65 @@ export class AdelantosComponent implements OnInit {
   usuario!: Usuario;
 
   constructor(
+    private cajaService: CajaService,
     private costoOtroService: CostoOtrosService,
     private pagosservicio: PagosServiciosService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private costoService: CostoService,
+    private clienteService: ClienteService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
     ){}
 
   ngOnInit(): void {
-
-    this.obtenerTarifaCliente(Number(this.costos[0].codcosto));
+    const {idCliente} = this.activatedRoute.snapshot.params;
+    this.verificarEstadoCaja();
     this.setearArregloAnios();
+    this.cargarCliente(idCliente);
+    this.cargarCostosCliente(idCliente);
+    //this.obtenerTarifaCliente(Number(this.costos[0].codcosto));
+
     // setTimeout(() => {
     //   this.setearMeses();
     //   this.spinner = false;
     // }, 1000);
+  }
+
+  verificarEstadoCaja() {
+    this.cajaService.getCajaStatus().subscribe({
+      next: (resp: Caja) => {
+        if (resp) {
+          if (resp.esta !== 1) {
+            alert('Caja no esta aperturada');
+            this.router.navigate(['/dashboard/caja']);
+          } else {
+            this.caja = resp;
+          }
+        }else{
+          alert('No hay resultado de cobranzas');
+        }
+      },
+      error: (error) => console.log(error)
+    });
+  }
+
+  cargarCostosCliente(idCli: number){
+    this.costoService.getCostsByClient(idCli)
+    .subscribe({
+      next: (resp: Costo[]) => {
+        this.costos = resp;
+      },
+      error: (error) => console.log(error),
+      complete: ()=> this.obtenerTarifaCliente(Number(this.costos[0].codcosto))
+    });
+  }
+
+  cargarCliente(id: number){
+    this.clienteService.getClientById(id)
+    .subscribe({
+      next: (resp: Cliente)=> this.cliente = resp,
+      error: error=> console.log(error)
+    });
   }
 
   setearArregloAnios(){

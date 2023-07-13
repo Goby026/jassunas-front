@@ -50,7 +50,7 @@ export class UsuarioService {
   }
 
   getLocalUser(): Usuario{
-    return JSON.parse(localStorage.getItem('usuario') || '');
+    return JSON.parse(String(localStorage.getItem('usuario')));
   }
 
   setUsuarioPerfil(username:string):void{
@@ -63,6 +63,10 @@ export class UsuarioService {
       },
       error: error=> console.log(error)
     });
+  }
+
+  findByUsername(username: string):Observable<Usuario>{
+    return this.http.get<Usuario>(`${base_url}/usuario/${username}`);
   }
 
 }

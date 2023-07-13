@@ -23,7 +23,10 @@ import { Caja } from 'src/app/models/caja.model';
 import { TipoPagoServicio } from 'src/app/models/tipopagoservicio.model';
 import { PagoServicioEstado } from 'src/app/models/pagoservicioestado.model';
 import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
-import { TicketTributo } from '../cobranzas/TicketTributo';
+import { TicketTributo } from '../TicketTributo';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ClienteService } from 'src/app/services/cliente.service';
+import { CajaService } from 'src/app/services/caja.service';
 
 
 @Component({
@@ -50,28 +53,56 @@ export class TributosComponent implements OnInit {
   itemsTicket: ItemTicket[] = [];
   isDisabled = false;
 
-  @Input() cliente!: Cliente;
-  @Input() caja!: Caja;
+  cliente!: Cliente;
+  caja!: Caja;
 
   constructor(
+    private cajaService: CajaService,
     private tributoService: TributoService ,
     private tupaService: TupaService,
     private requisitoService: RequisitoService,
     private usuarioService: UsuarioService,
+    private clienteService: ClienteService,
     private pagosserviciosService: PagosServiciosService,
-    private costoService: CostoService) { }
+    private costoService: CostoService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    // this.idCliente = this.activatedRoute.snapshot.params["idCliente"];
+    const {idCliente} = this.activatedRoute.snapshot.params;
+    this.verificarEstadoCaja();
+    this.cargarCliente(idCliente);
     this.listarTupas();
-    this.cargarCliente();
-    // this.getCorrelativo();
   }
 
-  cargarCliente(){
-    this.nombre_completo = `${this.cliente.apepaterno} ${this.cliente.apematerno} ${this.cliente.nombres}`;
+  verificarEstadoCaja() {
+    this.cajaService.getCajaStatus().subscribe({
+      next: (resp: Caja) => {
+        if (resp) {
+          if (resp.esta !== 1) {
+            alert('Caja no esta aperturada');
+            this.router.navigate(['/dashboard/caja']);
+          } else {
+            this.caja = resp;
+          }
+        }else{
+          alert('No hay resultado de cobranzas');
+        }
+      },
+      error: (error) => console.log(error)
+    });
+  }
 
-    this.setCostoCliente();
+  cargarCliente(id: number){
+    this.clienteService.getClientById(id)
+    .subscribe({
+      next: (resp: Cliente)=> this.cliente = resp,
+      error: error=> console.log(error),
+      complete: ()=> {
+        this.setCostoCliente(id);
+        this.nombre_completo = `${this.cliente.apepaterno} ${this.cliente.apematerno} ${this.cliente.nombres}`
+      }
+    });
   }
 
 
@@ -205,8 +236,8 @@ export class TributosComponent implements OnInit {
 
   }
 
-  setCostoCliente(){
-    this.costoService.getCostsByClient(Number(this.cliente.idclientes))
+  setCostoCliente(id: number){
+    this.costoService.getCostsByClient(id)
     .subscribe({
       next: (resp)=> {
         this.costos = resp;

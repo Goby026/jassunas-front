@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
 import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
@@ -8,36 +8,48 @@ import 'moment/locale/es';
 moment.locale('es');
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { HistorialReport } from '../reports/HistorialReport';
+import { HistorialReport } from '../../reports/HistorialReport';
 import { Cliente } from 'src/app/models/cliente.model';
 import { PagosServicio } from 'src/app/models/pagosservicio.model';
-import { Ticket } from '../cobranzas/Ticket';
+import { Ticket } from '../Ticket';
 import { ItemTicket } from 'src/app/interfaces/items-ticket-interface';
 import { DateService } from 'src/app/services/date.service';
-import { TicketTributo } from '../cobranzas/TicketTributo';
+import { TicketTributo } from '../TicketTributo';
+import { ActivatedRoute } from '@angular/router';
+import { ClienteService } from 'src/app/services/cliente.service';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-historial',
   templateUrl: './historial.component.html',
-  styleUrls: ['./historial.component.css'],
 })
 export class HistorialComponent implements OnInit {
   // @Input() idCliente: number = 0;
-  @Input() cliente!: Cliente;
+  cliente!: Cliente;
   pagos: PagosServicio[] = [];
   pagosDetalle: PagosServicioDetalle[] = [];
 
   constructor(
-    // private activatedRoute: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private pagosService: PagosServiciosService,
+    private clienteService: ClienteService,
     public dateService: DateService
   ) {}
 
   ngOnInit(): void {
     // this.idCliente = this.activatedRoute.snapshot.params["idCliente"];
-    this.cargarPagos();
+    const {idCliente} = this.activatedRoute.snapshot.params;
+    this.cargarCliente(Number(idCliente));
+    this.cargarPagos(Number(idCliente));
     // this.cargarHistorial();
+  }
+
+  cargarCliente(id: number){
+    this.clienteService.getClientById(id)
+    .subscribe({
+      next: (resp: Cliente)=> this.cliente = resp,
+      error: error=> console.log(error)
+    });
   }
 
   crearPdf() {
@@ -51,9 +63,9 @@ export class HistorialComponent implements OnInit {
   }
 
   // cargar pagos de un determinado cliente
-  cargarPagos() {
+  cargarPagos(id: number) {
     this.pagosService
-      .getPagosByCliente(Number(this.cliente.idclientes))
+      .getPagosByCliente(id)
       .subscribe({
         next: (resp: PagosServicio[]) => {
           this.pagos = resp;

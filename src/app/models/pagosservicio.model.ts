@@ -1,6 +1,7 @@
 import { Caja } from "./caja.model";
 import { Cliente } from "./cliente.model";
 import { Costo } from "./costo.model";
+import { Deuda } from "./deuda.model";
 import { PagoServicioEstado } from "./pagoservicioestado.model";
 import { TipoPagoServicio } from "./tipopagoservicio.model";
 import { Usuario } from "./usuario.model";
@@ -20,6 +21,7 @@ export class PagosServicio{
       public caja: Caja,
       public pagoServicioEstado: PagoServicioEstado,
       public tipoPagoServicios: TipoPagoServicio,
+      public deuda?: Deuda | null, //PK
       public id?: number, //PK
       public observacion?: string | null,
       public created_at?: Date | string,

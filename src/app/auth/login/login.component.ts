@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Ingreso } from 'src/app/models/ingreso.model';
+import { Usuario } from 'src/app/models/usuario.model';
+import { IngresoService } from 'src/app/services/ingreso.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
+
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +22,7 @@ export class LoginComponent implements OnInit {
 
   errogMsg: string = '';
   remember: boolean = false;
+  usuario!: Usuario;
 
   loginForm: FormGroup = new FormGroup({
     username: new FormControl(localStorage.getItem('email') || '', [Validators.required, Validators.email]),
@@ -24,7 +30,11 @@ export class LoginComponent implements OnInit {
     // remember: new FormControl(false)
   });
 
-  constructor(private usuarioService: UsuarioService, private router: Router) {}
+  constructor(
+    private usuarioService: UsuarioService,
+    private router: Router,
+    private ingresoService: IngresoService
+    ) {}
 
   ngOnInit(): void {}
 
@@ -46,7 +56,7 @@ export class LoginComponent implements OnInit {
         if (resp.ok) {
           this.usuarioService.setToken(resp.token);
           alert(resp.msg);
-          this.router.navigate(['/dashboard']);
+          // this.router.navigate(['/dashboard']);
         }
       },
       error: ({error}) => {
@@ -54,7 +64,35 @@ export class LoginComponent implements OnInit {
 
         alert(this.errogMsg = error.msg);
       },
-      complete: () => console.log('Login completo'),
+      complete: () => {
+        this.setUsuario();
+      },
+    });
+  }
+
+  setUsuario(){
+    this.usuarioService.findByUsername(this.loginForm.get('username')?.value)
+    .subscribe({
+      next: (resp:Usuario)=> {
+        this.usuario = resp;
+      },
+      error: error => console.log(error),
+      complete: ()=>{
+        this.registrarIngreso(this.usuario)
+      }
+    });
+  }
+
+  registrarIngreso(usuario: Usuario){
+    let ingreso: Ingreso = new Ingreso(
+      moment().format('yyyy-MM-DD hh:mm:ss'),'',usuario
+    );
+    this.ingresoService.saveIngreso(ingreso).subscribe({
+      next: (resp)=> console.log(resp),
+      error: err => console.log(err),
+      complete: ()=>{
+        this.router.navigate(['/dashboard']);
+      }
     });
   }
 

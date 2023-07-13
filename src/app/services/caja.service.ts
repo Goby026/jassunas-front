@@ -4,6 +4,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Caja } from '../models/caja.model';
+import { Usuario } from '../models/usuario.model';
+import { Router } from '@angular/router';
+import { UsuarioService } from './usuario.service';
 
 const base_url = environment.base_url;
 
@@ -13,7 +16,9 @@ const base_url = environment.base_url;
 export class CajaService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router,
+    private usuarioService: UsuarioService
     ) { }
 
   getCajaStatus():Observable<Caja>{
@@ -23,6 +28,31 @@ export class CajaService {
       })
     );
   }
+
+  // verificarEstadoCaja() {
+  //   let usuario!: Usuario;
+  //   let caja!: Caja;
+  //   this.getCajaStatus().subscribe({
+  //     next: (resp: Caja) => {
+  //       if (resp) {
+  //         if (resp.esta !== 1) {
+  //           alert('Caja no esta aperturada');
+  //           this.router.navigate(['/dashboard/caja']);
+  //         } else {
+  //           caja = resp;
+  //         }
+  //       }else{
+  //         alert('No hay resultado de cobranzas');
+  //       }
+  //     },
+  //     error: (error) => console.log(error),
+  //     complete: () => {
+  //       usuario = this.usuarioService.getLocalUser();
+  //       console.log(usuario);
+  //     },
+  //   });
+  //   return { usuario, caja };
+  // }
 
   getCajaById(idcaja: number):Observable<Caja>{
     return this.http.get<Caja>(`${base_url}/cajas/${idcaja}`);

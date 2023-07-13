@@ -38,12 +38,12 @@ export class SidebarService {
       path: 'cobranzas',
       roles: ['ADMIN_ROLE','CAJA_ROLE']
     },
-    {
-      titulo: 'Multas',
-      icono: 'menu-icon tf-icons bx bx-money',
-      path: 'multas',
-      roles: ['ADMIN_ROLE','CAJA_ROLE']
-    },
+    // {
+    //   titulo: 'Multas',
+    //   icono: 'menu-icon tf-icons bx bx-money',
+    //   path: 'multas',
+    //   roles: ['ADMIN_ROLE','CAJA_ROLE']
+    // },
     {
       titulo: 'Vouchers',
       icono: 'menu-icon tf-icons bx bx-credit-card',

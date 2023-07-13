@@ -7,9 +7,9 @@ import { ClienteDataComponent } from './clientes/cliente-data/cliente-data.compo
 import { ClientesComponent } from './clientes/clientes.component';
 import { CobranzasComponent } from './cobranzas/cobranzas.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HistorialComponent } from './historial/historial.component';
+import { HistorialComponent } from './cobranzas/historial/historial.component';
 import { PagesComponent } from './pages.component';
-import { TributosComponent } from './tributos/tributos.component';
+import { TributosComponent } from './cobranzas/tributos/tributos.component';
 import { ZonasComponent } from './zonas/zonas.component';
 import { TarifarioComponent } from './tarifario/tarifario.component';
 import { VouchersComponent } from './cobranzas/vouchers/vouchers.component';
@@ -21,6 +21,7 @@ import { EgresosComponent } from './egresos/egresos.component';
 import { ConfigTarifasComponent } from './configuracion/config-tarifas/config-tarifas.component';
 import { CateEgresosComponent } from './configuracion/cate-egresos/cate-egresos.component';
 import { MultasComponent } from './cobranzas/multas/multas.component';
+import { PagosDeudasCondonacionesComponent } from './cobranzas/pagos-deudas-condonaciones/pagos-deudas-condonaciones.component';
 
 const routes: Routes = [
   {
@@ -31,10 +32,14 @@ const routes: Routes = [
       { path: '', component: DashboardComponent, data: { titulo: 'Dashboard' } },
       { path: 'zonas', component: ZonasComponent, data: { titulo: 'Zonas' } },
       { path: 'cobranzas', component: CobranzasComponent, data: { titulo: 'Cobranzas' }, children: [
-        { path: 'multas', component: MultasComponent, data: { titulo: 'Multas' } }
+        { path: 'deudas/:idCliente', component: PagosDeudasCondonacionesComponent, data: { titulo: 'Deudas' } },
+        { path: 'tributos/:idCliente', component: TributosComponent, data: { titulo: 'Tributos' } },
+        { path: 'pagos/:idCliente', component: AdelantosComponent, data: { titulo: 'Pagos' } },
+        { path: 'historial/:idCliente', component: HistorialComponent, data: { titulo: 'Historial' } },
+        { path: 'multas/:idCliente', component: MultasComponent, data: { titulo: 'Multas' } },
       ] },
       { path: 'clientes', component: ClientesComponent, data: { titulo: 'Socios' } },
-      { path: 'historial/:idCliente', component: HistorialComponent, data: { titulo: 'Historial' } },
+      // { path: 'historial/:idCliente', component: HistorialComponent, data: { titulo: 'Historial' } },
       { path: 'tributos/:idCliente', component: TributosComponent, data: { titulo: 'Tributos' } },
       { path: 'adelantos/:idCliente', component: AdelantosComponent, data: { titulo: 'Adelantos' } },
       { path: 'tarifarios/:idClientes', component: TarifarioComponent, data: { titulo: 'Tarifarios' } },

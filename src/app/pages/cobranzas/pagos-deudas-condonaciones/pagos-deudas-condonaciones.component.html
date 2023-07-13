@@ -1,5 +1,112 @@
-<div class="row">
+<!-- <div class="row">
   <div class="col-md-12">
     <app-buscador></app-buscador>
+  </div>
+</div> -->
+
+<div class="row mt-1">
+  <div class="col-md-6 mb-4">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">DEUDAS</h5>
+        <div class="table-responsive text-nowrap">
+          <table class="table card-table">
+            <thead>
+              <tr class="table-primary">
+                <th>Sel</th>
+                <th>Concepto</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              <tr class="table-info" *ngFor="let deuda of deudas; index as i">
+                <td>
+                  <label class="d-flex justify-content-around">
+                    <input class="form-check-input me-1" type="checkbox" [value]="deuda.idtbdeudas"
+                      (change)="setPago(deudaSel,deuda)" #deudaSel>
+                    <span>{{ deuda.idtbdeudas }}</span>
+                  </label>
+                </td>
+                <td>
+                  <span>{{ dateService.setFormatPeriodo(deuda.periodo)}}</span>
+                </td>
+                <td>
+                  {{ deuda.total | currency: 'S/ ' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA DE PAGOS -->
+  <div class="col-md-6 mb-4">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">TRANSACCIONES</h5>
+        <div class="table-responsive text-nowrap">
+          <table class="table card-table">
+            <thead>
+              <tr class="table-primary">
+                <th>#</th>
+                <th>Concepto</th>
+                <th>Periodo</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              <tr class="table-info" *ngFor="let pago of pagos; index as i">
+                <td>{{ i + 1 }}</td>
+                <td>
+                  {{ pago.concepto }}
+                </td>
+                <td>
+                  <span>{{ pago.fecha }}</span>
+                </td>
+                <td>
+                  {{ pago.monto | currency: 'S/ ' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr>
+        <div class="mb-3 row mx-4">
+          <label class="col-md-8 col-form-label">Sub-Total</label>
+          <div class="col-md-4 mb-1">
+            <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+          </div>
+          <label class="col-md-8 col-form-label">Otras tasas</label>
+          <div class="col-md-4 mb-1">
+            <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+          </div>
+          <label class="col-md-8 col-form-label">Descuento</label>
+          <div class="col-md-4 mb-1">
+            <input class="form-control text-end" type="text" value="0.00">
+          </div>
+          <label class="col-md-8 col-form-label">Total</label>
+          <div class="col-md-4 mb-1">
+            <input class="form-control text-end" type="text" [value]="monto | currency: 'S/ ' " readonly>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-footer d-flex flex-row align-items-center justify-content-around">
+        <!-- <button type="button" class="btn btn-danger w-25 mx-2" (click)="setPaneles('x_all')">Cancelar</button> -->
+        <button type="button" class="btn btn-danger w-25 mx-2" >Cancelar</button>
+
+        <button (click)="condonarDeuda()" [disabled]="isDisabled" class="btn btn-info w-25 mx-2" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasEnd" aria-controls="offcanvasEnd">
+          Condonar deuda
+        </button>
+
+        <button (click)="regPagosServicio()" [disabled]="isDisabled" type="button" class="btn btn-success w-25 mx-2">
+          Emitir recibo
+        </button>
+
+      </div>
+    </div>
   </div>
 </div>

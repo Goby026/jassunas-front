@@ -2,10 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { Caja } from 'src/app/models/caja.model';
+import { Deuda } from 'src/app/models/deuda.model';
 import { Egreso } from 'src/app/models/egreso.model';
 import { PagoServicioEstado } from 'src/app/models/pagoservicioestado.model';
 import { PagosServicio } from 'src/app/models/pagosservicio.model';
 import { CajaService } from 'src/app/services/caja.service';
+import { DeudaService } from 'src/app/services/deuda.service';
 import { EgresoService } from 'src/app/services/egreso.service';
 import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
 import { environment } from 'src/environments/environment';
@@ -34,6 +36,7 @@ export class SeguimientoComponent implements OnInit, OnDestroy {
     private pagoServicios: PagosServiciosService,
     private cajaService: CajaService,
     private egresoService: EgresoService,
+    private deudaService: DeudaService,
     private router: Router
   ) {}
 
@@ -110,6 +113,19 @@ export class SeguimientoComponent implements OnInit, OnDestroy {
       esta: 4,
       pagoServicioEstado: pagoServEstado,
     };
+
+    // TODO: si el pago tiene deuda entonces se debe anular la multa
+    if (pago.deuda) {
+      let newDeuda:Deuda = {...pago.deuda};
+      newDeuda.deudaEstado.iddeudaEstado = 3;
+      newDeuda.saldo = pago.deuda.total;
+      this.deudaService.updateUserDebt(newDeuda)
+      .subscribe({
+        next: (resp)=> console.log('Deuda actualizada'),
+        error: err=> console.log(err),
+        // complete: ()=>
+      });
+    }
 
     this.pagoServicios.updatePagosServicio(pagoToUpdate).subscribe({
       next: (resp: PagosServicio) => {

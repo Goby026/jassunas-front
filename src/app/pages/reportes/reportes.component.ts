@@ -31,11 +31,10 @@ export class ReportesComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  getMes(){
-    let mes = 3;
-    let mesNombre = moment().month(mes-1).format('MMMM');
-    console.log(mesNombre);
-  }
+  // getMes(){
+  //   let mes = 3;
+  //   let mesNombre = moment().month(mes-1).format('MMMM');
+  // }
 
   selOpc(e:HTMLSelectElement){
     switch (e.value) {
