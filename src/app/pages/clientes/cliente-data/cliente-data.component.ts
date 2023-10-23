@@ -18,8 +18,7 @@ import { CostoOtroServicio } from 'src/app/models/costootroservicio.model';
 
 @Component({
   selector: 'app-cliente-data',
-  templateUrl: './cliente-data.component.html',
-  styleUrls: ['./cliente-data.component.css']
+  templateUrl: './cliente-data.component.html'
 })
 export class ClienteDataComponent implements OnInit {
 
@@ -109,7 +108,7 @@ export class ClienteDataComponent implements OnInit {
   listarTipoClientes(){
     this.clienteService.getTipoClientes()
     .subscribe({
-      next: (resp:any) => this.tipoClientes = resp.tipoClientes,
+      next: (resp:any) => this.tipoClientes = resp,
       error: error => console.log(error)
     });
   }

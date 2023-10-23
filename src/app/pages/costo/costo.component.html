@@ -1,7 +1,40 @@
-<!-- COSTOS -->
-<div class="card mb-2">
-  <h5 class="card-header pt-3">Costos</h5>
-  <div class="card-body">
+<!-- SELECCION DE TIPO DE REPORTE -->
+<div class="row mb-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="exampleFormControlSelect1" class="form-label">Tipo de reporte</label>
+          <div class="d-flex justify-content-between gap-1">
+            <select class="form-select" (change)="selOpc(tipo)" #tipo>
+              <option value="0" selected>Seleccionar</option>
+              <option value="1">Comprobantes de ingreso</option>
+              <option value="2">Reportes mensuales de ingresos</option>
+              <option value="3">Cuentas por cobrar</option>
+              <option value="4">Conceptos cobrables</option>
+              <option value="5">Conceptos cobrados</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="row">
+  <div class="col-md-12">
+
+  <app-comprobantes-ingreso1 *ngIf="comprobantesIngreso1"></app-comprobantes-ingreso1>
+
+  <app-reportes-mensuales2 *ngIf="reportesMensuales2"></app-reportes-mensuales2>
+
+  <app-cuentas-cobrar3 *ngIf="cuentasCobrar3"></app-cuentas-cobrar3>
+
+  <app-conceptos-cobrables4 *ngIf="conceptosCobrables4"></app-conceptos-cobrables4>
+
+  <app-conceptos-cobrados5 *ngIf="conceptosCobrados5"></app-conceptos-cobrados5>
 
   </div>
 </div>

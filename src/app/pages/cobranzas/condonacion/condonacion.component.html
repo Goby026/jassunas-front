@@ -1,4 +1,4 @@
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEnd" aria-labelledby="offcanvasEndLabel">
+<!-- <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEnd" aria-labelledby="offcanvasEndLabel">
   <form [formGroup]="condonacionForm">
     <div class="offcanvas-header">
       <h5 id="offcanvasEndLabel" class="offcanvas-title">CONDONAR DEUDA</h5>
@@ -31,6 +31,62 @@
         type="button"
         class="btn btn-outline-secondary d-grid w-100" data-bs-dismiss="offcanvas">
         Cancel
+      </button>
+    </div>
+  </form>
+</div> -->
+
+<div class="modal-content">
+  <form [formGroup]="condonacionForm" (ngSubmit)="registrarCondonacion()">
+    <div class="modal-header">
+      <h5 class="modal-title" id="modalCenterTitle">CONDONACION DE DEUDA</h5>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col mb-3">
+          <label for="txtMontoCondonar" class="form-label">Monto</label>
+          <input
+            type="text"
+            id="txtMontoCondonar"
+            class="form-control"
+            placeholder="monto"
+            formControlName="monto"
+            readonly
+          />
+        </div>
+      </div>
+      <div class="row g-2">
+        <div class="col mb-0">
+          <label for="txtObsCondonar" class="form-label">Observaciones</label>
+          <textarea
+            class="form-control"
+            id="txtObsCondonar"
+            rows="3"
+            formControlName="observacion"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-bs-dismiss="modal"
+      >
+        Cerrar
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        data-bs-dismiss="modal"
+      >
+        Registrar
       </button>
     </div>
   </form>

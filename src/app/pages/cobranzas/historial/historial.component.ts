@@ -17,6 +17,8 @@ import { DateService } from 'src/app/services/date.service';
 import { TicketTributo } from '../TicketTributo';
 import { ActivatedRoute } from '@angular/router';
 import { ClienteService } from 'src/app/services/cliente.service';
+import { Deuda } from 'src/app/models/deuda.model';
+import { DeudaService } from 'src/app/services/deuda.service';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -28,11 +30,13 @@ export class HistorialComponent implements OnInit {
   cliente!: Cliente;
   pagos: PagosServicio[] = [];
   pagosDetalle: PagosServicioDetalle[] = [];
+  deudas!: Deuda[];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private pagosService: PagosServiciosService,
     private clienteService: ClienteService,
+    private deudasService: DeudaService,
     public dateService: DateService
   ) {}
 
@@ -41,7 +45,7 @@ export class HistorialComponent implements OnInit {
     const {idCliente} = this.activatedRoute.snapshot.params;
     this.cargarCliente(Number(idCliente));
     this.cargarPagos(Number(idCliente));
-    // this.cargarHistorial();
+    this.cargarDeudasCondonadas(idCliente);
   }
 
   cargarCliente(id: number){
@@ -72,6 +76,16 @@ export class HistorialComponent implements OnInit {
         },
         error: (error) => console.log(error),
       });
+  }
+
+  cargarDeudasCondonadas(idCliente : number){
+    this.deudasService.getUserDebt( idCliente, 5 )
+    .subscribe({
+      next: (resp: Deuda[]) => {
+        this.deudas = resp;
+      },
+      error: (error) => console.log(error),
+    });
   }
 
   // el historial es la lista de detalles de un pago determinado
@@ -108,7 +122,7 @@ export class HistorialComponent implements OnInit {
         itemsTicket,
         String(pago.fecha)
       );
-      ticket.pagar();
+      ticket.pagar(pago.observacion!, pago.montodescuento, pago.montoapagar);
     } else {
       // VOUCHER DE TRIBUTO
       const ticketTributo: TicketTributo = new TicketTributo(

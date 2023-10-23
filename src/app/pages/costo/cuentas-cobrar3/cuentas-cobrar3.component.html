@@ -1,0 +1,30 @@
+<div class="card mb-3">
+  <div class="card-body">
+    <form [formGroup]="fechasForm" (ngSubmit)="listarCuentas()">
+    <div class="row mb-3">
+
+        <label class="col-sm-1 col-form-label" for="basic-default-name">Desde</label>
+        <div class="col-sm-3">
+          <input
+            type="date"
+            class="form-control"
+            formControlName="inicio">
+        </div>
+
+        <label class="col-sm-1 col-form-label" for="basic-default-name">Hasta</label>
+        <div class="col-sm-3">
+          <input
+            type="date"
+            class="form-control"
+            formControlName="fin">
+        </div>
+
+
+        <div class="col-sm-2">
+          <button type="submit" class="btn btn-info">Mostrar</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>

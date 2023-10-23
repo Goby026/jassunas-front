@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
   <div class="row">
     <div class="col-md-12">
       <div class="card mb-4">
@@ -36,15 +36,130 @@
 
               </div>
 
-              <!-- <div class="d-flex justify-content-center demo-inline-spacing">
-                <button class="btn btn-secondary" type="button" onclick="history.back()">Cancelar</button>
-
-                <a class="btn btn-success" type="button" routerLink="/upload-pago">Siguiente</a>
-              </div> -->
-
             </form>
           </div>
 
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="d-flex flex-column justify-content-center vh-100 bg-dark">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <nav class="navbar navbar-example navbar-expand-lg navbar-light bg-light mb-3 rounded">
+          <div class="container-fluid">
+            <a class="navbar-brand" routerLink="/">
+              <img src="../../../assets/img/jass.png" class="img-thumbnail" alt="..." style="width: 100px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-ex-2" aria-controls="navbar-ex-2" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-ex-2">
+              <div class="navbar-nav me-auto">
+                <!-- <a class="nav-item nav-link active" href="javascript:void(0)">Home</a>
+                <a class="nav-item nav-link" href="javascript:void(0)">About</a>
+                <a class="nav-item nav-link" href="javascript:void(0)">Contact</a> -->
+              </div>
+
+              <span class="navbar-text">26-07-2023</span>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card h-100">
+          <div class="card-body">
+            <h3 class="card-title fw-bold text-center text-success text-decoration-underline mb-5">SUBIR EL COMPROBANTE O VOUCHER</h3>
+            <div class="d-flex justify-content-center align-items-center">
+              <div class="col-6">
+                <form>
+
+                  <div class="mb-3">
+                    <label for="formFile" class="form-label">Seleccione su voucher</label>
+                    <input (change)="selImagen($event)" class="form-control" type="file" id="formFile">
+                  </div>
+
+                  <div class="mb-3 demo-inline-spacing text-center">
+                    <button (click)="subirImagen()" class="btn btn-success" type="button">
+                      SUBIR VOUCHER
+                    </button>
+                  </div>
+
+                  <div class="mt-4">
+                    <span>
+                      <h5 class="text-success text-center">SU PAGO HA SIDO ENVIADO CORRECTAMENTE, SERA VERIFICADO EN EL TRANSCURSO DEL DIA</h5>
+                    </span>
+
+                    <p class="text-center">
+                      <span class="text-primary">NOMBRE</span>: {{ nombreCompleto }}
+                    </p>
+
+                    <p class="text-center text-info">
+                      Recuerda que el comprobante de pago debe de coindicir con el valor del recibo, caso contrario su pago sera rechazado.
+                    </p>
+
+                  </div>
+
+                  <!-- <div class="d-flex justify-content-center demo-inline-spacing">
+                    <button class="btn btn-secondary" type="button" onclick="history.back()">Cancelar</button>
+
+                    <a class="btn btn-success" type="button" routerLink="/upload-pago">Siguiente</a>
+                  </div> -->
+
+                </form>
+              </div>
+            </div>
+
+            <!-- <p class="card-text">Bear claw sesame snaps gummies chocolate.</p>
+            <a href="javascript:void(0);" class="card-link">Card link</a>
+            <a href="javascript:void(0);" class="card-link">Another link</a> -->
+          </div>
+          <div class="card-footer">
+            <div class="mb-4">
+              <h5 class="text-primary text-center">
+                PAGUE SUS SERVICIOS EN LAS SIGUIENTES AGENCIAS / BANCOS O CON
+                YAPE, PLIN
+              </h5>
+              <div class="d-flex justify-content-around">
+                <img
+                  class="img-fluid"
+                  style="max-width: 100px"
+                  src="../../assets/img/yape.png"
+                  alt=""
+                />
+                <img
+                  class="img-fluid"
+                  style="max-width: 100px"
+                  src="../../assets/img/plin.png"
+                  alt=""
+                />
+                <img
+                  class="img-fluid"
+                  style="max-width: 150px"
+                  src="../../assets/img/bcp.png"
+                  alt=""
+                />
+                <img
+                  class="img-fluid"
+                  style="max-width: 150px"
+                  src="../../assets/img/interbank.png"
+                  alt=""
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <h5 class="text-secondary text-center">BCP: 002 8765832658</h5>
+              <h5 class="text-secondary text-center">
+                INTERBANK: 003 8765832658DGDFG
+              </h5>
+            </div>
+          </div>
         </div>
       </div>
     </div>

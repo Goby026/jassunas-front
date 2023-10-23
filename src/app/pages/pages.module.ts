@@ -45,6 +45,15 @@ import { CateEgresosComponent } from './configuracion/cate-egresos/cate-egresos.
 import { FormCateComponent } from './configuracion/cate-egresos/form-cate.component';
 import { ReporteEgresosComponent } from './reportes/reporte-egresos/reporte-egresos.component';
 import { TipomultasComponent } from './configuracion/tipomultas/tipomultas.component';
+import { AccesosComponent } from './configuracion/accesos/accesos.component';
+import { ReporteMultasComponent } from './reportes/reporte-multas/reporte-multas.component';
+import { DescuentosComponent } from './cobranzas/descuentos/descuentos.component';
+import { ComprobantesIngreso1Component } from './costo/comprobantes-ingreso1/comprobantes-ingreso1.component';
+import { ReportesMensuales2Component } from './costo/reportes-mensuales2/reportes-mensuales2.component';
+import { CuentasCobrar3Component } from './costo/cuentas-cobrar3/cuentas-cobrar3.component';
+import { ConceptosCobrables4Component } from './costo/conceptos-cobrables4/conceptos-cobrables4.component';
+import { ConceptosCobrados5Component } from './costo/conceptos-cobrados5/conceptos-cobrados5.component';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +92,16 @@ import { TipomultasComponent } from './configuracion/tipomultas/tipomultas.compo
     CateEgresosComponent,
     FormCateComponent,
     ReporteEgresosComponent,
-    TipomultasComponent
+    TipomultasComponent,
+    AccesosComponent,
+    ReporteMultasComponent,
+    DescuentosComponent,
+    ComprobantesIngreso1Component,
+    ReportesMensuales2Component,
+    CuentasCobrar3Component,
+    ConceptosCobrables4Component,
+    ConceptosCobrados5Component,
+    AdminComponent
   ],
   exports:[
     DashboardComponent,

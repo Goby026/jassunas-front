@@ -1,0 +1,85 @@
+
+<div class="row mb-3">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="mostrarData()">
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-5">
+                <label for="selectMes" class="form-label">MES</label>
+                <select class="form-select" id="selectMes" formControlName="mes">
+                  <option value="0">
+                    Seleccionar
+                  </option>
+                  <option *ngFor="let item of meses" [value]="item.valor">
+                    {{ item.mes }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-5" *ngIf="years">
+                <label for="selectYear" class="form-label">AÑO</label>
+                <select class="form-select" id="selectYear" formControlName="year">
+                  <option value="0">
+                    Seleccionar
+                  </option>
+                  <option *ngFor="let year of years" [value]="year.valor">
+                    {{ year.valor }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-2 text-center">
+                <br>
+                <button type="submit" class="btn btn-info">Mostrar</button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="row" *ngIf="pagos">
+        <div class="col-md-6">
+          <h5 class="card-header">
+            Reporte de comprobantes por mes y año
+          </h5>
+        </div>
+        <div class="col-md-6 d-flex justify-content-around align-items-center">
+          <button class="btn btn-success btn-sm" (click)="crearReporte()"><i class='bx bxs-file'></i> Excel</button>
+        </div>
+      </div>
+      <div class="card-body" *ngIf="pagos">
+        <div class="mb-3">
+          <div class="table-responsive text-nowrap">
+            <table class="table">
+              <thead class="table-light">
+                <tr>
+                  <th>FECHA</th>
+                  <th>REGISTRO</th>
+                  <th>COMPROBANTE DE COBRANZA</th>
+                  <th>SOCIO / RAZON</th>
+                  <th>IMPORTE</th>
+                  <th>DETALLE / OBSERVACION</th>
+                </tr>
+              </thead>
+              <tbody class="table-border-bottom-0">
+
+                <tr *ngFor="let pago of pagos">
+                  <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ pago.fecha | date: 'short' }}</strong></td>
+                  <td>.</td>
+                  <td>{{pago.correlativo}}</td>
+                  <td>{{pago.cliente.apepaterno}} {{pago.cliente.apematerno}} {{pago.cliente.nombres}} </td>
+                  <td>
+                    {{pago.montopagado | currency: 'S/ '}}
+                  </td>
+                  <td><span class="badge bg-label-primary me-1">{{ pago.observacion }}</span></td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

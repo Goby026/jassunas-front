@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Cliente } from '../models/cliente.model';
 import { Deuda } from '../models/deuda.model';
 import { ClienteService } from '../services/cliente.service';
-import { DeudaService } from '../services/deuda.service';
 
 import * as moment from 'moment';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Router } from '@angular/router';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-subir-pago',
@@ -33,137 +34,110 @@ export class SubirPagoComponent implements OnInit {
   tblPagos: boolean = false;
   busca: boolean = false;
 
+  fecha:string = moment().format('MMMM Do YYYY, h:mm:ss a');
+
   constructor(
     private clienteService: ClienteService,
-    private deudaService: DeudaService,
     private router: Router,
     ) { }
 
   ngOnInit(): void {
   }
 
-  buscarCliente(param: HTMLInputElement) {
-
-    if(param.value.trim() === ''){
+  buscarCliente(dni: HTMLInputElement){
+    if (!(dni.value.length === 8)) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Ingrese dni válido',
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });
       return;
     }
-
     this.spinner = true;
-    this.busca = true;
-    let paramVal = {
-      nombre: '',
-      dni: '',
-      ape: '',
-    };
-    switch (this.tipoBusqueda) {
-      case 'Nombre':
-        paramVal = {
-          nombre: param.value,
-          dni: '',
-          ape: '',
-        };
-        break;
-      case 'Dni':
-        paramVal = {
-          nombre: '',
-          dni: param.value,
-          ape: '',
-        };
-        break;
-      case 'Apellido':
-        paramVal = {
-          nombre: '',
-          dni: '',
-          ape: param.value,
-        };
-        break;
-      default:
-        break;
-    }
-    this.monto = 0;
-    this.clienteService
-      .findClients(paramVal.nombre, paramVal.dni, paramVal.ape)
-      .subscribe({
-        next: (resp: any) => {
-          this.clientes = resp.clientes;
-        },
-        error: (error) => console.log(error),
-        complete: () => {
-          this.monto = 0;
-          this.spinner = false
-        },
-      });
-  }
-
-  mostrarCliente(id: any) {
-    // this.panel_pagos = true;
-    // this.panel_condonacion = true;
-    // this.idCliente = id;
-
-    // console.log(JSON.stringify(this.idCliente, null, 2));
-
-    this.clienteService.getClientById(Number(id)).subscribe({
-      next: (resp: Cliente) => {
-        this.cliente = resp;
-        this.nombre_completo = `${resp.apepaterno} ${resp.apematerno} ${resp.nombres}`;
-      },
-      error: (error) => console.log(error),
-      complete: ()=>{
-        // cargar costos del cliente
-        // this.cargarCostosCliente(id);
-        // this.cargarDeudasCliente(id);
-      }
-    });
-  }
-
-
-  cargarDeudasCliente(cliente: Cliente) {
-    this.busca = false;
-    this.deudaService.getAllUserDebt(Number(cliente.idclientes))
+    this.clienteService.searchByDni(dni.value)
     .subscribe({
-      next: (resp: Deuda[]) => {
-        this.deudas = resp.filter((item)=>{
-          return item.deudaEstado.iddeudaEstado !== 2;
-        });
-        this.tblPagos = true;
+      next: (resp: Cliente)=> {
+        this.cliente = resp;
       },
-      error: (error) => console.log(error),
-      complete: ()=>{
-        this.mostrarCliente(cliente.idclientes);
+      error: err=> console.log(err),
+      complete: ()=> {
+        if(this.cliente !== null){
+          this.router.navigate(['/datos', this.cliente.idclientes]);
+        }else{
+          Swal.fire({
+            title: 'Error!',
+            text: 'Dni no existe',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });
+        }
+        this.spinner = false
       }
     });
   }
 
+  // mostrarCliente(id: any) {
 
-  setearDeuda(sel: HTMLInputElement, deuda: Deuda) {
-    if (sel.checked) {
-      this.deudasSel.push(deuda);
-    }else {
-
-      this.deudasSel = this.deudasSel.filter((item) => {
-        return item.idtbdeudas !== deuda.idtbdeudas;
-      });
-
-    }
-    this.operar()
-  }
-
-  operar(){
-    this.monto = 0;
-    this.deudasSel.map((item)=>(this.monto += item.saldo));
-  }
+  //   this.clienteService.getClientById(Number(id)).subscribe({
+  //     next: (resp: Cliente) => {
+  //       this.cliente = resp;
+  //       this.nombre_completo = `${resp.apepaterno} ${resp.apematerno} ${resp.nombres}`;
+  //     },
+  //     error: (error) => console.log(error),
+  //     complete: ()=>{
+  //     }
+  //   });
+  // }
 
 
-  siguiente(){
-    if (this.deudasSel.length <= 0){
-      alert('Seleccione deuda a pagar');
-      return;
-    }
+  // cargarDeudasCliente(cliente: Cliente) {
+  //   this.busca = false;
+  //   this.deudaService.getAllUserDebt(Number(cliente.idclientes))
+  //   .subscribe({
+  //     next: (resp: Deuda[]) => {
+  //       this.deudas = resp.filter((item)=>{
+  //         return item.deudaEstado.iddeudaEstado !== 2;
+  //       });
+  //       this.tblPagos = true;
+  //     },
+  //     error: (error) => console.log(error),
+  //     complete: ()=>{
+  //       this.mostrarCliente(cliente.idclientes);
+  //     }
+  //   });
+  // }
 
-    let arrDeudasSerializado = JSON.stringify(this.deudasSel);
 
-    this.router.navigate(['/confirmar-pago', arrDeudasSerializado, this.cliente.idclientes]);
+  // setearDeuda(sel: HTMLInputElement, deuda: Deuda) {
+  //   if (sel.checked) {
+  //     this.deudasSel.push(deuda);
+  //   }else {
 
-  }
+  //     this.deudasSel = this.deudasSel.filter((item) => {
+  //       return item.idtbdeudas !== deuda.idtbdeudas;
+  //     });
+
+  //   }
+  //   this.operar()
+  // }
+
+  // operar(){
+  //   this.monto = 0;
+  //   this.deudasSel.map((item)=>(this.monto += item.saldo));
+  // }
+
+
+  // siguiente(){
+  //   if (this.deudasSel.length <= 0){
+  //     alert('Seleccione deuda a pagar');
+  //     return;
+  //   }
+
+  //   let arrDeudasSerializado = JSON.stringify(this.deudasSel);
+
+  //   this.router.navigate(['/confirmar-pago', arrDeudasSerializado, this.cliente.idclientes]);
+
+  // }
 
 }

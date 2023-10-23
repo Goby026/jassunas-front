@@ -21,6 +21,7 @@ export class ReportesComponent implements OnInit {
   cajaPanel: boolean = false;
   tributo: boolean = false;
   egreso: boolean = false;
+  multas: boolean = false;
 
   // clientes: Cliente[] = [];
   // zonas: Zona[] = [];
@@ -46,6 +47,7 @@ export class ReportesComponent implements OnInit {
         this.cajaPanel = false;
         this.tributo = false;
         this.egreso = false;
+        this.multas = false;
         break;
       case 'zona':
         this.clientePanel = false;
@@ -55,6 +57,7 @@ export class ReportesComponent implements OnInit {
         this.cajaPanel = false;
         this.tributo = false;
         this.egreso = false;
+        this.multas = false;
         break;
       case 'tupa':
         this.clientePanel = false;
@@ -64,6 +67,7 @@ export class ReportesComponent implements OnInit {
         this.cajaPanel = false;
         this.tributo = false;
         this.egreso = false;
+        this.multas = false;
         break;
       case 'pago':
         this.clientePanel = false;
@@ -73,6 +77,7 @@ export class ReportesComponent implements OnInit {
         this.cajaPanel = false;
         this.tributo = false;
         this.egreso = false;
+        this.multas = false;
         break;
       case 'caja':
           this.clientePanel = false;
@@ -82,6 +87,7 @@ export class ReportesComponent implements OnInit {
           this.cajaPanel = true;
           this.tributo = false;
           this.egreso = false;
+          this.multas = false;
           break;
       case 'tributo':
           this.clientePanel = false;
@@ -91,6 +97,7 @@ export class ReportesComponent implements OnInit {
           this.cajaPanel = false;
           this.tributo = true;
           this.egreso = false;
+          this.multas = false;
           break;
       case 'egreso':
           this.clientePanel = false;
@@ -100,6 +107,17 @@ export class ReportesComponent implements OnInit {
           this.cajaPanel = false;
           this.tributo = false;
           this.egreso = true;
+          this.multas = false;
+          break;
+      case 'multas':
+          this.clientePanel = false;
+          this.zonaPanel = false;
+          this.tupaPanel = false;
+          this.pagoPanel = false;
+          this.cajaPanel = false;
+          this.tributo = false;
+          this.egreso = false;
+          this.multas = true;
           break;
 
       default:
@@ -110,6 +128,7 @@ export class ReportesComponent implements OnInit {
         this.cajaPanel = false;
         this.tributo = false;
         this.egreso = false;
+        this.multas = false;
         break;
     }
   }

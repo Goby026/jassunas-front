@@ -11,16 +11,14 @@ export class TicketPago{
 
   constructor(
       public correlativo: number | null,
-      // public idCliente: number,
       public cliente: Cliente,
-      // public nombre_completo: string,
-      // public direccion: string,
-      // public monto: number,
       public pagos:ItemTicket[],
-      public fechaPago?: string | ''
+      public dcto?: number | 0,
+      public observaciondcto?: string | '',
+      public fechaPago?: string | '',
   ){}
 
-  async pagar(montoPagado: number) {
+  async pagar(subtotal: number,montoPagado: number) {
     let dataPagos: any[] = [];
 
     this.pagos.map((item: ItemTicket) => {
@@ -86,7 +84,7 @@ export class TicketPago{
               width: 50,
             },
             {
-              text: `${this.cliente.idclientes} - ${this.getNombreCompleto}`,
+              text: `${this.cliente.idclientes} - ${this.cliente.nombres} ${this.cliente.apepaterno} ${this.cliente.apematerno}`,
               style: 'small',
               // width: 60,
             },
@@ -130,6 +128,15 @@ export class TicketPago{
           },
         },
         {
+          style: 'tableExample',
+          table: {
+            widths: ['*', '*'],
+            body: [
+              ['OBSERVACION DCTO: ',this.observaciondcto]
+            ],
+          },
+        },
+        {
           text: `SON: ${montoPagado} con 00/100 SOLES`,
           alignment: 'left',
           style: 'small',
@@ -137,9 +144,9 @@ export class TicketPago{
         },
         {
           text: `
-            SUBTOTAL: \t\t S/ ${montoPagado}.00 \n
+            SUBTOTAL: \t\t S/ ${subtotal}.00 \n
             TASAS: \t\t S/ 0.00 \n
-            DESCUENTO: \t\t S/ 0.00 \n
+            DESCUENTO: \t\t S/ ${this.dcto}.00 \n
             ________________________ \n
           `,
           alignment: 'right',
@@ -213,7 +220,7 @@ export class TicketPago{
       return mes;
     }
 
-    getNombreCompleto(): String{
-      return `${this.cliente.nombres} ${this.cliente.apepaterno} ${this.cliente.apematerno}`;
-    }
+    // getNombreCompleto(): String{
+    //   return `${this.cliente.nombres} ${this.cliente.apepaterno} ${this.cliente.apematerno}`;
+    // }
 }

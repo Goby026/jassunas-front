@@ -88,8 +88,8 @@ export class ClientesComponent implements OnInit, OnDestroy {
   listarClientes(): void{
     this.clienteService.listClients()
     .subscribe({
-      next: ( resp:any )=>{
-        this.clientes = resp.clientes;
+      next: ( resp:Cliente[] )=>{
+        this.clientes = resp.filter( (item)=> (item.estado != 0) );
       },
       error: error=>console.log('ERROR->', error),
       complete: ()=>{
@@ -107,7 +107,7 @@ export class ClientesComponent implements OnInit, OnDestroy {
     this.tipoClienteService.getTipoClientes()
     .subscribe({
       next: (resp: any)=>{
-        this.tipoClientes = resp.tipoClientes;
+        this.tipoClientes = resp;
       },
       error: (error)=>console.log(error)
     });

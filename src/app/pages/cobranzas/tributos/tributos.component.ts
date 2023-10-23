@@ -298,6 +298,7 @@ export class TributosComponent implements OnInit {
       error: error => console.log(error),
       complete: () => {
         this.subTotal = 0.00;
+        this.observacion = '';
         this.reqSel = [];
       }
     });

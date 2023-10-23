@@ -13,7 +13,7 @@ import { TributosComponent } from './cobranzas/tributos/tributos.component';
 import { ZonasComponent } from './zonas/zonas.component';
 import { TarifarioComponent } from './tarifario/tarifario.component';
 import { VouchersComponent } from './cobranzas/vouchers/vouchers.component';
-import { CarritoComponent } from './cobranzas/carrito/carrito.component';
+// import { CarritoComponent } from './cob0ranzas/carrito/carrito.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
 import { SeguimientoComponent } from './apertura/seguimiento/seguimiento.component';
@@ -22,6 +22,9 @@ import { ConfigTarifasComponent } from './configuracion/config-tarifas/config-ta
 import { CateEgresosComponent } from './configuracion/cate-egresos/cate-egresos.component';
 import { MultasComponent } from './cobranzas/multas/multas.component';
 import { PagosDeudasCondonacionesComponent } from './cobranzas/pagos-deudas-condonaciones/pagos-deudas-condonaciones.component';
+import { AccesosComponent } from './configuracion/accesos/accesos.component';
+import { CostoComponent } from './costo/costo.component';
+import { AdminComponent } from './admin/admin.component';
 
 const routes: Routes = [
   {
@@ -46,7 +49,8 @@ const routes: Routes = [
       { path: 'cliente-data', component: ClienteDataComponent, data: { titulo: 'Socio-data' } },
       { path: 'caja', component: AperturaComponent, data: { titulo: 'Caja' } },
       { path: 'vouchers', component: VouchersComponent, data: { titulo: 'Confirmar-Vouchers' } },
-      { path: 'carrito', component: CarritoComponent, data: { titulo: 'Pagos' } },
+      { path: 'contable', component: CostoComponent, data: { titulo: 'Contable' } },
+      // { path: 'carrito', component: CarritoComponent, data: { titulo: 'Pagos' } },
       { path: 'reportes', component: ReportesComponent, data: { titulo: 'Reportes' } },
       { path: 'configuracion', component: ConfiguracionComponent, data: { titulo: 'Configuración' }, children: [
         { path: 'config-tarifas', component: ConfigTarifasComponent, data: { titulo: 'Tarifas' } },
@@ -54,6 +58,8 @@ const routes: Routes = [
       ] },
       { path: 'seguimiento/:idcaja', component: SeguimientoComponent, data: { titulo: 'Seguimiento' } },
       { path: 'egresos', component: EgresosComponent, data: { titulo: 'Egresos' } },
+      { path: 'administrador', component: AdminComponent, data: { titulo: 'Administrador' } },
+      { path: 'accesos', component: AccesosComponent, data: { titulo: 'Accesos' } },
       // { path: 'multas', component: MultasComponent, data: { titulo: 'Multas' } }
       // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     ],

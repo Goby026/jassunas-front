@@ -3,7 +3,7 @@
     <div class="card">
       <div class="d-flex flex-row align-items-center justify-content-between">
         <h5 class="card-header">LISTA DE VOUCHERS ENVIADOS</h5>
-        <div class="form-group row w-50 d-flex align-items-center">
+        <!-- <div class="form-group row w-50 d-flex align-items-center">
           <div class="col-md-9">
             <input
               class="form-control"
@@ -12,15 +12,18 @@
               id="html5-search-input"
               (keyup)="recargarLista(cliente)"
               (keyup.enter)="buscarVoucher(cliente)"
-              #cliente>
+              #cliente
+            />
           </div>
           <div class="col-md-2">
-            <button class="btn btn-success" (click)="buscarVoucher(cliente)"><i class='bx bx-search'></i></button>
+            <button class="btn btn-success" (click)="buscarVoucher(cliente)">
+              <i class="bx bx-search"></i>
+            </button>
           </div>
-        </div>
+        </div> -->
       </div>
-      <div class="table-responsive text-nowrap p-4" style="min-height: 400px;">
-        <table class="table table-sm">
+      <div class="table-responsive text-nowrap p-4" style="min-height: 400px">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
           <thead>
             <tr>
               <th>#</th>
@@ -30,101 +33,143 @@
               <th>Acción</th>
             </tr>
           </thead>
-          <tbody class="table-border-bottom-0">
-
-            <tr *ngFor="let v of vouchers | paginate:{
-              itemsPerPage: tableSize,
-              currentPage: page,
-              totalItems: count}; index as i">
-              <td>{{ i+1 }}</td>
-              <td>{{ v.cliente.apepaterno }} {{ v.cliente.apematerno }} {{ v.cliente.nombres }}</td>
+          <tbody>
+            <tr *ngFor="let v of vouchers; index as i">
+              <td>{{ i + 1 }}</td>
+              <td>
+                {{ v.cliente.apepaterno }} {{ v.cliente.apematerno }}
+                {{ v.cliente.nombres }}
+              </td>
               <td>
                 <button
-                (click)="imgSel = v.imagen"
-                class="btn btn-light"
-                data-bs-toggle="modal"
-                  data-bs-target="#modalImagen">
-                  <i class='bx bx-image-alt'></i>
+                  (click)="imgSel = v.imagen"
+                  class="btn btn-light"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalImagen"
+                >
+                  <i class="bx bx-image-alt"></i>
                 </button>
               </td>
               <td>
-                <span class="badge bg-label-warning me-1" *ngIf="v.pagoServicioEstado.idpagoestado === 2; else noPendiente">PENDIENTE</span>
+                <span
+                  class="badge bg-label-warning me-1"
+                  *ngIf="
+                    v.pagoServicioEstado.idpagoestado === 2;
+                    else noPendiente
+                  "
+                  >PENDIENTE</span
+                >
                 <ng-template #noPendiente>
-
-                  <span class="badge bg-label-danger me-1" *ngIf="v.pagoServicioEstado.idpagoestado === 4; else approved">ANULADO</span>
+                  <span
+                    class="badge bg-label-danger me-1"
+                    *ngIf="
+                      v.pagoServicioEstado.idpagoestado === 4;
+                      else approved
+                    "
+                    >ANULADO</span
+                  >
 
                   <ng-template #approved>
                     <span class="badge bg-label-success me-1">APROBADO</span>
                   </ng-template>
-
                 </ng-template>
               </td>
               <td>
-                <div class="dropdown">
-                  <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                <div class="dropdown" *ngIf="v.pagoServicioEstado.idpagoestado !== 4" (click)="setearVoucher(v)">
+                  <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu">
-                    <div *ngIf="v.pagoServicioEstado.idpagoestado !== 1; else recibo">
-                      <button
-                        (click)="setearVoucher(v)"
-                        class="dropdown-item"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalCenter">
-                        <i class="bx bx-edit-alt me-1"></i> Confirmar
-                      </button>
-                      <button (click)="confimarAnulacion(v)" class="dropdown-item">
-                        <i class="bx bx-x me-1"></i> Anular
-                      </button>
+                    <div [ngSwitch]="v.pagoServicioEstado.idpagoestado">
+                      <!-- PAGADO -->
+                      <div *ngSwitchCase="1">
+                        <button
+                          (click)="imprimirVoucher(v)"
+                          class="dropdown-item"
+                        >
+                          <i class="bx bx-edit-alt me-1"></i> Imprimir recibo
+                        </button>
+                      </div>
+                      <!-- EN PROCESO -->
+                      <div *ngSwitchCase="2">
+                        <button
+                          class="dropdown-item"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalCenter"
+                        >
+                          <i class="bx bx-edit-alt me-1"></i> Confirmar
+                        </button>
+                        <button
+                          (click)="confimarAnulacion(v)"
+                          class="dropdown-item"
+                        >
+                          <i class="bx bx-x me-1"></i> Anular
+                        </button>
+                      </div>
+                      <!-- CANCELADO -->
+                      <div *ngSwitchCase="3">
+                        <p>Sin acciones</p>
+                      </div>
+                      <!-- ANULADO -->
+                      <div *ngSwitchCase="4">
+                        <p>Sin acciones</p>
+                      </div>
+                      <!--default case when there are no matches -->
+                      <div *ngSwitchDefault>
+                        <button
+                          class="dropdown-item"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalCenter"
+                        >
+                          <i class="bx bx-edit-alt me-1"></i> Confirmar
+                        </button>
+                        <button
+                          (click)="confimarAnulacion(v)"
+                          class="dropdown-item"
+                        >
+                          <i class="bx bx-x me-1"></i> Anular
+                        </button>
+                        <button
+                          (click)="imprimirVoucher(v)"
+                          class="dropdown-item"
+                        >
+                          <i class="bx bx-edit-alt me-1"></i> Imprimir recibo
+                        </button>
+                      </div>
                     </div>
 
-                    <ng-template #recibo>
-                      <button
-                        (click)="imprimirVoucher(v)"
-                        class="dropdown-item">
-                        <i class="bx bx-edit-alt me-1"></i> Imprimir recibo
-                      </button>
-                    </ng-template>
                   </div>
                 </div>
               </td>
             </tr>
-
           </tbody>
         </table>
-        <div class="mt-4">
+        <!-- <div class="mt-4">
           <pagination-controls
             previousLabel="Prev"
             nextLabel="Sig"
-            (pageChange)="onTableDataChange($event)">
+            (pageChange)="onTableDataChange($event)"
+          >
           </pagination-controls>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </div>
 
-
 <!-- DETALLE DE VOUCHER -->
 <div class="col-lg-4 col-md-6">
   <div class="mt-3">
-    <!-- Button trigger modal -->
-    <!-- <button
-      type="button"
-      class="btn btn-primary"
-      data-bs-toggle="modal"
-      data-bs-target="#modalCenter"
-    >
-      Launch modal
-    </button> -->
 
-    <!-- Modal -->
+    <!-- MODAL CONFIRMAR -->
     <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modalCenterTitle" *ngIf="voucherSel">
-              {{ voucherSel.cliente.apepaterno }} {{ voucherSel.cliente.apematerno }} {{ voucherSel.cliente.nombres }}
+              {{ voucherSel.cliente.apepaterno }}
+              {{ voucherSel.cliente.apematerno }}
+              {{ voucherSel.cliente.nombres }}
             </h5>
             <button
               type="button"
@@ -136,7 +181,6 @@
           <div class="modal-body">
             <div class="row">
               <div class="col">
-
                 <div class="table-responsive text-nowrap">
                   <table class="table table-sm">
                     <thead>
@@ -147,39 +191,41 @@
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-
                       <tr *ngFor="let det of voucherDetalles; index as i">
-                        <td>{{ i+1 }}</td>
-                        <td>{{ det.idmes }} - {{ det.idanno }}</td>
-                        <td>{{ det.monto | currency: 'S/ ' }}</td>
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ det.idmes | meses }} - {{ det.idanno }}</td>
+                        <td>{{ det.monto | currency : "S/ " }}</td>
                       </tr>
-
                     </tbody>
                     <tfoot>
                       <tr class="text-primary">
                         <td></td>
                         <td>TOTAL:</td>
                         <td>
-                          {{ total | currency: 'S/ ' }}
+                          {{ total | currency : "S/ " }}
                         </td>
                       </tr>
                     </tfoot>
                   </table>
                 </div>
-
-
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
               Cerrar
             </button>
             <button
               (click)="confirmarPago()"
               type="button"
               class="btn btn-primary"
-              data-bs-dismiss="modal">Confirmar pagos
+              data-bs-dismiss="modal"
+            >
+              Confirmar pagos
             </button>
           </div>
         </div>
@@ -188,19 +234,9 @@
   </div>
 </div>
 
-
 <!-- IMAGEN DE VOUCHER -->
 <div class="col-lg-4 col-md-6">
   <div class="mt-3">
-    <!-- Button trigger modal -->
-    <!-- <button
-      type="button"
-      class="btn btn-primary"
-      data-bs-toggle="modal"
-      data-bs-target="#modalImagen"
-    >
-      Launch modal
-    </button> -->
 
     <!-- Modal -->
     <div class="modal fade" id="modalImagen" tabindex="-1" aria-hidden="true">
@@ -220,7 +256,6 @@
           <div class="modal-body">
             <div class="row">
               <div class="col">
-
                 <div class="card mb-3">
                   <div class="card-body">
                     <h5 class="card-title">Voucher</h5>
@@ -228,15 +263,23 @@
                       <!-- <small class="text-muted">Last updated 3 mins ago</small> -->
                     </p>
                   </div>
-                  <!-- <img *ngIf="imgSel !=='' " class="card-img-bottom" src="http://localhost:8081/api/v1/uploads/img/{{imgSel}}" alt="{{imgSel}}"> -->
+                  <!-- <img
+                    *ngIf="imgSel !== ''"
+                    class="card-img-bottom"
+                    src="http://localhost:8081/api/v1/uploads/img/{{ imgSel }}"
+                    alt="{{ imgSel }}"
+                  /> -->
                   <img *ngIf="imgSel !=='' " class="card-img-bottom" src="http://154.12.238.230:8081/api/v1/uploads/img/{{imgSel}}" alt="{{imgSel}}">
                 </div>
-
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
               Cerrar
             </button>
           </div>
@@ -245,3 +288,4 @@
     </div>
   </div>
 </div>
+

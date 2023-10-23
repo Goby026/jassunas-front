@@ -28,6 +28,14 @@ export class VoucherService {
       );
   }
 
+  getVoucherDetailsByClientId(idcliente: number): Observable<VoucherDetalle[]> {
+    return this.http
+      .get(`${base_url}/voucher-detalles/cliente/${idcliente}`)
+      .pipe(
+        map((response: any) => response.voucherdetalles as VoucherDetalle[])
+      );
+  }
+
   getVoucherByCliente(nombres: String): Observable<Voucher[]> {
     return this.http.get(`${base_url}/vouchers/search/${nombres}`).pipe(
       map( (res:any)=> {

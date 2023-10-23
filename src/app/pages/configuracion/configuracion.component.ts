@@ -12,4 +12,9 @@ export class ConfiguracionComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  mantenimiento(){
+    alert('MANTENIMIENTO 👀');
+    return;
+  }
+
 }

@@ -8,11 +8,24 @@ import { LoginComponent } from './auth/login/login.component';
 import { SubirPagoComponent } from './subir-pago/subir-pago.component';
 import { ConfirmacionComponent } from './subir-pago/confirmacion.component';
 import { UploadComponent } from './subir-pago/upload.component';
+import { PagoSocioComponent } from './subir-pago/pago-socio/pago-socio.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'subir-pago', component: SubirPagoComponent },
-  { path: 'confirmar-pago/:arrDeudas/:idcliente', component: ConfirmacionComponent },
+  {
+    path: 'subir-pago',
+    component: SubirPagoComponent,
+    data: { titulo: 'Subir pagos' }
+  },
+  {
+    path: 'datos/:idCliente',
+    component: PagoSocioComponent,
+    data: { titulo: 'Datos Socio' },
+  },
+  {
+    path: 'confirmar-pago/:arrDeudas/:idcliente/:tipopago',
+    component: ConfirmacionComponent,
+  },
   { path: 'upload-pago/:voucher', component: UploadComponent },
   { path: '**', component: NopagefoundComponent },
 ];
@@ -22,7 +35,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes),
     PagesRoutingModule,
-    AuthRoutingModule
+    AuthRoutingModule,
   ],
   exports: [RouterModule],
 })

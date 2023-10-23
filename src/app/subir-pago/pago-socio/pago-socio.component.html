@@ -1,0 +1,381 @@
+<div class="d-flex flex-column justify-content-center vh-100 bg-dark">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <nav
+          class="navbar navbar-example navbar-expand-lg navbar-light bg-light mb-3 rounded"
+        >
+          <div class="container-fluid">
+            <a class="navbar-brand" routerLink="/">
+              <img
+                src="../../../assets/img/jass.png"
+                class="img-thumbnail"
+                alt="..."
+                style="width: 100px"
+              />
+            </a>
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbar-ex-2"
+              aria-controls="navbar-ex-2"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-ex-2">
+              <div class="navbar-nav me-auto">
+                <!-- <a class="nav-item nav-link active" href="javascript:void(0)">Home</a>
+                <a class="nav-item nav-link" href="javascript:void(0)">About</a>
+                <a class="nav-item nav-link" href="javascript:void(0)">Contact</a> -->
+              </div>
+
+              <span class="navbar-text">26-07-2023</span>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Pagar mi recibo</h5>
+            <h6 class="card-subtitle text-muted">-----------------------</h6>
+            <div class="demo-inline-spacing mt-3">
+              <ul *ngIf="cliente && costo" class="list-group">
+                <li class="list-group-item d-flex align-items-center">
+                  <!-- <i class="bx bx-tv me-2"></i> -->
+                  <i class="bx bxs-id-card me-2"></i>
+                  <div>
+                    <h3 class="mb-0" for="">{{ cliente.dni }}</h3>
+                    <small>Nro. de dni</small>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex align-items-center">
+                  <!-- <i class="bx bx-bell me-2"></i> -->
+                  <i class="bx bxs-user-rectangle me-2"></i>
+                  <div>
+                    <h5 class="mb-0" for="">{{ nombre }}</h5>
+                    <small>Nombre</small>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex align-items-center">
+                  <!-- <i class="bx bx-support me-2"></i> -->
+                  <i class="bx bx-home-circle me-2"></i>
+                  <div>
+                    <h5 class="mb-0" for="">{{ cliente.direccion }}</h5>
+                    <small>Dirección</small>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex align-items-center">
+                  <!-- <i class="bx bx-purchase-tag-alt me-2"></i> -->
+                  <i class="bx bx-calendar me-2"></i>
+                  <div>
+                    <h5 class="mb-0" for="">
+                      {{ costo.fecha_registro | date : "dd/MM/YYYY" }}
+                    </h5>
+                    <small>Fecha de emisión</small>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex align-items-center">
+                  <!-- <i class="bx bx-closet me-2"></i> -->
+                  <i class="bx bxs-calendar me-2"></i>
+                  <div>
+                    <h5 class="mb-0" for="">
+                      {{ costo.fcobranza | date : "dd/MM/YYYY" }}
+                    </h5>
+                    <small>Fecha de vencimiento</small>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex align-items-center">
+                  <!-- <i class="bx bx-closet me-2"></i> -->
+                  <i class="bx bx-money me-2"></i>
+                  <div>
+                    <h3 class="mb-0 text-primary" for="">
+                      {{ total | currency : "S/ " }}
+                    </h3>
+                    <small>Deuda total</small>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <p class="card-text">Verifique sus datos antes de continuar.</p>
+            <!-- <a href="javascript:void(0);" class="card-link">Card link</a>
+            <a href="javascript:void(0);" class="card-link">Another link</a> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="col-xl-12">
+              <!-- <h6 class="text-muted">Filled Tabs</h6> -->
+              <div class="nav-align-top mb-4">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                  <li class="nav-item">
+                    <button
+                      type="button"
+                      class="nav-link active"
+                      role="tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#navs-justified-home"
+                      aria-controls="navs-justified-home"
+                      aria-selected="true"
+                      (click)="resetearArreglos()"
+                    >
+                      <i class="tf-icons bx bx-home"></i> Deudas
+                      <span
+                        class="badge rounded-pill badge-center h-px-20 w-px-20 bg-label-danger"
+                        >{{ deudas.length || 0 }}</span
+                      >
+                    </button>
+                  </li>
+                  <li class="nav-item">
+                    <!-- <button (click)="verificarDeuda()" type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-profile" aria-controls="navs-justified-profile" aria-selected="false">
+                      <i class="tf-icons bx bx-user"></i> Pagos
+                    </button> -->
+                    <button
+                      type="button"
+                      class="nav-link"
+                      role="tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#navs-justified-profile"
+                      aria-controls="navs-justified-profile"
+                      aria-selected="false"
+                      (click)="resetearArreglos()"
+                    >
+                      <i class="tf-icons bx bx-user"></i> Pagos
+                    </button>
+                  </li>
+                  <!-- <li class="nav-item">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-messages" aria-controls="navs-justified-messages" aria-selected="false">
+                      <i class="tf-icons bx bx-message-square"></i> Messages
+                    </button>
+                  </li> -->
+                </ul>
+                <div class="tab-content">
+                  <!-- TAB DEUDAS -->
+                  <div
+                    class="tab-pane fade active show"
+                    id="navs-justified-home"
+                    role="tabpanel"
+                  >
+                    <div *ngIf="deudas.length > 0; else noDeuda">
+                      <div class="table-responsive text-nowrap">
+                        <table class="table table-sm">
+                          <thead>
+                            <tr>
+                              <th>Sel</th>
+                              <th>Periodo</th>
+                              <th>Tipo Documento</th>
+                              <th>Fecha Vence</th>
+                              <th>Importe</th>
+                              <th>Estado</th>
+                            </tr>
+                          </thead>
+                          <tbody class="table-border-bottom-0">
+                            <tr *ngFor="let deuda of deudas">
+                              <td>
+                                <div class="form-check">
+                                  <input
+                                    *ngIf="deuda.deudaEstado.iddeudaEstado != 4"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    [value]="deuda.idtbdeudas"
+                                    id="defaultCheck3"
+                                    (change)="setearDeuda(deudaSel, deuda)"
+                                    #deudaSel
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                {{ deuda.periodo | date : "MMMM - YYYY" }}
+                              </td>
+                              <td>
+                                {{ deuda.deudaDescripcion.descripcion }}
+                              </td>
+                              <td>
+                                {{ deuda.vencimiento | date : "short" }}
+                              </td>
+                              <td>
+                                {{ deuda.total | currency : "S/ " }}
+                              </td>
+
+                              <!-- TODO: usar ngclass para manejar los estilos del mensaje de estado -->
+                              <td>
+                                {{ deuda.deudaEstado.estado }}
+                              </td>
+                            </tr>
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <td colspan="3"></td>
+                              <td>TOTAL S/</td>
+                              <td>
+                                {{ montoSeleccionado | currency : "S/ " }}
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+
+                    <ng-template #noDeuda>
+                      <div class="d-flex justify-content-center align-items-center" style="min-height: 250px;">
+                        <h4>Usted no tiene deudas pendientes</h4>
+                      </div>
+                      <!-- <button class="btn btn-secondary" (click)="back()">
+                        Atras
+                      </button> -->
+                    </ng-template>
+                  </div>
+
+                  <!-- TAB PAGOS -->
+                  <div
+                    class="tab-pane fade"
+                    id="navs-justified-profile"
+                    role="tabpanel"
+                  >
+                    <div *ngIf="deudas.length <= 0; else tieneDeuda">
+                      <div class="mb-3">
+                        <label for="selAnnio" class="form-label"
+                          >Seleccionar año</label
+                        >
+                        <select
+                          class="form-select"
+                          id="selAnnio"
+                          (change)="verMeses(annio.value)"
+                          #annio
+                        >
+                          <option [value]="0" [selected]="true">
+                            Seleccionar año
+                          </option>
+                          <option [value]="anio" *ngFor="let anio of anios">
+                            {{ anio }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- seleccionar año -->
+                    <!-- <select name="" id="" (change)="verMeses(mes.value)" #mes>
+                      <option [value]="0" [selected]="true">Seleccionar año</option>
+                      <option [value]="anio" *ngFor="let anio of anios">{{anio}}</option>
+                    </select> -->
+
+
+
+                    <ng-template #tieneDeuda>
+                      <div class="d-flex justify-content-center align-items-center" style="min-height: 250px;">
+                        <h4>TIENE DEUDAS PENDIENTES</h4> <br>
+                      </div>
+                      <div class="text-center">
+                        <small>Para proceder a realizar pagos, cancele todas sus deudas.</small>
+                      </div>
+                    </ng-template>
+
+                    <!-- <ul>
+                      <li *ngFor="let pago of sinPagar">
+                        {{ pago.idmes | meses }} - {{ pago.idanno }} -
+                        {{ pago.monto }}
+                      </li>
+                    </ul> -->
+
+                    <div class="table-responsive text-nowrap">
+                      <table *ngIf="sinPagar.length > 0" class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>SEL</th>
+                            <th>PERIODO</th>
+                            <th>MONTO</th>
+                            <th>ESTADO</th>
+                          </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0">
+
+                          <tr *ngFor="let pago of sinPagar">
+                            <td>
+                              <div class="form-check">
+                                <input
+                                *ngIf="pago.state == 1"
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  [value]="pago.id"
+                                  id="defaultCheck3"
+                                  (change)="setearPago(pagoSel, pago)"
+                                  #pagoSel
+                                />
+                              </div>
+                            </td>
+                            <td>
+                              {{ pago.idmes | meses }}
+                            </td>
+                            <td>
+                              {{ pago.monto | currency : "S/ " }}
+                            </td>
+
+                            <!-- TODO: usar ngclass para manejar los estilos del mensaje de estado -->
+                            <td>
+                              <label *ngIf="pago.state==1; else proceso">PENDIENTE</label>
+                              <ng-template #proceso>
+                                <label>EN PROCESO</label>
+                              </ng-template>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td colspan="2"></td>
+                            <td>TOTAL S/</td>
+                            <td>
+                              {{ montoSeleccionadoSinPagar | currency : "S/ " }}
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex justify-content-center">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="cbTerminos"
+                    [(ngModel)]="terminos"
+                  />
+                  <label class="form-check-label" for="cbTerminos">
+                    Acepto las políticas de los términos y condiciones
+                  </label>
+                </div>
+              </div>
+
+              <!-- <div class="d-flex flex-row justify-content-center align-items-center"> -->
+              <div class="demo-inline-spacing d-flex justify-content-center">
+                <button class="btn btn-danger" (click)="back()">
+                  Cancelar
+                </button>
+                <button (click)="siguiente()" class="btn btn-primary">
+                  Siguiente
+                </button>
+              </div>
+
+              <!-- <button (click)="verPagos()" class="btn btn-info">
+                Ver pagos
+              </button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

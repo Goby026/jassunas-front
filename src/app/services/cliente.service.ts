@@ -21,12 +21,16 @@ export class ClienteService {
 
   constructor( private http: HttpClient ) { }
 
-  /* LISTAR TODOS LOS CLIENTES */
-  listClients(){
-    return this.http.get(`${base_url}/clientes`);
+  /*================ LISTAR TODOS LOS SOCIOS ================*/
+  listClients(): Observable<Cliente[]>{
+    return this.http.get(`${base_url}/clientes`).pipe(
+      map( (res: any)=> {
+        return res.clientes as Cliente[]
+      } )
+    );
   }
 
-  /* LISTAR CLIENTES POR ZONA*/
+  /*================ LISTAR SOCIOS POR ZONA ================*/
   listClientsByZona(idzona: number): Observable<Cliente[]>{
     return this.http.get(`${base_url}/clientes/zona/${idzona}`)
     .pipe(
@@ -34,6 +38,11 @@ export class ClienteService {
         return resp.clientes as Cliente[];
       })
     );
+  }
+
+  /*================ BUSCAR SOCIO POR DNI ================*/
+  searchByDni(dni: string): Observable<Cliente>{
+    return this.http.get<Cliente>(`${base_url}/clientes/dni/${dni}`);
   }
 
   findClients(nombre: string = '', dni:string= '', ape:string=''){
@@ -46,7 +55,7 @@ export class ClienteService {
     });
   }
 
-  // buscador mejorado
+  /*================ BUSCADOR MEJORADO ================*/
   buscarClientes(cadena: string = ''): Observable<Cliente[]>{
     return this.http.get(`${base_url}/clientes/search/${cadena}`)
     .pipe(

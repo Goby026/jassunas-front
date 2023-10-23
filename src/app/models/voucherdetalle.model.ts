@@ -1,3 +1,4 @@
+import { Deuda } from "./deuda.model";
 import { PagosServicio } from "./pagosservicio.model";
 import { Voucher } from "./voucher.model";
 
@@ -10,6 +11,7 @@ export class VoucherDetalle{
     public monto:number,
     public voucher:Voucher | null,
     public pagosServicio:PagosServicio | null,
+    public deuda: Deuda | null,
     public idvoucherdetalles?:number | string, //pk
     public created_at?:Date | string,
     public updated_at?:Date | string,

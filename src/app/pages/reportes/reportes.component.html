@@ -15,6 +15,7 @@
               <option value="caja">Pagos por caja</option>
               <option value="tributo">Pagos por tributo</option>
               <option value="egreso">Egresos</option>
+              <option value="multas">Multas</option>
             </select>
             <!-- <button *ngIf="clientePanel" class="btn btn-info">Buscar</button> -->
           </div>
@@ -50,3 +51,6 @@
 
 <!-- REPORTE DE EGRESOS -->
 <app-reporte-egresos *ngIf="egreso"></app-reporte-egresos>
+
+<!-- REPORTE DE MULTAS -->
+<app-reporte-multas *ngIf="multas"></app-reporte-multas>

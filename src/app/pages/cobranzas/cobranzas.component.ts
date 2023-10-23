@@ -7,7 +7,6 @@ import { CajaService } from 'src/app/services/caja.service';
 import { Caja } from 'src/app/models/caja.model';
 import { Router } from '@angular/router';
 
-import * as moment from 'moment';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;

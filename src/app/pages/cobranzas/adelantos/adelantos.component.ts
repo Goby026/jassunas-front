@@ -19,6 +19,8 @@ import { CostoService } from 'src/app/services/costo.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { CajaService } from 'src/app/services/caja.service';
+import { DeudaService } from 'src/app/services/deuda.service';
+import { Deuda } from 'src/app/models/deuda.model';
 
 @Component({
   selector: 'app-adelantos',
@@ -29,23 +31,27 @@ export class AdelantosComponent implements OnInit {
   caja!: Caja;
   cliente!: Cliente;
   costos!: Costo[];
+  deudas: Deuda[] = [];
 
   datos: any[] = [];
   anios: number[] = [];
   anio = moment().year()-6;
   anioSel: any = 0;
   anioHtml: any;
-  // idCosto: number = 0;
   tarifa!: Tarifario;
   costoOtroServicio!: CostoOtroServicio;
   meses: ItemTicket[] = [];
   monto: number = 0;
+  subtotal: number = 0;
+  dcto: number = 0;
+  observacionDcto: string = '';
   arregloPagar: ItemTicket[] = [];
   pagosDetalles: PagosServicioDetalle[]= [];
   spinner: boolean = true;
+  tieneDeuda: boolean = false;
+  msg: string = '¡El socio seleccionado presenta multa(s) pendiente(s), no se puede registrar pago(s)!';
 
   isDisabled = false;
-
   usuario!: Usuario;
 
   constructor(
@@ -55,6 +61,7 @@ export class AdelantosComponent implements OnInit {
     private usuarioService: UsuarioService,
     private costoService: CostoService,
     private clienteService: ClienteService,
+    private deudaService: DeudaService,
     private router: Router,
     private activatedRoute: ActivatedRoute
     ){}
@@ -106,7 +113,26 @@ export class AdelantosComponent implements OnInit {
     this.clienteService.getClientById(id)
     .subscribe({
       next: (resp: Cliente)=> this.cliente = resp,
-      error: error=> console.log(error)
+      error: error=> console.log(error),
+      complete: ()=> this.cargarDeudasCliente(id)
+    });
+  }
+
+  cargarDeudasCliente(idCliente: number) {
+    let totalDeudas: Deuda[] = [];
+    this.deudaService.getUserDebt(idCliente)
+    .subscribe({
+      next: (resp: Deuda[]) => {
+        totalDeudas = resp;
+        this.deudas = resp.filter( (deuda)=> {
+          return ( deuda.deudaDescripcion.iddeudadescripcion == 1
+            || deuda.deudaDescripcion.iddeudadescripcion == 2 || deuda.deudaDescripcion.iddeudadescripcion == 3);
+        });
+      },
+      error: (error) => console.log(error),
+      complete: ()=> {
+        this.tieneDeuda = this.deudaService.verifyPenalty(totalDeudas);
+      }
     });
   }
 
@@ -277,14 +303,15 @@ export class AdelantosComponent implements OnInit {
     let pagosServicioR: PagosServicio = {
       costo: this.costos[0],
       cliente: this.cliente,
-      montoapagar: this.monto,
+      montoapagar: this.subtotal,
       montotasas: 0,
-      montodescuento: 0,
+      montodescuento: this.dcto,
       montopagado: this.monto,
       fecha: moment().toDate(),
       usuario: this.usuario,
       esta: 1,
       correlativo: null,
+      observacion: this.observacionDcto,
       caja: this.caja,
       tipoPagoServicios: tipoPagoS,
       pagoServicioEstado: tipoPagoServiciosE
@@ -304,21 +331,18 @@ export class AdelantosComponent implements OnInit {
             this.monto,
             this.arregloPagar);
 
-          ticket.pagar();
+          ticket.pagar(this.observacionDcto, this.dcto, this.subtotal);
       },
       error: error => console.log(error),
       complete: ()=>{
         this.setearMeses(this.anioHtml);
         this.arregloPagar = [];
         this.monto = 0.00;
+        this.subtotal = 0.00;
         this.isDisabled = false;
+        this.cleanData();
       }
     });
-  }
-
-
-  verArregloPagos(){
-    console.log(this.arregloPagar);
   }
 
   registrarPagoServiciosDetalles(pagoServicio: PagosServicio):PagosServicioDetalle[] {
@@ -354,7 +378,7 @@ export class AdelantosComponent implements OnInit {
         this.pagosDetalles.forEach( (detalle:PagosServicioDetalle)=>{
           // console.log( 'tipo pago servicio', detalle.pagosServicio.tipoPagoServicios.idtipopagosservicio);
 
-          if (detalle.pagosServicio.tipoPagoServicios.idtipopagosservicio !== 2) {
+          if (detalle.pagosServicio.tipoPagoServicios.idtipopagosservicio !== 2 && detalle.pagosServicio.tipoPagoServicios.idtipopagosservicio !== 4) {
             mesPagado = {
               concepto: detalle.detalletasas,
               monto: detalle.monto,
@@ -377,11 +401,33 @@ export class AdelantosComponent implements OnInit {
     });
   }
 
+  cleanData(){
+    // this.deudas = [];
+    this.dcto = 0;
+    this.observacionDcto = '';
+    this.operarMonto();
+  }
+
+  aplicarDcto(e: any){
+    this.dcto = Number(e.descuento);
+    if (this.dcto <= 0) {
+      return;
+    }
+    this.observacionDcto = String(e.mensaje);
+    this.operarMonto();
+  }
+
   operarMonto(){
     this.monto = 0;
+    this.subtotal = 0;
     this.arregloPagar.forEach( (item)=>{
       this.monto += item.monto!
+      this.subtotal += item.monto!
     });
+
+    if(this.dcto != 0){
+      this.monto -= this.dcto
+    }
   }
 
 }

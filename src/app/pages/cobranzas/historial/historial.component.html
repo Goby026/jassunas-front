@@ -18,6 +18,7 @@
                 <th>Concepto</th>
                 <th>Boleta</th>
                 <th>Monto</th>
+                <th>Dcto</th>
                 <th>Estado</th>
                 <th>Opc</th>
               </tr>
@@ -45,6 +46,9 @@
                   {{ pago.montopagado | currency: 'S/ ' }}
                 </td>
                 <td>
+                  {{ pago.montodescuento | currency: 'S/ ' }}
+                </td>
+                <td>
                   <span class="badge bg-label-primary me-1" *ngIf="pago.esta !== 4; else anulado">Activo</span>
                   <ng-template #anulado>
                     <span class="badge bg-label-danger me-1">Anulado</span>
@@ -59,6 +63,58 @@
         </div>
       </div>
     </div>
+
+    <!-- HISTORIAL DE CONDONACIONES -->
+    <div class="card mb-2" *ngIf="deudas">
+      <div class="d-flex flex-row justify-content-between align-items-center">
+        <h5 class="card-header">Historial de condonaciones: </h5>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive text-nowrap">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Fecha condonación</th>
+                <th>Observación</th>
+                <th>Deuda</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Periodo</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+
+              <tr *ngFor="let deuda of deudas; index as i" >
+                <td>
+                  <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{i+1}}</strong>
+                </td>
+                <td>
+                  {{ deuda.created_at}}
+                </td>
+                <td>
+                  {{ deuda.observacion }}
+                </td>
+                <td>
+                  {{deuda.deudaDescripcion.descripcion}}
+                </td>
+                <td>
+                  {{ deuda.total | currency: 'S/ ' }}
+                </td>
+                <td>
+                  {{deuda.estado}}
+                </td>
+                <td>
+                  {{ deuda.periodo | date: 'medium' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 

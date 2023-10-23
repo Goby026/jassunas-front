@@ -37,8 +37,10 @@ export class BuscadorDatatableComponent implements OnInit, OnDestroy {
   listarClientes(): void{
     this.clienteService.listClients()
     .subscribe({
-      next: ( resp:any )=>{
-        this.clientes = resp.clientes;
+      next: ( resp:Cliente[] )=>{
+        this.clientes = resp.filter( (item)=> {
+          return item.estado != 0
+        } )
       },
       error: error=>console.log('ERROR->', error),
       complete: ()=>{

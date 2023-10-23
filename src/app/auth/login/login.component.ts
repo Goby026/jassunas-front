@@ -5,6 +5,7 @@ import { Ingreso } from 'src/app/models/ingreso.model';
 import { Usuario } from 'src/app/models/usuario.model';
 import { IngresoService } from 'src/app/services/ingreso.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import Swal from 'sweetalert2';
 
 import * as moment from 'moment';
 
@@ -40,7 +41,12 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (this.loginForm.invalid) {
-      alert('Datos incompletos');
+      Swal.fire({
+        title: 'Error!',
+        text: '¡Datos incompletos!',
+        icon: 'error',
+        confirmButtonText: 'Cerrar',
+      });
       return;
     }
 
@@ -55,14 +61,26 @@ export class LoginComponent implements OnInit {
       next: (resp: any) => {
         if (resp.ok) {
           this.usuarioService.setToken(resp.token);
-          alert(resp.msg);
+          // alert(resp.msg);
+          Swal.fire({
+            icon: 'success',
+            title: 'Bienvenido!',
+            text: resp.msg,
+            // confirmButtonText: 'Cerrar',
+          });
           // this.router.navigate(['/dashboard']);
         }
       },
       error: ({error}) => {
         error === '' || error.msg === undefined ? this.errogMsg = 'Algo salio mal' : this.errogMsg = error.msg;
 
-        alert(this.errogMsg = error.msg);
+        // alert(this.errogMsg = error.msg);
+        Swal.fire({
+          title: 'Error!',
+          text: this.errogMsg = error.msg,
+          icon: 'error',
+          confirmButtonText: 'Cerrar',
+        });
       },
       complete: () => {
         this.setUsuario();
@@ -88,7 +106,7 @@ export class LoginComponent implements OnInit {
       moment().format('yyyy-MM-DD hh:mm:ss'),'',usuario
     );
     this.ingresoService.saveIngreso(ingreso).subscribe({
-      next: (resp)=> console.log(resp),
+      next: (resp)=> console.log('Acceso registrado'),
       error: err => console.log(err),
       complete: ()=>{
         this.router.navigate(['/dashboard']);
@@ -101,7 +119,13 @@ export class LoginComponent implements OnInit {
   }
 
   mantenimiento(){
-    alert('Funcionalidad en mantenimiento');
+    // alert('Funcionalidad en mantenimiento');
+    Swal.fire({
+      title: 'Oops!',
+      text: '¡Funcionalidad en mantenimiento!',
+      icon: 'warning',
+      confirmButtonText: 'Cerrar',
+    });
     return;
   }
 }

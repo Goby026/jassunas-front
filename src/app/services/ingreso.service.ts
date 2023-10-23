@@ -18,7 +18,7 @@ export class IngresoService {
 
   getIngresos(): Observable<Ingreso[]>{
     return this.http.get(`${base_url}/ingresos`).pipe(
-      map( (resp)=> resp as Ingreso[] ),
+      map( (resp:any)=> resp.ingresos as Ingreso[] ),
       catchError( e => {
         console.log(e.error)
         return throwError(e);

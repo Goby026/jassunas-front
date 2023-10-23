@@ -5,6 +5,8 @@ import { LoginForm } from '../interfaces/login-form-interface';
 import { environment } from 'src/environments/environment';
 import { Usuario } from '../models/usuario.model';
 import { Observable, tap } from 'rxjs';
+import { Ingreso } from '../models/ingreso.model';
+import { map } from 'jquery';
 
 const base_url = environment.base_url;
 const base_login = environment.base_login;
@@ -68,5 +70,4 @@ export class UsuarioService {
   findByUsername(username: string):Observable<Usuario>{
     return this.http.get<Usuario>(`${base_url}/usuario/${username}`);
   }
-
 }

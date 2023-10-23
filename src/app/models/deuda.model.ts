@@ -13,6 +13,7 @@ export class Deuda{
     public cliente: Cliente,
     public deudaDescripcion: DeudaDescripcion,//tipo de deuda
     public deudaEstado: DeudaEstado,
+    public dcto: number | 0,
     public observacion?: string | null,
     public created_at?: Date,
     public updated_at?: Date,

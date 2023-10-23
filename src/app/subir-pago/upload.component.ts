@@ -41,8 +41,6 @@ export class UploadComponent implements OnInit {
     });
 
     this.nombreCompleto = `${this.cliente.apepaterno} ${this.cliente.apematerno} ${this.cliente.nombres}`;
-
-    console.log(this.voucherS);
   }
 
   selImagen(e:any){

@@ -21,10 +21,11 @@ export class CondonacionService {
 
   constructor( private http: HttpClient, private router: Router ) { }
 
-  saveCondonaciones(conds: Condonacion[]): Observable<Condonacion>{
-    return this.http.post<Condonacion>(`${base_url}/condonaciones/service`, conds, {
+  saveCondonaciones(conds: Condonacion[]): Observable<Condonacion[]>{
+    return this.http.post(`${base_url}/condonaciones/service`, conds, {
       headers: this.encabezados
     }).pipe(
+      map( (resp:any)=> resp.condonaciones as Condonacion[] ),
       catchError( e => {
         // this.router.navigate();
         alert(`Error al guardar ${e} error`);

@@ -12,7 +12,7 @@
                 Lista de deudas por multa
               </h6>
             </div>
-            <button (click)="cargarTiposMulta()" class="btn btn-primary">
+            <button (click)="cargarTiposMulta(); nuevo = true" class="btn btn-primary">
               <i class="bx bx-plus-circle"></i>
             </button>
           </div>
@@ -26,7 +26,7 @@
                   <th>#</th>
                   <th>Descripción</th>
                   <th>Monto</th>
-                  <th>Fecha</th>
+                  <th>Observación</th>
                   <th>Estado</th>
                   <th>Acción</th>
                 </tr>
@@ -42,18 +42,34 @@
                     {{ multa.saldo | currency : "S/ " }}
                   </td>
                   <td>
-                    {{ multa.created_at }}
+                    {{ multa.observacion }}
                   </td>
                   <td>
-                    <span class="badge bg-label-primary me-1">Activo</span>
-                    <span class="badge bg-label-danger me-1">Inactivo</span>
+                    <div *ngIf="multa.deudaEstado.iddeudaEstado">
+                      <span *ngIf="multa.deudaEstado.iddeudaEstado == 3; else noMulta" class="badge bg-label-primary me-1">Activo</span>
+                      <ng-template #noMulta>
+                        <span class="badge bg-label-danger me-1">Anulado</span>
+                      </ng-template>
+                    </div>
                   </td>
                   <td>
-                    <button
+                    <button *ngIf="multa.deudaEstado.iddeudaEstado != 1"
                       (click)="pagarDeuda(multa)"
                       class="btn btn-info btn-sm"
                     >
                       Pagar
+                    </button>
+                    <button *ngIf="multa.deudaEstado.iddeudaEstado != 1"
+                    (click)="editar(multa)"
+                      class="btn btn-warning btn-sm"
+                    >
+                      Editar
+                    </button>
+                    <button *ngIf="multa.deudaEstado.iddeudaEstado != 1"
+                    (click)="anular(multa)"
+                      class="btn btn-danger btn-sm"
+                    >
+                      Anular
                     </button>
                   </td>
                 </tr>
@@ -61,11 +77,11 @@
             </table>
           </div>
         </div>
-        <div class="card-body">
+        <!-- <div class="card-body">
           <p class="card-text">Bear claw sesame snaps gummies chocolate.</p>
           <a href="javascript:void(0);" class="card-link">Card link</a>
           <a href="javascript:void(0);" class="card-link">Another link</a>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -75,7 +91,7 @@
       <div class="card-title">
         <div class="d-flex justify-content-between align-items-center">
           <h5 class="card-header">Registrar multa</h5>
-          <button class="btn btn-danger btn-sm">X</button>
+          <button (click)="multaForm = false" class="btn btn-danger btn-sm">X</button>
         </div>
       </div>
       <div class="card-body">
@@ -89,6 +105,7 @@
               id="selectTipoMulta"
               aria-label="Default select example"
               formControlName="tipoMulta"
+              (change)="getTipoMulta()"
             >
               <option
                 *ngFor="let tipo of tipoMultas"
@@ -125,7 +142,11 @@
 
           <div class="mb-3">
             <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary">Registrar</button>
+              <button *ngIf="nuevo; else modificar" type="submit" class="btn btn-primary">Registrar</button>
+
+              <ng-template #modificar>
+                <button (click)="actualizarDeuda()" type="button" class="btn btn-warning">Modificar</button>
+              </ng-template>
             </div>
           </div>
         </form>

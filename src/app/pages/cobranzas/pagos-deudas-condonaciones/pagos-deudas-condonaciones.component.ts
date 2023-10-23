@@ -20,6 +20,8 @@ import { ClienteService } from 'src/app/services/cliente.service';
 import { TicketPago } from '../TicketPago';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { CajaService } from 'src/app/services/caja.service';
+import { Condonacion } from 'src/app/models/condonacion.model';
+import { CondonacionService } from 'src/app/services/condonacion.service';
 
 @Component({
   selector: 'app-pagos-deudas-condonaciones',
@@ -27,15 +29,12 @@ import { CajaService } from 'src/app/services/caja.service';
 })
 export class PagosDeudasCondonacionesComponent implements OnInit {
 
-  // @Input() idCliente: number= 0;
-  // @Output() deuda = new EventEmitter<object>();
-
-  // deudaTotal: number = 0;
-
   isDisabled = false;
   correlativo: number = 0;
 
   monto: number = 0;
+  subtotal: number = 0;
+  dcto: number = 0;
   usuario!: Usuario;
   caja!: Caja;
   cliente!: Cliente;
@@ -43,7 +42,13 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
   costos!: Costo[];
   deudas: Deuda[] = [];
   deudasToUpdate: Deuda[] = [];
+  tieneDeuda: boolean = false;
   pagos: ItemTicket[] = [];
+
+  condonacion!: Condonacion;
+  observacion!: string;
+  observacionDcto!: string;
+  msg: string = '¡El socio seleccionado presenta multa(s) pendiente(s), no se puede registrar pago(s)!';
 
   constructor(
     private cajaService: CajaService,
@@ -53,6 +58,7 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
     private pagosService: PagosServiciosService,
     private clienteService: ClienteService,
     private usuarioService: UsuarioService,
+    private condonacionService: CondonacionService,
     private router: Router,
     private activatedRoute: ActivatedRoute
     ) { }
@@ -60,6 +66,7 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
   ngOnInit(): void {
     const {idCliente} = this.activatedRoute.snapshot.params;
     this.verificarEstadoCaja();
+    // this.crearFormularioCondonacion();
     this.cargarCliente(idCliente);
     this.cargarDeudasCliente(idCliente);
     this.cargarCostosCliente(idCliente);
@@ -107,15 +114,20 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
   }
 
   cargarDeudasCliente(idCliente: number) {
+    let totalDeudas: Deuda[] = [];
     this.deudaService.getUserDebt(idCliente)
     .subscribe({
       next: (resp: Deuda[]) => {
+        totalDeudas = resp;
         this.deudas = resp.filter( (deuda)=> {
           return ( deuda.deudaDescripcion.iddeudadescripcion == 1
-            || deuda.deudaDescripcion.iddeudadescripcion == 2);
+            || deuda.deudaDescripcion.iddeudadescripcion == 2 || deuda.deudaDescripcion.iddeudadescripcion == 3);
         });
       },
-      error: (error) => console.log(error)
+      error: (error) => console.log(error),
+      complete: ()=> {
+        this.tieneDeuda = this.deudaService.verifyPenalty(totalDeudas);
+      }
     });
   }
 
@@ -146,14 +158,15 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
 
     let pagoServicio: PagosServicio = {
       costo: this.costos[0],
-      montoapagar: this.monto,
+      montoapagar: this.subtotal,
       montotasas: 0.0,
-      montodescuento: 0.0,
+      montodescuento: this.dcto,
       montopagado: this.monto,
       fecha: moment().toDate(),
       usuario: this.usuario,
       esta: 1,
       correlativo: 1,
+      observacion: this.observacionDcto,
       caja: this.caja,
       cliente: this.cliente,
       tipoPagoServicios: tipoPago,
@@ -173,6 +186,7 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
         saldo: item.saldo,
         vencimiento: item.vencimiento,
         estado: item.estado,
+        dcto: this.dcto
       }
     });
 
@@ -186,29 +200,28 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
         this.correlativo = Number(resp.pagosservicio.correlativo);
         this.actualizarEstadoDeuda(this.deudasToUpdate);
         this.cargarDeudasCliente(Number(this.cliente.idclientes));
-        // this.pagar(this.monto); //instanciar TicketPago
         const ticketPago = new TicketPago(
           this.correlativo,
           this.cliente,
           this.pagos,
+          this.dcto,
+          this.observacionDcto
         );
-
-        ticketPago.pagar(this.monto);
-
+        ticketPago.pagar(this.subtotal, this.monto);
       },
       error: (error) => console.log(error),
       complete: () => {
-        // actualizar estado de las deudas pagadas
-
         this.pagos=[];
         this.deudasToUpdate=[];
         this.monto = 0.0;
+        this.subtotal = 0.0;
         this.isDisabled = false;
+        this.cleanData();
       },
     });
   }
 
-// ************metodo para registrar los detalles del pago (tabla dependiente)************
+// ************metodo para setear los detalles del pago (tabla dependiente)************
   regPagosDetalle(pagoServicio: PagosServicio):PagosServicioDetalle[]  {
     let pagosServicioDeta: PagosServicioDetalle;
     let pagServDetalles: PagosServicioDetalle[] = [];
@@ -222,6 +235,7 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
         monto: itemPago.monto,
         cliente: this.cliente,
         pagosServicio: pagoServicio,
+        iddeuda: itemPago.id
       };
       pagServDetalles.push(pagosServicioDeta);
     });
@@ -245,13 +259,10 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
       alert('Nada por condonar');
       return;
     }
-    // this.panel_condonacion = true;
   }
 
 
   setPago(deudaSel: HTMLInputElement, deuda: Deuda) {
-
-    console.log(deuda);
 
     let itemDeuda: ItemTicket = {
       concepto: 'MANTENIMIENTO',
@@ -261,7 +272,7 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
       nannio: moment(deuda.periodo).year(),
       monto: deuda.total,
       id: deuda.idtbdeudas
-    };
+    }
 
     if (deudaSel.checked) {
       this.pagos.push(itemDeuda);
@@ -280,9 +291,91 @@ export class PagosDeudasCondonacionesComponent implements OnInit {
 
   operaciones() {
     this.monto = 0;
+    this.subtotal = 0;
     this.pagos.map((item) => {
       this.monto += Number(item.monto);
+      this.subtotal += Number(item.monto);
     });
+    if(this.dcto != 0){
+      this.monto -= this.dcto
+    }
+  }
+
+
+  /* ---------CONDONACIONES--------- */
+
+  registrarCondonacion(){
+
+    let condonacion!: Condonacion;
+    let listaCondonaciones:Condonacion[] = []; //array para enviar al back
+
+    let deudas2: Deuda[] = this.deudasToUpdate.map( (item)=> {
+      condonacion = {
+        estado: 1,
+        fecha: new Date(),
+        monto: item.total,
+        observacion: this.observacion,
+        usuario: this.usuario.username,
+        deuda: item
+      }
+      listaCondonaciones.push(condonacion);
+
+      item.total = 0;
+      item.deudaEstado.iddeudaEstado = 5;
+      item.observacion = this.observacion;
+
+      return item;
+    });
+
+    // console.log(deudas2);
+
+    this.condonacionService.saveCondonaciones(listaCondonaciones)
+    .subscribe({
+      next: ( resp:any )=>{
+        console.log('Registro: ' + resp);
+      },
+      error: error => console.log(error),
+      complete: ()=> {
+        this.actualizarEstadoDeudaCondonada(deudas2);
+        this.pagos=[];
+        this.deudasToUpdate=[];
+        this.monto = 0.0;
+        this.isDisabled = false;
+      }
+    });
+
+    // EMITIR ORDEN PARA ACTUALIZAR LISTA DE DEUDAS
+  }
+
+  // actualizar estado de deuda (iddeuda_estado) a 1
+  actualizarEstadoDeudaCondonada(deudas: Deuda[]){
+    this.deudaService.updateUserDebts(deudas)
+    .subscribe({
+      next: ( resp:any )=>{
+        console.log(resp);
+      },
+      error: error => console.log(error),
+      complete: ()=> {
+        this.cargarDeudasCliente(Number(this.cliente.idclientes));
+        this.cleanData()
+      }
+    });
+  }
+
+  cleanData(){
+    // this.deudas = [];
+    this.dcto = 0;
+    this.observacionDcto = '';
+    this.operaciones()
+  }
+
+  aplicarDcto(e: any){
+    this.dcto = Number(e.descuento);
+    if (this.dcto <= 0) {
+      return;
+    }
+    this.observacionDcto = String(e.mensaje);
+    this.operaciones();
   }
 
 }

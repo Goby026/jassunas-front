@@ -18,7 +18,7 @@ export class Ticket{
         public fechaPago?: string | ''
     ){}
 
-    public async pagar( observacion: string = '' ){
+    public async pagar( observacion: string = '', dcto: number = 0.0, subtotal: number ){
 
         let dataPagos: any[] = [];
 
@@ -123,6 +123,15 @@ export class Ticket{
               }
             },
             {
+              style: 'tableExample',
+              table: {
+                widths: ['*', '*'],
+                body: [
+                  ['OBSERVACION DCTO: ',observacion]
+                ],
+              },
+            },
+            {
               text: `SON: ${this.monto} con 00/100 SOLES`,
               alignment: 'left',
               style: 'small',
@@ -130,9 +139,9 @@ export class Ticket{
             },
             {
               text: `
-                SUBTOTAL: \t\t S/ ${this.monto}.00 \n
+                SUBTOTAL: \t\t S/ ${subtotal}.00 \n
                 TASAS: \t\t S/ 0.00 \n
-                DESCUENTO: \t\t S/ 0.00 \n
+                DESCUENTO: \t\t S/ ${dcto}.00 \n
                 ________________________ \n
               `,
               alignment: 'right',

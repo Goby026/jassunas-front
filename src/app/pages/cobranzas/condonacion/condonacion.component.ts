@@ -7,13 +7,11 @@ import { CondonacionService } from 'src/app/services/condonacion.service';
 
 @Component({
   selector: 'app-condonacion',
-  templateUrl: './condonacion.component.html',
-  styleUrls: ['./condonacion.component.css']
+  templateUrl: './condonacion.component.html'
 })
 export class CondonacionComponent implements OnInit {
 
   @Input() deudas: Deuda[] = [];
-  @Input() monto: number = 0;
 
   condonacion!: Condonacion;
   condonacionForm!: FormGroup;
@@ -24,13 +22,14 @@ export class CondonacionComponent implements OnInit {
 
   ngOnInit(): void {
     this.crearFormularioCondonacion();
+    console.log(this.deudas);
   }
 
 
   crearFormularioCondonacion(){
 
     this.condonacionForm = new FormGroup({
-      // "monto": new FormControl(null, Validators.required),
+      "monto": new FormControl(null, Validators.required),
       "observacion": new FormControl(null, Validators.required),
     });
 
@@ -59,13 +58,15 @@ export class CondonacionComponent implements OnInit {
       return item;
     });
 
-    this.condonacionService.saveCondonaciones(listaCon)
-    .subscribe({
-      next: ( resp:any )=>{
-        this.actualizarEstadoDeuda(this.deudasMod);
-      },
-      error: error => console.log(error)
-    });
+    console.log(this.deudasMod);
+
+    // this.condonacionService.saveCondonaciones(listaCon)
+    // .subscribe({
+    //   next: ( resp:any )=>{
+    //     this.actualizarEstadoDeuda(this.deudasMod);
+    //   },
+    //   error: error => console.log(error)
+    // });
 
     // EMITIR ORDEN PARA ACTUALIZAR LISTA DE DEUDAS
   }
@@ -84,7 +85,7 @@ export class CondonacionComponent implements OnInit {
 
   cleanData(){
     this.deudas = [];
-    this.monto = 0;
+    // this.monto = 0;
   }
 
 }

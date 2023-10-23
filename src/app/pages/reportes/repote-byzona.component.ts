@@ -86,10 +86,7 @@ export class RepoteByzonaComponent implements OnInit {
       next: (resp: Deuda[])=>{
         this.deudas = resp
       },
-      error: error=>console.log(error),
-      complete: ()=> {
-        console.log(this.deudas);
-      }
+      error: error=>console.log(error)
     });
 
   }
@@ -118,7 +115,6 @@ export class RepoteByzonaComponent implements OnInit {
 
   /* ---------------CLIENTES POR ZONA--------------- */
   clientesByZona(){
-    console.log(this.zonaForm.value);
     if (!this.zonaForm.valid){
       alert('Indique parámetros de busqueda correctamente');
       return;
@@ -133,8 +129,7 @@ export class RepoteByzonaComponent implements OnInit {
           return item.nombres !== null && item.tipoCliente.idtipocliente === Number(this.zonaForm.get('tiposocio')?.value);
         });
       },
-      error: error=>console.log(error),
-      complete: ()=> console.log(this.clientes)
+      error: error=>console.log(error)
     });
 
   }
