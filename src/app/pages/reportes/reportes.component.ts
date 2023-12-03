@@ -9,8 +9,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
 @Component({
   selector: 'app-reportes',
-  templateUrl: './reportes.component.html',
-  styleUrls: ['./reportes.component.css']
+  templateUrl: './reportes.component.html'
 })
 export class ReportesComponent implements OnInit {
 

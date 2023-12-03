@@ -19,7 +19,6 @@
                 <th>COD-CLI</th>
                 <th>N° DNI</th>
                 <th>Socio/Usuario de servicios</th>
-                <!-- <th>Estado</th> -->
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -37,14 +36,9 @@
                     {{ cliente.nombres }}
                   </a>
                 </td>
-                <!-- <td><span class="badge bg-label-primary me-1">Active</span></td> -->
               </tr>
             </tbody>
           </table>
-          <!-- <div class="mt-4">
-            <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
-            </pagination-controls>
-          </div> -->
         </div>
       </div>
     </div>
@@ -69,12 +63,15 @@
 
         <div class="mb-3">
           <label for="year" class="form-label">Año</label>
-          <select class="form-select" id="year" *ngIf="cliente" id="year" (change)="cargarPagos(cliente, yearSel.value)" #yearSel>
-            <option selected="" value="0">Seleccionar</option>
-            <option *ngFor="let year of years" [value]="year.valor">
-              {{ year.valor }}
-            </option>
-          </select>
+          <div class="d-flex gap-1">
+            <select class="form-select" id="year" *ngIf="cliente" id="year" (change)="setearYear(yearSel.value)" #yearSel>
+              <option selected="" value="0">Seleccionar</option>
+              <option *ngFor="let year of years" [value]="year.valor">
+                {{ year.valor }}
+              </option>
+            </select>
+            <button class="btn btn-primary btn-sm" *ngIf="deudas" (click)="verDeudas()">✔</button>
+          </div>
         </div>
 
         <div class="table-responsive text-nowrap">
@@ -87,27 +84,36 @@
               </tr>
             </thead>
             <tbody class="table-border-bottom-0" *ngIf="pagos">
-              <tr *ngFor="let pago of pagos">
+              <tr *ngFor="let deuda of deudas">
                 <td>
                   <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                  <strong>{{pago.idmes}}</strong>
-                </td>
-                <td>{{pago.pagosServicio.pagoServicioEstado.descripcion}}</td>
-                <td>
-                  <span class="badge rounded-pill bg-success">PAGADO</span>
-                </td>
-              </tr>
-              <tr *ngFor="let sinpago of sinPagar">
-                <td>
-                  <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                  <strong>{{sinpago.valor}}</strong>
+                  <strong>{{deuda.periodo | date: 'MMMM'}}</strong>
                 </td>
                 <td>
-                  <span class="badge bg-secondary">SIN PAGO</span>
+                  <span *ngIf="!deuda.idtbdeudas; else pagoEstado" class="badge rounded-pill bg-info">
+                    REGISTRAR
+                  </span>
+                  <ng-template #pagoEstado>
+                    <span class="badge rounded-pill bg-success">
+                      REGISTRADO
+                    </span>
+                  </ng-template>
                 </td>
-                <td><button type="button" class="btn btn-xs btn-warning" (click)="registrarDeuda(sinpago)">Reg. Deuda</button></td>
+                <td>
+                  <button *ngIf="!deuda.idtbdeudas" type="button" class="btn btn-xs btn-warning" (click)="registrarDeuda(deuda)">
+                    Reg. Deuda
+                  </button>
+                </td>
               </tr>
             </tbody>
+            <tfoot *ngIf="deudas.length > 0">
+              <tr>
+                <td colspan="2">
+                  <button class="btn btn-danger" (click)="registrarVarias()">Generar todas las deudas</button>
+                </td>
+                <td></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>

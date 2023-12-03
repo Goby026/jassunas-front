@@ -3,36 +3,6 @@
 
     <div class="card mb-3">
       <div class="card-body">
-        <!-- <form [formGroup]="zonaForm" (ngSubmit)="reporteDeudasZonaAnio()">
-        <div class="row mb-3">
-            <label class="col-sm-1 col-form-label" for="basic-default-name">Zona</label>
-            <div class="col-sm-3">
-              <select
-                class="form-select"
-                formControlName="zona">
-                <option *ngFor="let zona of zonas" [value]="zona.idtbzonas">{{ zona.detazona }}</option>
-              </select>
-            </div>
-
-            <label class="col-sm-1 col-form-label" for="basic-default-name">Año</label>
-            <div class="col-sm-3">
-              <select
-                class="form-select"
-                name=""
-                formControlName="anio">
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-              </select>
-            </div>
-            <div class="col-sm-2">
-              <button type="submit" class="btn btn-info">Ver</button>
-            </div>
-
-          </div>
-        </form> -->
 
         <form [formGroup]="zonaForm" (ngSubmit)="clientesByZona()">
           <div class="row mb-3 d-flex justify-content-between">

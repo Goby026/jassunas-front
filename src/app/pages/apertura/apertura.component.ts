@@ -11,8 +11,7 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-apertura',
-  templateUrl: './apertura.component.html',
-  styleUrls: ['./apertura.component.css'],
+  templateUrl: './apertura.component.html'
 })
 export class AperturaComponent implements OnInit {
 

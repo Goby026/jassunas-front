@@ -122,6 +122,12 @@ export class TicketMulta{
               }
             },
             {
+              text: `OBSERVACION: ${observacion}`,
+              alignment: 'left',
+              style: 'small',
+              margin: [0, 8]
+            },
+            {
               text: `SON: ${this.multa.total} con 00/100 SOLES`,
               alignment: 'left',
               style: 'small',

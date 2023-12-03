@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Year } from 'src/app/models/Year.model';
 import { Cliente } from 'src/app/models/cliente.model';
-import { PagosServicio } from 'src/app/models/pagosservicio.model';
 import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
@@ -19,7 +18,6 @@ import { CostoOtroServicio } from 'src/app/models/costootroservicio.model';
 import { Tarifario } from 'src/app/models/tarifario.model';
 
 import Swal from 'sweetalert2';
-import * as XLSX from 'xlsx';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
 import 'moment/locale/es';
@@ -37,13 +35,11 @@ export class AdminComponent implements OnInit, OnDestroy {
   cliente!: Cliente;
   clientes: Cliente[] = [];
   tarifa!: Tarifario;
-  // clienteForm!: FormGroup;
   panel: boolean = false;
   years: Year[] = [];
   year!: Year;
 
   pagos: PagosServicioDetalle[] = [];
-  sinPagar: any[] = [];
   deudas: Deuda[] = [];
   costos: Costo[] = [];
 
@@ -91,10 +87,16 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   mostrarCliente(cli: Cliente) {
-    this.cliente = cli;
-    this.panel = true;
-    this.pagos = [];
-    this.sinPagar = [];
+    this.cerrarPanel();
+    if (cli) {
+      this.cargarCostosCliente(Number(cli.idclientes));
+      this.cliente = cli;
+      this.panel = true;
+      this.pagos = [];
+      this.year = undefined!;
+    } else {
+      alert('cliente no válido');
+    }
   }
 
   cargarPagos(cliente: Cliente, yearSel: string) {
@@ -103,31 +105,110 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.pagosServicioService
       .getDetallePagosCliente(Number(cliente.idclientes))
       .subscribe({
-        next: (resp) => (this.pagos = resp),
+        next: (resp) => {
+          this.pagos = resp.filter((item) => {
+            return String(item.idanno) === String(yearSel);
+          });
+        },
         error: (err) => console.log(err),
         complete: () => {
-          this.pagos = this.filtrarPagos(this.pagos, Number(yearSel));
-          this.cargarDeudasCliente(Number(cliente.idclientes));
-          // cargar costo de cliente
-          this.cargarCostosCliente(Number(this.cliente.idclientes));
+          this.deudas = this.filtrarDeudasConPagos(this.pagos, this.deudas);
         },
       });
   }
 
-  cargarDeudasCliente(idCliente: number) {
-    this.deudaService.getUserDebt(idCliente).subscribe({
-      next: (resp: Deuda[]) => {
+  filtrarDeudasConPagos(
+    pagosFiltrados: PagosServicioDetalle[],
+    deudas: Deuda[]
+  ): Deuda[] {
+    let deudasFiltradasPagos: Deuda[] = deudas.filter((item1) => {
+      return !pagosFiltrados.some((item2) => {
+        return (
+          `${item2.idanno}-${moment(String(item2.idmes)).format('MM')}` ===
+          String(item1.periodo).slice(0, 7)
+        );
+      });
+    });
 
-        this.deudas = resp;
+    return deudasFiltradasPagos;
+  }
+
+  cargarDeudasCliente(cli: Cliente, yearSel: string) {
+    this.deudaService.getUserDebt(Number(cli.idclientes)).subscribe({
+      next: (resp: Deuda[]) => {
+        this.deudas = resp.filter((item) => {
+          return String(item.periodo).slice(0, 4) === yearSel;
+        });
       },
       error: (error) => console.log(error),
       complete: () => {
-        this.sinPagar = this.mergePagos(this.pagos, this.deudas);
+        this.cargarCostosCliente(Number(this.cliente.idclientes));
+        console.log(this.deudas);
       },
     });
   }
 
-  registrarDeuda(sinpago: any) {
+  setearYear(yearSel: string) {
+    this.year = { estado: 1, valor: yearSel };
+    this.cargarDeudasCliente(this.cliente, yearSel);
+  }
+
+  verDeudas() {
+    if (!this.year) {
+      return;
+    }
+    this.generarDeudas(this.deudas);
+    this.year = undefined!;
+  }
+
+  generarDeudas(deudasFiltered: Deuda[]) {
+    let newDeudas: Deuda[] = [];
+
+    let deudaDesc: DeudaDescripcion = {
+      iddeudadescripcion: 1,
+      descripcion: 'Deuda',
+    };
+
+    let deudaEst: DeudaEstado = {
+      estado: 'DEUDA',
+      valor: 'debt',
+      iddeudaEstado: 3,
+    };
+
+    MESES.forEach((item) => {
+      let newDeuda: Deuda = {
+        codigo: '',
+        periodo: `${this.year.valor}-${moment(String(item.valor)).format(
+          'MM'
+        )}-02`,
+        total: this.tarifa.monto!,
+        saldo: this.tarifa.monto!,
+        vencimiento: '',
+        estado: 1,
+        cliente: this.cliente,
+        deudaDescripcion: deudaDesc,
+        deudaEstado: deudaEst,
+        dcto: 0,
+      };
+      newDeudas.push(newDeuda);
+    });
+
+    this.deudas = newDeudas.filter((item1) => {
+      return !deudasFiltered.some((item2) => {
+        return (
+          String(item2.periodo).slice(0, 7) ===
+          String(item1.periodo).slice(0, 7)
+        );
+      });
+    });
+
+
+    console.log(this.deudas);
+
+    this.cargarPagos(this.cliente, this.year.valor);
+  }
+
+  registrarDeuda(deudaSelected: Deuda) {
     Swal.fire({
       title: '¿Registrar deuda?',
       text: 'No se podra revertir luego!',
@@ -138,52 +219,55 @@ export class AdminComponent implements OnInit, OnDestroy {
       confirmButtonText: 'Si, registrar!',
     }).then((result) => {
       if (result.isConfirmed) {
-        let deudaDesc: DeudaDescripcion = {
-          iddeudadescripcion: 1,
-          descripcion: '',
-        };
+        deudaSelected.periodo = moment(deudaSelected.periodo)
+          .add(5, 'days')
+          .format('yyyy-MM-DD');
 
-        let deudaEst: DeudaEstado = {
-          estado: null,
-          valor: null,
-          iddeudaEstado: 3,
-        };
+        this.deudaService.saveUserDebt(deudaSelected).subscribe({
+          next: (resp) => console.log(resp),
+          error: (err) => console.log(err),
+          complete: () => {
+            // Swal.fire(
+            //   'Registrado!',
+            //   'La deuda fue registrada correctamente!',
+            //   'success'
+            // );
+            this.pagos = [];
+            this.deudas = [];
 
-        // cargar tarifas de cliente
+            this.cargarDeudasCliente(this.cliente, this.year.valor);
+          },
+        });
+      } else {
+        return;
+      }
+    });
+  }
 
-        let periodo: string = `${this.year.valor}-${sinpago.valor}-01`;
+  registrarVarias() {
+    if (this.deudas.length <= 0) {
+      alert('No hay deudas para registrar');
+      return;
+    }
 
-        let newDeuda: Deuda = {
-          codigo: '0',
-          periodo: moment(periodo).format('yyyy-MM-DD'),
-          total: this.tarifa.monto!,
-          saldo: this.tarifa.monto!,
-          vencimiento: '',
-          estado: 5, //agregado a deudas
-          cliente: this.cliente,
-          deudaDescripcion: deudaDesc,
-          deudaEstado: deudaEst,
-          dcto: 0.0,
-        };
-
-        console.log(newDeuda);
-
-        // this.deudaService.saveUserDebt(newDeuda)
-        // .subscribe({
-        //   next: (resp)=>console.log(resp),
-        //   error: err=>console.log(err),
-        //   complete: ()=> {
-
-        //     Swal.fire(
-        //       'Registrado!',
-        //       'La deuda fue registrada correctamente!',
-        //       'success'
-        //     );
-
-        //     this.cargarPagos(this.cliente, this.year.valor);
-
-        //   }
-        // });
+    Swal.fire({
+      title: '¿Registrar todas las deudas?',
+      text: 'No se podra revertir luego!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, registrar!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.deudaService.saveAllUserDebt(this.deudas).subscribe({
+          next: (resp: Deuda[]) => {
+            console.log('deudas registradas: ' + resp);
+          },
+          error: (err) => console.log(err),
+          complete: () => this.deudas = []
+            // this.cargarDeudasCliente(this.cliente, this.year.valor),
+        });
       } else {
         return;
       }
@@ -197,58 +281,15 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
   }
 
-  filtrarPagos(
-    pagos: PagosServicioDetalle[],
-    year: number
-  ): PagosServicioDetalle[] {
-    let filteredPagos: PagosServicioDetalle[] = pagos.filter((item) => {
-      return item.idanno == year && item.pagosServicio.tipoPagoServicios.idtipopagosservicio == 3;
-    });
-    return filteredPagos;
-  }
-
-  mergePagos(pagosFiltrados: PagosServicioDetalle[], deudas: Deuda[] = []) {
-    // comparar con pagos
-    let mesesSinPagar1: any = MESES.filter((item1) => {
-      return !pagosFiltrados.some((item2) => {
-        return (
-          item2.idmes === item1.valor &&
-          item2.pagosServicio.pagoServicioEstado.idpagoestado !== 4
-        );
-      });
-    });
-
-    // comparar con deudas
-    let mesesSinPagar2: any = mesesSinPagar1.filter((mes:any) => {
-      return deudas.some((deuda) => {
-        return (
-          String(deuda.periodo).slice(5,7) != String( moment(mes.valor).format('MM') ) &&
-          deuda.estado != 5
-        );
-      });
-    });
-
-    console.log('deudas', deudas);
-
-    deudas.forEach( (item)=> {
-      console.log('año de deuda', String(item.periodo).slice(0,4));
-      console.log('meses de deuda', String(item.periodo).slice(5,7));
-      if (String(item.periodo).slice(5,7) == '01' ) {
-        console.log('Deuda enero');
-      }
-    } );
-
-    return mesesSinPagar2;
-  }
-
   cargarCostosCliente(idCli: number) {
     this.costoService.getCostsByClient(idCli).subscribe({
       next: (resp: Costo[]) => {
         this.costos = resp;
       },
       error: (error) => console.log(error),
-      complete: () =>
-        this.obtenerTarifaCliente(Number(this.costos[0].codcosto)),
+      complete: () => {
+        this.obtenerTarifaCliente(Number(this.costos[0].codcosto));
+      },
     });
   }
 
@@ -257,7 +298,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       next: (resp: CostoOtroServicio[]) => {
         this.tarifa = resp[0].tarifario;
       },
-      error: (error) => console.error(error)
+      error: (error) => console.error(error),
     });
   }
 
@@ -265,6 +306,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     // this.cliente = {};
     this.panel = false;
     this.pagos = [];
-    this.sinPagar = [];
+    this.deudas = [];
+    this.year = undefined!;
   }
 }

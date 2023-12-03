@@ -46,6 +46,14 @@ export class DeudaService {
       .post<Deuda>(`${base_url}/deudas`, deuda);
   }
 
+  //* ===============REGISTRAR VARIAS DEUDAS===============
+  saveAllUserDebt(deudas: Deuda[]): Observable<Deuda[]> {
+    return this.http
+      .post(`${base_url}/deudas-all`, deudas).pipe(
+        map( (res: any)=> res.deudas as Deuda[] )
+      );
+  }
+
   //* ===============DEUDAS POR ID DE CLIENTE===============
   getAllUserDebt(idCliente: number): Observable<Deuda[]> {
     return this.http
@@ -57,6 +65,20 @@ export class DeudaService {
   geDebtsByZoneAndYear(idzona: number, year: number): Observable<Deuda[]> {
     return this.http
       .get(`${base_url}/deudas/buscar-zona/${idzona}/${year}`)
+      .pipe(
+        map((resp: any) => {
+          return resp.deudas as Deuda[];
+        })
+      );
+  }
+
+  //* ===============DEUDAS POR RANGO DE FECHAS===============
+  geDebtsByPeriodRange(
+    desde: String,
+    hasta: String
+  ): Observable<Deuda[]> {
+    return this.http
+      .get(`${base_url}/deudas/buscar-periodo/${desde}/${hasta}`)
       .pipe(
         map((resp: any) => {
           return resp.deudas as Deuda[];

@@ -128,12 +128,28 @@ export class PagosServiciosService {
       );
   }
 
-    /* === OBTENER PAGOS POR AÑO Y MES === */
-    getPagosYearMonth(param: string): Observable<PagosServicio[]> {
-      return this.http
-        .get(`${base_url}/pagos-servicio/year-month/${param}`)
-        .pipe(map((resp: any) => resp.pagosservicios as PagosServicio[]));
-    }
+  /* === OBTENER PAGOS POR AÑO Y MES === */
+  getPagosYearMonth(param: string): Observable<PagosServicio[]> {
+    return this.http
+      .get(`${base_url}/pagos-servicio/year-month/${param}`)
+      .pipe(map((resp: any) => resp.pagosservicios as PagosServicio[]));
+  }
+
+  /* === OBTENER PAGOS POR TRIBUTO === */
+  getPagosBetweenDates(
+    desde: string,
+    hasta: string
+  ): Observable<PagosServicio[]> {
+    return this.http
+      .get<PagosServicio[]>(
+        `${base_url}/pagos-servicio/dates/${desde}/${hasta}`
+      )
+      .pipe(
+        map((res: any) => {
+          return res.pagos as PagosServicio[];
+        })
+      );
+  }
 
   tracking(idCaja: number) {
     return this.http.get(`${base_url}/pagos-servicio/caja/${idCaja}`);

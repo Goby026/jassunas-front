@@ -143,7 +143,7 @@ export class MultasComponent implements OnInit {
     newMulta.estado = 2;
     newMulta.saldo = 0;
     newMulta.deudaEstado = newDeudaEstado;
-    newMulta.observacion = 'Sin observaciones';
+    newMulta.observacion = multa.observacion;
 
     this.deudaService.updateUserDebt(newMulta).subscribe({
       next: (resp: Deuda) => {
@@ -293,7 +293,7 @@ export class MultasComponent implements OnInit {
 
         let multaNueva: Deuda = {
           codigo: '1',
-          periodo: String(moment().month()),
+          periodo: String(moment().format('yyyy-MM-DD')),
           total: this.form.get('monto')?.value,
           saldo: this.form.get('monto')?.value,
           vencimiento: moment().add(30, 'days').format('yyyy-MM-DD'),
@@ -304,6 +304,8 @@ export class MultasComponent implements OnInit {
           dcto: 0.0,
           observacion: this.form.get('observacion')?.value,
         };
+
+        console.log(multaNueva);
 
         //TODO: registrar deuda de tipo multa
         this.deudaService.saveUserDebt(multaNueva).subscribe({

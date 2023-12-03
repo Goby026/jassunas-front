@@ -1,19 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { PagosServicioDetalle } from 'src/app/models/pagosserviciodeta.model';
-import { PagosServiciosService } from 'src/app/services/pagos-servicios.service';
+import { Deuda } from 'src/app/models/deuda.model';
+import { DeudaService } from 'src/app/services/deuda.service';
+import { ExcelReport } from '../../reports/ExcelReport';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cuentas-cobrar3',
   templateUrl: './cuentas-cobrar3.component.html',
-  styleUrls: ['./cuentas-cobrar3.component.css']
 })
 export class CuentasCobrar3Component implements OnInit {
-
   fechasForm!: FormGroup;
-  pagosDetalles: PagosServicioDetalle[] = [];
+  data: boolean = false;
+  deudas: Deuda[] = [];
 
-  constructor( private pagosServicioService: PagosServiciosService ) {}
+    /* PAGINACION */
+    page: number = 1;
+    count: number = 0;
+    tableSize: number = 10;
+    tableSizes: number[] = [5, 10, 15, 20];
+
+  constructor(private deudaService: DeudaService) {}
 
   ngOnInit(): void {
     this.crearFormulario();
@@ -27,21 +34,48 @@ export class CuentasCobrar3Component implements OnInit {
   }
 
   /* === LISTAR CUENTAS PAGADAS SEGUN RANGO DE FECHAS === */
-  listarCuentas(){
-  if (this.fechasForm.invalid) return;
+  listarCuentas() {
+    if (this.fechasForm.invalid) return;
 
-  this.pagosServicioService.getDetallePagoFechas( this.fechasForm.get('inicio')?.value, this.fechasForm.get('fin')?.value )
-  .subscribe({
-    next: (resp)=> this.pagosDetalles = resp,
-    error: err=> console.log(err),
-    complete: ()=> this.filtrarCuentasPorCobrar(this.pagosDetalles)
-  });
+    this.data = true;
 
+    this.deudaService
+      .geDebtsByPeriodRange(
+        this.fechasForm.get('inicio')?.value,
+        this.fechasForm.get('fin')?.value
+      )
+      .subscribe({
+        next: (resp) => (this.deudas = resp),
+        error: (err) => console.log(err),
+        complete: ()=> this.data = false
+      });
   }
 
-
-  filtrarCuentasPorCobrar(cuentas:PagosServicioDetalle[] ){
-    // cuentas.
+  crearReporte() {
+    Swal.fire({
+      title: '¿Generar archivo Excel?',
+      text: 'Se descargará el archivo',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, continuar!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let reporte: ExcelReport = new ExcelReport();
+        reporte.reportCuentasPorCobrar(this.deudas);
+      }
+    });
   }
 
+  onTableDataChange(event: any) {
+    this.page = event;
+    // this.listarCajas();
+  }
+
+  onTableSizeChange(event: any): void {
+    this.tableSize = event.target.value;
+    this.page = 1;
+    // this.listarCajas();
+  }
 }

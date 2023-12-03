@@ -1,1 +1,131 @@
-<p>conceptos-cobrables4 works!</p>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-3">
+      <div class="card-body">
+        <form [formGroup]="requisitoForm" (ngSubmit)="listarPagosTributos()">
+          <div class="row mb-3">
+            <label class="col-sm-1 col-form-label" for="basic-default-name"
+              >Tributo</label
+            >
+            <div class="col-sm-2">
+              <select class="form-select" formControlName="tributo">
+                <option value="">Seleccionar</option>
+                <option *ngFor="let req of requisitos" [value]="req.codrequi">
+                  {{ req.requisitos }}
+                </option>
+              </select>
+            </div>
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name"
+              >Desde</label
+            >
+            <div class="col-sm-2">
+              <input
+                type="date"
+                class="form-control"
+                formControlName="inicio"
+              />
+            </div>
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name"
+              >Hasta</label
+            >
+            <div class="col-sm-2">
+              <input type="date" class="form-control" formControlName="fin" />
+            </div>
+
+            <div class="col-sm-2 d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary">Ver</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-md-12 mt-5 d-flex justify-content-center">
+      <div
+        *ngIf="data; else _data"
+        class="spinner-border spinner-border-lg text-primary"
+        role="status"
+      >
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <ng-template #_data>
+      <div *ngIf="detalles.length > 0" class="card mb-3">
+        <div class="row">
+          <div class="col-md-6">
+            <h5 class="card-header">Reporte de conceptos cobrados</h5>
+          </div>
+          <div
+            class="col-md-6 d-flex justify-content-around align-items-center"
+          >
+            <button
+              class="btn btn-success btn-sm mr-4"
+              (click)="crearReporte()"
+            >
+              <i class="bx bxs-file"></i> Excel
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive text-nowrap">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Socio</th>
+                    <th>Dirección</th>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let detalle of detalles
+                        | paginate
+                          : {
+                              itemsPerPage: tableSize,
+                              currentPage: page,
+                              totalItems: count
+                            };
+                      index as i
+                    "
+                  >
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>
+                      {{ detalle.cliente.apepaterno }}
+                      {{ detalle.cliente.apematerno }}
+                      {{ detalle.cliente.nombres }}
+                    </td>
+                    <td>
+                      {{ detalle.direccion }}
+                    </td>
+                    <td>
+                      {{ detalle.createdAt | date : "short" }}
+                    </td>
+                    <td>
+                      {{ detalle.monto | currency : "S/ " }}
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <!--Including the pagination control.-->
+                  <pagination-controls
+                    previousLabel="Prev"
+                    nextLabel="Sig"
+                    (pageChange)="onTableDataChange($event)"
+                  >
+                  </pagination-controls>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

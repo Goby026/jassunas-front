@@ -1,30 +1,97 @@
-<div class="card mb-3">
-  <div class="card-body">
-    <form [formGroup]="fechasForm" (ngSubmit)="listarCuentas()">
-    <div class="row mb-3">
+<div class="row">
+  <div class="col-md-12">
 
-        <label class="col-sm-1 col-form-label" for="basic-default-name">Desde</label>
-        <div class="col-sm-3">
-          <input
-            type="date"
-            class="form-control"
-            formControlName="inicio">
-        </div>
+    <div class="card mb-3">
+      <div class="card-body">
 
-        <label class="col-sm-1 col-form-label" for="basic-default-name">Hasta</label>
-        <div class="col-sm-3">
-          <input
-            type="date"
-            class="form-control"
-            formControlName="fin">
-        </div>
+        <form [formGroup]="fechasForm" (ngSubmit)="listarCuentas()">
+          <div class="row mb-3">
+
+              <label class="col-sm-1 col-form-label" for="basic-default-name">Desde</label>
+              <div class="col-sm-3">
+                <input
+                  type="date"
+                  class="form-control"
+                  formControlName="inicio">
+              </div>
+
+              <label class="col-sm-1 col-form-label" for="basic-default-name">Hasta</label>
+              <div class="col-sm-3">
+                <input
+                  type="date"
+                  class="form-control"
+                  formControlName="fin">
+              </div>
 
 
-        <div class="col-sm-2">
-          <button type="submit" class="btn btn-info">Mostrar</button>
-        </div>
+              <div class="col-sm-2">
+                <button type="submit" class="btn btn-info">Mostrar</button>
+              </div>
+
+            </div>
+          </form>
 
       </div>
-    </form>
+    </div>
+
+    <div class="col-md-12 mt-5 d-flex justify-content-center">
+      <div *ngIf="data; else _data" class="spinner-border spinner-border-lg text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <ng-template #_data>
+      <div *ngIf="deudas.length > 0" class="card mb-3">
+        <div class="row">
+          <div class="col-md-6">
+            <h5 class="card-header">
+              Reporte de conceptos cobrados
+            </h5>
+          </div>
+          <div class="col-md-6 d-flex justify-content-around align-items-center">
+            <button class="btn btn-success btn-sm mr-4" (click)="crearReporte()"><i class='bx bxs-file'></i> Excel</button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive text-nowrap">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>PERIODO</th>
+                    <th>COMPROBANTE DE COBRANZA</th>
+                    <th>SOCIO / RAZON</th>
+                    <th>IMPORTE</th>
+                    <th>DETALLE / OBSERVACION</th>
+                  </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+
+                  <tr *ngFor="let deuda of deudas | paginate:{
+                    itemsPerPage: tableSize,
+                    currentPage: page,
+                    totalItems: count}">
+                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ deuda.periodo | date: 'MMMM' }}</strong></td>
+                    <td></td>
+                    <td>{{deuda.cliente.apepaterno}} {{deuda.cliente.apematerno}} {{deuda.cliente.nombres}} </td>
+                    <td>
+                      {{deuda.total | currency: 'S/ '}}
+                    </td>
+                    <td><span class="badge bg-label-primary me-1">{{ deuda.observacion }}</span></td>
+                  </tr>
+
+                </tbody>
+                <tfoot>
+                  <!--Including the pagination control.-->
+                  <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
+                  </pagination-controls>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
   </div>
+
 </div>
+

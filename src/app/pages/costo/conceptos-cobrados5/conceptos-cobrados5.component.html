@@ -1,1 +1,103 @@
-<p>conceptos-cobrados5 works!</p>
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <form [formGroup]="fechasForm" (ngSubmit)="cargarAllPagos()">
+        <div class="row mb-3">
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Desde</label>
+            <div class="col-sm-2">
+              <input
+                type="date"
+                class="form-control"
+                formControlName="inicio">
+            </div>
+
+            <label class="col-sm-1 col-form-label" for="basic-default-name">Hasta</label>
+            <div class="col-sm-2">
+              <input
+                type="date"
+                class="form-control"
+                formControlName="fin">
+            </div>
+
+
+            <div class="col-sm-2 d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary">Ver</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-md-12 mt-5 d-flex justify-content-center">
+      <div *ngIf="data; else _data" class="spinner-border spinner-border-lg text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <ng-template #_data>
+      <div *ngIf="pagosServicios.length > 0" class="card mb-3">
+        <div class="row">
+          <div class="col-md-6">
+            <h5 class="card-header">
+              Reporte de conceptos cobrados
+            </h5>
+          </div>
+          <div class="col-md-6 d-flex justify-content-around align-items-center">
+            <button class="btn btn-success btn-sm mr-4" (click)="crearReporte()"><i class='bx bxs-file'></i> Excel</button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive text-nowrap">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Caja</th>
+                    <th>Recibo</th>
+                    <th>Socio</th>
+                    <th>Concepto</th>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                    <th>Dcto</th>
+                    <th>Cobrado por</th>
+                  </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                  <tr *ngFor="let pago of pagosServicios | paginate:{
+                    itemsPerPage: tableSize,
+                    currentPage: page,
+                    totalItems: count} ; let i = index">
+                    <td> {{ i+1 }} </td>
+                    <td> {{ pago.caja.ncaja }} </td>
+                    <td> {{ pago.correlativo }} </td>
+                    <td> {{ pago.cliente.apepaterno }} {{ pago.cliente.apematerno }} {{
+                      pago.cliente.nombres }}</td>
+                    <td>
+                      {{ pago.tipoPagoServicios.descripcion}}
+                    </td>
+                    <td> {{ pago.fecha | date: 'short' }} </td>
+                    <td> {{ pago.montopagado | currency: 'S/ ' }} </td>
+                    <td> {{ pago.montodescuento | currency: 'S/ ' }} </td>
+                    <td> {{ pago.usuario?.username }} </td>
+
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <!--Including the pagination control.-->
+                  <pagination-controls previousLabel="Prev" nextLabel="Sig" (pageChange)="onTableDataChange($event)">
+                  </pagination-controls>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+  </div>
+
+</div>
+

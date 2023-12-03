@@ -38,28 +38,25 @@ export class CostoComponent implements OnInit {
         this.conceptosCobrados5 = false;
         break;
       case 3:
-        this.mantenimiento();
         this.comprobantesIngreso1 = false;
         this.reportesMensuales2 = false;
-        this.cuentasCobrar3 = false;
+        this.cuentasCobrar3 = true;
         this.conceptosCobrables4 = false;
         this.conceptosCobrados5 = false;
         break;
       case 4:
-        this.mantenimiento();
         this.comprobantesIngreso1 = false;
         this.reportesMensuales2 = false;
         this.cuentasCobrar3 = false;
-        this.conceptosCobrables4 = false;
+        this.conceptosCobrables4 = true;
         this.conceptosCobrados5 = false;
         break;
       case 5:
-        this.mantenimiento();
         this.comprobantesIngreso1 = false;
         this.reportesMensuales2 = false;
         this.cuentasCobrar3 = false;
         this.conceptosCobrables4 = false;
-        this.conceptosCobrados5 = false;
+        this.conceptosCobrados5 = true;
         break;
 
       default:
