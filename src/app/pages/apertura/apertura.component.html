@@ -53,6 +53,22 @@
     <div class="card">
       <div class="card-header d-flex justify-content-between">
         <h3>Mostrar por fecha</h3>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" style="">
+            <li><a class="dropdown-item" [routerLink]="['cortes']">Cortes de mes</a></li>
+            <!-- <li><a class="dropdown-item" href="javascript:void(0);">Another action</a></li>
+            <li><a class="dropdown-item" href="javascript:void(0);">Something else here</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="javascript:void(0);">Separated link</a></li> -->
+          </ul>
+        </div>
+
       </div>
       <div class="card-body">
         <input type="date" class="form-control mb-4" (change)="buscarFecha(fecha.value)" #fecha>

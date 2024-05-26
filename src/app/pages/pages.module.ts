@@ -54,6 +54,8 @@ import { CuentasCobrar3Component } from './costo/cuentas-cobrar3/cuentas-cobrar3
 import { ConceptosCobrables4Component } from './costo/conceptos-cobrables4/conceptos-cobrables4.component';
 import { ConceptosCobrados5Component } from './costo/conceptos-cobrados5/conceptos-cobrados5.component';
 import { AdminComponent } from './admin/admin.component';
+import { CortesComponent } from './apertura/cortes/cortes.component';
+import { DetallecorteComponent } from './apertura/cortes/detallecorte/detallecorte.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +103,9 @@ import { AdminComponent } from './admin/admin.component';
     CuentasCobrar3Component,
     ConceptosCobrables4Component,
     ConceptosCobrados5Component,
-    AdminComponent
+    AdminComponent,
+    CortesComponent,
+    DetallecorteComponent
   ],
   exports:[
     DashboardComponent,

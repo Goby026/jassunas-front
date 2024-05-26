@@ -171,4 +171,11 @@ export class DeudaService {
 
     return penalty;
   }
+
+  //* ===============GENERAR DEUDAS SEGUN CORTE===============
+  generateDebt(): Observable<Deuda[]>{
+    return this.http.get(`${base_url}/generar-deudas`).pipe(
+      map( (resp: any)=> resp.deudas as Deuda[] )
+    );
+  }
 }

@@ -4,7 +4,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Caja } from '../models/caja.model';
-import { Usuario } from '../models/usuario.model';
 import { Router } from '@angular/router';
 import { UsuarioService } from './usuario.service';
 
@@ -16,9 +15,7 @@ const base_url = environment.base_url;
 export class CajaService {
 
   constructor(
-    private http: HttpClient,
-    private router: Router,
-    private usuarioService: UsuarioService
+    private http: HttpClient
     ) { }
 
   getCajaStatus():Observable<Caja>{

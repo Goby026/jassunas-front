@@ -25,6 +25,8 @@ import { PagosDeudasCondonacionesComponent } from './cobranzas/pagos-deudas-cond
 import { AccesosComponent } from './configuracion/accesos/accesos.component';
 import { CostoComponent } from './costo/costo.component';
 import { AdminComponent } from './admin/admin.component';
+import { CortesComponent } from './apertura/cortes/cortes.component';
+import { DetallecorteComponent } from './apertura/cortes/detallecorte/detallecorte.component';
 
 const routes: Routes = [
   {
@@ -57,6 +59,8 @@ const routes: Routes = [
         { path: 'cate-egresos', component: CateEgresosComponent, data: { titulo: 'Categorías Egresos' } },
       ] },
       { path: 'seguimiento/:idcaja', component: SeguimientoComponent, data: { titulo: 'Seguimiento' } },
+      { path: 'caja/cortes', component: CortesComponent, data: { titulo: 'Corte de mes' } },
+      { path: 'caja/cortes/detallecorte', component: DetallecorteComponent, data: { titulo: 'Detalle de corte' } },
       { path: 'egresos', component: EgresosComponent, data: { titulo: 'Egresos' } },
       { path: 'administrador', component: AdminComponent, data: { titulo: 'Administrador' } },
       { path: 'accesos', component: AccesosComponent, data: { titulo: 'Accesos' } },
