@@ -20,19 +20,25 @@ export class DetallecorteComponent implements OnInit {
   year = moment().format('yyyy');
   total: number = 0.0;
   porcentaje: number = 0.0;
+  cargando: boolean = false;
 
   constructor(private deudaService: DeudaService, private clienteService: ClienteService) { }
 
   ngOnInit(): void {
+    console.log('cargando deudas');
     this.generarDeudas();
   }
 
   generarDeudas(){
+    console.log('ejecutando metodo para obtener deudas');
+    this.cargando = true;
     this.deudaService.generateDebt()
     .subscribe({
-      next: (resp: Deuda[])=> this.deudas = resp,
+      next: (resp: Deuda[])=> this.deudas = resp.filter( deuda => deuda.cliente.nombres != ''),
       error: err=> console.log(err),
       complete: ()=> {
+        console.log(this.deudas);
+        this.cargando = false;
         this.deudas.map( (resp)=> {
           this.total += resp.saldo
         } );
@@ -42,6 +48,7 @@ export class DetallecorteComponent implements OnInit {
   }
 
   obtenerClientes(){
+    console.log('obteniendo clientes');
     this.clienteService.listClients()
     .subscribe({
       next: (resp: Cliente[])=> this.clientes = resp,
