@@ -15,13 +15,12 @@ const base_url = environment.base_url;
 export class DeudaService {
   constructor(private http: HttpClient) {}
 
-  //* ===============OBTENER DEUDAS CON ESTADO PENDIENTE===============
+  //* ===============OBTENER TODAS LAS DEUDAS===============
   getAllDebts(): Observable<Deuda[]> {
-    return this.http.get(`${base_url}/deudas`)
-    .pipe(
-      map( (resp: any)=> {
-        return resp.deudas as Deuda[]
-      } )
+    return this.http.get(`${base_url}/deudas`).pipe(
+      map((resp: any) => {
+        return resp.deudas as Deuda[];
+      })
     );
   }
 
@@ -42,16 +41,14 @@ export class DeudaService {
 
   //* ===============REGISTRAR DEUDA===============
   saveUserDebt(deuda: Deuda): Observable<Deuda> {
-    return this.http
-      .post<Deuda>(`${base_url}/deudas`, deuda);
+    return this.http.post<Deuda>(`${base_url}/deudas`, deuda);
   }
 
   //* ===============REGISTRAR VARIAS DEUDAS===============
   saveAllUserDebt(deudas: Deuda[]): Observable<Deuda[]> {
     return this.http
-      .post(`${base_url}/deudas-all`, deudas).pipe(
-        map( (res: any)=> res.deudas as Deuda[] )
-      );
+      .post(`${base_url}/deudas-all`, deudas)
+      .pipe(map((res: any) => res.deudas as Deuda[]));
   }
 
   //* ===============DEUDAS POR ID DE CLIENTE===============
@@ -72,11 +69,17 @@ export class DeudaService {
       );
   }
 
+  //* ===============DEUDAS POR AÑO===============
+  geDebtsByYear(year: number): Observable<Deuda[]> {
+    return this.http.get(`${base_url}/deudas/buscar-annio/${year}`).pipe(
+      map((resp: any) => {
+        return resp.deudas as Deuda[];
+      })
+    );
+  }
+
   //* ===============DEUDAS POR RANGO DE FECHAS===============
-  geDebtsByPeriodRange(
-    desde: String,
-    hasta: String
-  ): Observable<Deuda[]> {
+  geDebtsByPeriodRange(desde: String, hasta: String): Observable<Deuda[]> {
     return this.http
       .get(`${base_url}/deudas/buscar-periodo/${desde}/${hasta}`)
       .pipe(
@@ -160,22 +163,25 @@ export class DeudaService {
   }
 
   //* ===============VERIFICAR SI SOCIO TIENE MULTA PENDIENTE===============
-  verifyPenalty( deudas: Deuda[] ): boolean {
-    let penalty : boolean = false;
+  verifyPenalty(deudas: Deuda[]): boolean {
+    let penalty: boolean = false;
 
-    deudas.forEach( (item)=> {
-      if((item.deudaDescripcion.iddeudadescripcion == 3 || item.deudaDescripcion.iddeudadescripcion == 4 || item.deudaDescripcion.iddeudadescripcion == 5) && item.deudaEstado.iddeudaEstado== 3){
+    deudas.forEach((item) => {
+      if (
+        (item.deudaDescripcion.iddeudadescripcion == 3 ||
+          item.deudaDescripcion.iddeudadescripcion == 4 ||
+          item.deudaDescripcion.iddeudadescripcion == 5) &&
+        item.deudaEstado.iddeudaEstado == 3
+      ) {
         penalty = true;
       }
-    } )
+    });
 
     return penalty;
   }
 
   //* ===============GENERAR DEUDAS SEGUN CORTE===============
-  generateDebt(): Observable<Deuda[]>{
-    return this.http.get(`${base_url}/generar-deudas`).pipe(
-      map( (resp: any)=> resp.deudas as Deuda[] )
-    );
+  generateDebt(): Observable<any> {
+    return this.http.get(`${base_url}/generar-deudas`);
   }
 }

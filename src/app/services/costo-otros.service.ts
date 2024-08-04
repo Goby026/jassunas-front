@@ -13,6 +13,14 @@ export class CostoOtrosService {
   // tabla: tbcostootroservicio entidad: Costootroservicio
   constructor(private http: HttpClient) {}
 
+  getAllCostoOtros(): Observable<CostoOtroServicio[]> {
+    return this.http.get(`${base_url}/costo-otros`).pipe(
+      map((response: any) => {
+        return response.costootros as CostoOtroServicio[];
+      })
+    );
+  }
+
   getCosto_otros(idCosto: number): Observable<CostoOtroServicio[]> {
     {
       return this.http.get(`${base_url}/costo-otros/buscar/${idCosto}`).pipe(

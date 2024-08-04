@@ -305,8 +305,6 @@ export class MultasComponent implements OnInit {
           observacion: this.form.get('observacion')?.value,
         };
 
-        console.log(multaNueva);
-
         //TODO: registrar deuda de tipo multa
         this.deudaService.saveUserDebt(multaNueva).subscribe({
           next: (resp: Deuda) => {

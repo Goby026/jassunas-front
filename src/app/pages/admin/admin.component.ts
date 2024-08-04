@@ -21,6 +21,7 @@ import Swal from 'sweetalert2';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
 import 'moment/locale/es';
+import { Router } from '@angular/router';
 moment.locale('es');
 
 @Component({
@@ -31,7 +32,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
-  title = 'Lista de socios';
+  title = 'MODULO DE GESTION DIRECTA DE DEUDAS';
   cliente!: Cliente;
   clientes: Cliente[] = [];
   tarifa!: Tarifario;
@@ -55,7 +56,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     private yearService: YearsService,
     private deudaService: DeudaService,
     private costoService: CostoService,
-    private costoOtroService: CostoOtrosService
+    private costoOtroService: CostoOtrosService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +65,8 @@ export class AdminComponent implements OnInit, OnDestroy {
       pagingType: 'full_numbers',
       language: environment.language,
     };
-    this.listarClientes();
+    // this.listarClientes();
+    this.listarDeudas();
   }
 
   ngOnDestroy(): void {
@@ -72,6 +75,35 @@ export class AdminComponent implements OnInit, OnDestroy {
       destroy: true,
     };
   }
+
+  listarDeudas(): void {
+    this.deudaService.getAllDebts().subscribe({
+      next: (resp) => (this.deudas = resp),
+      error: (err) => console.log(err),
+      complete: () => {
+        this.dtTrigger.next(null);
+      },
+    });
+  }
+
+  // filtrar($event: any, sel: string): void {
+  //   if ($event) {
+  //     this.deudaService.geDebtsByYear(Number(sel)).subscribe({
+  //       next: (resp) => {
+  //         this.deudas = resp;
+  //       },
+  //       error: (err) => console.log(err),
+  //       complete: () => {
+  //         this.router
+  //           .navigateByUrl('/dashboard', { skipLocationChange: true })
+  //           .then(() => {
+  //             this.router.navigate(['/dashboard/administrador']);
+  //           });
+  //         this.dtTrigger.next(null);
+  //       },
+  //     });
+  //   }
+  // }
 
   listarClientes(): void {
     this.clienteService.listClients().subscribe({
@@ -202,7 +234,6 @@ export class AdminComponent implements OnInit, OnDestroy {
       });
     });
 
-
     console.log(this.deudas);
 
     this.cargarPagos(this.cliente, this.year.valor);
@@ -265,8 +296,8 @@ export class AdminComponent implements OnInit, OnDestroy {
             console.log('deudas registradas: ' + resp);
           },
           error: (err) => console.log(err),
-          complete: () => this.deudas = []
-            // this.cargarDeudasCliente(this.cliente, this.year.valor),
+          complete: () => (this.deudas = []),
+          // this.cargarDeudasCliente(this.cliente, this.year.valor),
         });
       } else {
         return;

@@ -21,6 +21,7 @@ export class Cliente {
     public zona: Zona,
     public estado: string | number,
     public codCli: string,
+    public costo?: number | 0,
     public created_at?: Date,
     public updated_at?: Date,
     public idclientes?: number | string

@@ -1,8 +1,8 @@
-import { Cliente } from "./cliente.model";
-import { DeudaDescripcion } from "./deudadescripcion.model";
-import { DeudaEstado } from "./deudaestado.model";
+import { Cliente } from './cliente.model';
+import { DeudaDescripcion } from './deudadescripcion.model';
+import { DeudaEstado } from './deudaestado.model';
 
-export class Deuda{
+export class Deuda {
   constructor(
     public codigo: string | null,
     public periodo: Date | string,
@@ -11,12 +11,12 @@ export class Deuda{
     public vencimiento: Date | string,
     public estado: number,
     public cliente: Cliente,
-    public deudaDescripcion: DeudaDescripcion,//tipo de deuda
+    public deudaDescripcion: DeudaDescripcion, //tipo de deuda
     public deudaEstado: DeudaEstado,
     public dcto: number | 0,
     public observacion?: string | null,
-    public created_at?: Date,
-    public updated_at?: Date,
-    public idtbdeudas?: number//PK
-  ){}
+    public createdAt?: Date,
+    public updatedAt?: Date,
+    public idtbdeudas?: number //PK
+  ) {}
 }
